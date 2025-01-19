@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateItemsTable extends Migration
+class CreatePoItemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,20 +13,15 @@ class CreateItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('items', function (Blueprint $table) {
+        Schema::create('po_items', function (Blueprint $table) {
             $table->id(); // Auto-incrementing primary key
-            $table->text('name'); // Name column
-            $table->text('description'); // Description column
-            $table->unsignedBigInteger('supplier_id'); // Foreign key column (unsignedBigInteger for large ID)
-            $table->float('cost', 8, 2)->default(0); // Cost with precision and default value
-            $table->boolean('status')->default(1); // Status as boolean
-            $table->timestamps(0); // Adds created_at and updated_at with datetime precision
-
-            // Foreign key constraint
-            $table->foreign('supplier_id')
-                  ->references('id')
-                  ->on('suppliers')
-                  ->onDelete('cascade'); // Cascade on delete to remove related items when supplier is deleted
+            $table->foreignId('po_id')->constrained('purchase_orders')->onDelete('cascade'); // Foreign key for purchase order
+            $table->foreignId('item_id')->constrained('items')->onDelete('cascade'); // Foreign key for item
+            $table->integer('quantity'); // Quantity of items
+            $table->float('price', 8, 2)->default(0); // Price per item
+            $table->string('unit', 50); // Unit of measurement
+            $table->float('total', 8, 2)->default(0); // Total price (quantity * price)
+            $table->timestamps(); // Created and updated timestamps
         });
     }
 
@@ -37,6 +32,6 @@ class CreateItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('items');
+        Schema::dropIfExists('po_items');
     }
 }

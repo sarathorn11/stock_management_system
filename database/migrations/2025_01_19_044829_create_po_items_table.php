@@ -15,24 +15,13 @@ class CreatePoItemsTable extends Migration
     {
         Schema::create('po_items', function (Blueprint $table) {
             $table->id(); // Auto-incrementing primary key
-            $table->unsignedBigInteger('po_id'); // Foreign key for purchase order
-            $table->unsignedBigInteger('item_id'); // Foreign key for item
+            $table->foreignId('po_id')->constrained('purchase_orders')->onDelete('cascade'); // Foreign key for purchase order
+            $table->foreignId('item_id')->constrained('items')->onDelete('cascade'); // Foreign key for item
             $table->integer('quantity'); // Quantity of items
             $table->float('price', 8, 2)->default(0); // Price per item
             $table->string('unit', 50); // Unit of measurement
             $table->float('total', 8, 2)->default(0); // Total price (quantity * price)
             $table->timestamps(); // Created and updated timestamps
-
-            // Foreign key relationships
-            $table->foreign('po_id')
-                  ->references('id')
-                  ->on('purchase_orders')
-                  ->onDelete('cascade'); // Remove related po_items when purchase_order is deleted
-
-            $table->foreign('item_id')
-                  ->references('id')
-                  ->on('items')
-                  ->onDelete('cascade'); // Remove related po_items when item is deleted
         });
     }
 
