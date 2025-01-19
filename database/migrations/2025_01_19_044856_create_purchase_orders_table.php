@@ -4,24 +4,40 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreatePurchaseOrderTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('purchase_orders', function (Blueprint $table) {
+        Schema::create('purchase_order', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('po_code', 50);  // Add po_code field
+            $table->integer('supplier_id');  // Add supplier_id field (foreign key)
+            $table->float('amount', 8, 2);  // Add amount field
+            $table->float('discount_perc', 8, 2)->default(0);  // Add discount percentage
+            $table->float('discount', 8, 2)->default(0);  // Add discount amount
+            $table->float('tax_perc', 8, 2)->default(0);  // Add tax percentage
+            $table->float('tax', 8, 2)->default(0);  // Add tax amount
+            $table->text('remarks');  // Add remarks field
+            $table->tinyInteger('status')->default(0)->comment('0 = pending, 1 = partially received, 2 = received');  // Add status field
+            $table->timestamps();  // Add created_at and updated_at fields
+
+            // Foreign key relationship to the suppliers table
+            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('purchase_orders');
+        Schema::dropIfExists('purchase_order');
     }
-};
+}
