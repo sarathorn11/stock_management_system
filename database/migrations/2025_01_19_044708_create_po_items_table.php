@@ -15,7 +15,7 @@ class CreatePoItemsTable extends Migration
     {
         Schema::create('po_items', function (Blueprint $table) {
             $table->id(); // Auto-incrementing primary key
-            $table->foreignId('po_id')->constrained('purchase_orders')->onDelete('cascade'); // Foreign key for purchase order
+            $table->foreignId('po_id')->constrained('purchase_order')->onDelete('cascade'); // Foreign key for purchase order
             $table->foreignId('item_id')->constrained('items')->onDelete('cascade'); // Foreign key for item
             $table->integer('quantity'); // Quantity of items
             $table->float('price', 8, 2)->default(0); // Price per item
