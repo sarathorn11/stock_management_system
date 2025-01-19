@@ -1,16 +1,19 @@
 @extends('layouts.app')
-
 @section('content')
-<div class="container">
-    <h1>Stock Details</h1>
-    <p><strong>ID:</strong> {{ $stock->id }}</p>
-    <p><strong>Item ID:</strong> {{ $stock->item_id }}</p>
-    <p><strong>Quantity:</strong> {{ $stock->quantity }}</p>
-    <p><strong>Unit:</strong> {{ $stock->unit }}</p>
-    <p><strong>Price:</strong> {{ $stock->price }}</p>
-    <p><strong>Total:</strong> {{ $stock->total }}</p>
-    <p><strong>Type:</strong> {{ $stock->type == 1 ? 'IN' : 'OUT' }}</p>
-    <p><strong>Date Created:</strong> {{ $stock->date_created }}</p>
-    <a href="{{ route('stocks.index') }}" class="btn btn-secondary">Back</a>
+<div class="container mx-auto bg-white shadow-md rounded-lg p-6">
+    <h1 class="text-2xl font-bold mb-4 text-gray-800">Stock Details</h1>
+    <div class="space-y-2">
+        <p><strong class="text-gray-600">ID:</strong> {{ $stock->id }}</p>
+        <p><strong class="text-gray-600">Item ID:</strong> {{ $stock->item_id }}</p>
+        <p><strong class="text-gray-600">Quantity:</strong> {{ $stock->quantity }}</p>
+        <p><strong class="text-gray-600">Unit:</strong> {{ $stock->unit }}</p>
+        <p><strong class="text-gray-600">Price:</strong> {{ $stock->price }}</p>
+        <p><strong class="text-gray-600">Total:</strong> {{ $stock->total }}</p>
+        <p><strong class="text-gray-600">Type:</strong> {{ $stock->type == 1 ? 'IN' : 'OUT' }}</p>
+        <p><strong class="text-gray-600">Date Created:</strong> {{ $stock->date_created }}</p>
+    </div>
+    <div class="mt-6">
+        <a href="{{ route('stocks.index') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Back</a>
+    </div>
 </div>
 @endsection
