@@ -26,9 +26,9 @@ class Receiving extends Model
     ];
 
     // If you have foreign relationships, you can define them here
-    public function form()
+    public function from()
     {
-        return $this->belongsTo(Form::class, 'from_id'); // Example: Assumes 'Form' is another model
+        return $this->morphTo(__FUNCTION__, 'from_order', 'from_id');
     }
 
     // Additional methods or logic can go here
