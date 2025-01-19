@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('stock_list', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('item_id');
+            $table->foreignId('item_id')->constrained();
             $table->integer('quantity');
             $table->string('unit', 250)->nullable();
             $table->float('price', 8, 2)->default(0);
