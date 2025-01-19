@@ -12,8 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('receivings', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id(); // Auto-incrementing primary key
+            $table->unsignedBigInteger('from_id'); // Foreign key for the form
+            $table->tinyInteger('from_order')->default(1)->comment('1 = PO, 2 = BO'); // From order (PO or BO)
+            $table->float('amount', 8, 2)->default(0); // Amount
+            $table->float('discount_perc', 8, 2)->default(0); // Discount percentage
+            $table->float('discount', 8, 2)->default(0); // Discount value
+            $table->float('tax_perc', 8, 2)->default(0); // Tax percentage
+            $table->float('tax', 8, 2)->default(0); // Tax value
+            $table->text('stock_ids')->nullable(); // Stock IDs (can store a serialized or JSON array)
+            $table->text('remarks')->nullable(); // Remarks
+            $table->timestamps(); // created_at and updated_at
+
+            // Foreign key constraint for form_id
+            $table->foreign('from_id')->references('id')->on('purchase_orders')->onDelete('cascade'); // Assuming 'purchase_orders' is the related table
         });
     }
 
