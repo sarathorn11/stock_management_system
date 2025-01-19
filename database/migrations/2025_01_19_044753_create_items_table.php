@@ -13,7 +13,7 @@ class CreateItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('po_items', function (Blueprint $table) {
+        Schema::create('items', function (Blueprint $table) {
             $table->id(); // Auto-incrementing primary key
             $table->foreignId('po_id')->constrained('purchase_orders')->onDelete('cascade'); // Foreign key for purchase order
             $table->foreignId('item_id')->constrained('items')->onDelete('cascade'); // Foreign key for item
@@ -32,6 +32,6 @@ class CreateItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('po_items');
+        Schema::dropIfExists('items');
     }
 }
