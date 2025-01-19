@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('suppliers', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id(); 
+            $table->text('name')->nullable(); 
+            $table->text('address')->nullable(); 
+            $table->text('cperson')->nullable(); 
+            $table->text('contact'); 
+            $table->tinyInteger('status')->default(1); 
+            $table->dateTime('date_created')->useCurrent(); 
+            $table->dateTime('date_updated')->useCurrent()->useCurrentOnUpdate(); 
         });
     }
 
