@@ -4,24 +4,23 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
+return new class extends Migration {
     public function up(): void
     {
-        Schema::create('stocks', function (Blueprint $table) {
+        Schema::create('stock_list', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->unsignedBigInteger('item_id');
+            $table->integer('quantity');
+            $table->string('unit', 250)->nullable();
+            $table->float('price', 8, 2)->default(0);
+            $table->float('total', 8, 2)->default(0);
+            $table->tinyInteger('type')->default(1)->comment('1=IN , 2=OUT');
+            $table->timestamp('date_created')->useCurrent();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('stocks');
+        Schema::dropIfExists('stock_list');
     }
 };
