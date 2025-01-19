@@ -15,12 +15,11 @@ class CreateItemsTable extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id(); // Auto-incrementing primary key
-            $table->foreignId('po_id')->constrained('purchase_orders')->onDelete('cascade'); // Foreign key for purchase order
-            $table->foreignId('item_id')->constrained('items')->onDelete('cascade'); // Foreign key for item
-            $table->integer('quantity'); // Quantity of items
-            $table->float('price', 8, 2)->default(0); // Price per item
-            $table->string('unit', 50); // Unit of measurement
-            $table->float('total', 8, 2)->default(0); // Total price (quantity * price)
+            $table->string('name'); // Name of the item
+            $table->text('description'); // Description of the item
+            $table->foreignId('supplier_id')->constrained()->onDelete('cascade'); // Supplier ID
+            $table->decimal('cost', 8, 2); // Cost of the item
+            $table->tinyInteger('status'); // Status of the item
             $table->timestamps(); // Created and updated timestamps
         });
     }

@@ -12,15 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('sales', function (Blueprint $table) {
-            $table->id(); 
-            $table->string('sales_code', 50); 
-            $table->text('client'); 
-            $table->float('amount'); 
+            $table->id();
+            $table->string('sales_code', 50);
+            $table->text('client');
+            $table->float('amount');
             $table->foreignId('stock_id')->constrained();
-            $table->text('remarks')->nullable(); 
-            $table->timestamps(); 
-            $table->foreign('stock_id')->references('id')->on('stock_list')->onDelete('cascade');
-
+            $table->text('remarks')->nullable();
+            $table->timestamps();
         });
     }
 
