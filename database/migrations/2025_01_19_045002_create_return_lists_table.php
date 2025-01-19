@@ -20,8 +20,6 @@ return new class extends Migration
             $table->text('remarks')->nullable(); 
             $table->dateTime('date_created')->useCurrent(); 
             $table->dateTime('date_updated')->useCurrent()->useCurrentOnUpdate(); 
-            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
-            $table->foreign('stock_id')->references('id')->on('stock_list')->onDelete('cascade');
         });
     }
 
