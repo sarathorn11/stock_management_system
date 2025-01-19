@@ -26,9 +26,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('stocks', StockController::class);
-
-
 // Dashboard Route
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
