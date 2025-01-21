@@ -8,15 +8,15 @@
     <div class="flex items-center justify-between">
       <a href="{{ route('stocks.create') }}"
         class="inline-block bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600">Create</a>
-      <a href="{{ route('stocks.create') }}"
-        class="inline-block bg-gray-400 text-black px-4 py-2 rounded mb-4 hover:bg-blue-600 ml-2"><i
-          class="fa fa-cog mr-2"></i>Option</a>
+      <a class="inline-block bg-gray-300 text-black px-4 py-2 rounded mb-4 hover:bg-gray-400 ml-2">
+        <i class="fa fa-cog mr-2"></i>Option
+      </a>
     </div>
   </div>
   @if(session('success'))
   <div class="bg-green-100 text-green-800 p-4 rounded mb-4">{{ session('success') }}</div>
   @endif
-  <div class="overflow-x-auto">
+  <div class="w-full h-full">
     <table class="table-auto w-full">
       <thead class="bg-blue-500 text-white">
         <tr>

@@ -99,4 +99,14 @@ class StockController extends Controller
         // Redirect to the stock list with a success message
         return redirect()->route('stocks.index')->with('success', 'Stock deleted successfully.');
     }
+
+    public function search(Stock $stock)
+    {
+        $query = request('query');
+        $stocks = Stock::where('item_id', 'LIKE', "%{$query}%")
+            ->orWhere('unit', 'LIKE', "%{$query}%")
+            ->paginate(10);
+
+        return view('stocks.index', compact('stocks'));
+    }
 }

@@ -26,7 +26,7 @@
 
 <body>
   <div class="bg-gray-100 min-h-screen flex">
-    <div class="bg-gray-800 text-white w-64 flex flex-col">
+    <div class="bg-gray-800 w-64 flex flex-col">
       <div class="p-4 flex items-center">
         <img src="{{ asset('static/assets/images/logo.png') }}" alt="Logo" class="h-[50px] w-[50px] mr-3">
         <span class="font-bold text-md text-[#3C8DBC]">Stock Management <span
