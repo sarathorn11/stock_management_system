@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\StockController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\ReceivingController;
 use App\Http\Controllers\BackOrderController;
 use App\Http\Controllers\ReturnListController;
+use App\Http\Controllers\StockController;
 use App\Http\Controllers\SupplierListController;
 use App\Http\Controllers\ItemListController;
 use App\Http\Controllers\UserListController;
@@ -22,12 +22,8 @@ use App\Http\Controllers\SettingsController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 // Dashboard Route
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 // Purchase Order Routes
 Route::resource('purchase-order', PurchaseOrderController::class);
@@ -41,6 +37,9 @@ Route::resource('back-order', BackOrderController::class);
 // Return List Routes
 Route::resource('return', ReturnListController::class);
 
+// Stock List Routes
+Route::resource('stocks', StockController::class);
+
 // Supplier List Routes
 Route::resource('supplier', SupplierListController::class);
 
@@ -52,6 +51,3 @@ Route::resource('user', UserListController::class);
 
 // Settings Routes
 Route::resource('settings', SettingsController::class);
-
-// Stocks Routes (Already Added)
-Route::resource('stocks', StockController::class);
