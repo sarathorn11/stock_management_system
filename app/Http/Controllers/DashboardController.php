@@ -12,12 +12,6 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // Example data for the dashboard
-        $totalStocks = Stock::count();
-        $totalQuantity = Stock::sum('quantity');
-        $totalValue = Stock::sum('total');
-
-        // Pass data to the view
-        return view('dashboard.index', compact('totalStocks', 'totalQuantity', 'totalValue'));
+        return view('dashboard.index');
     }
 }

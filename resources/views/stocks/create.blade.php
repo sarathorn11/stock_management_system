@@ -1,46 +1,51 @@
 @extends('layouts.app')
 @section('content')
-<div class="bg-white shadow-md rounded-lg p-6 max-w-3xl mx-auto">
-    <h1 class="text-2xl font-bold mb-6 text-gray-800">Add Stock</h1>
-    <form action="{{ route('stocks.store') }}" method="POST">
-        @csrf
-        <div class="mb-4">
-            <label for="item_id" class="block text-gray-700 font-medium mb-2">Item ID</label>
-            <input type="number" id="item_id" name="item_id" required 
-                class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        </div>
-        <div class="mb-4">
-            <label for="quantity" class="block text-gray-700 font-medium mb-2">Quantity</label>
-            <input type="number" id="quantity" name="quantity" required 
-                class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        </div>
-        <div class="mb-4">
-            <label for="unit" class="block text-gray-700 font-medium mb-2">Unit</label>
-            <input type="text" id="unit" name="unit" 
-                class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        </div>
-        <div class="mb-4">
-            <label for="price" class="block text-gray-700 font-medium mb-2">Price</label>
-            <input type="number" step="0.01" id="price" name="price" required 
-                class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        </div>
-        <div class="mb-4">
-            <label for="total" class="block text-gray-700 font-medium mb-2">Total</label>
-            <input type="number" step="0.01" id="total" name="total" required 
-                class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        </div>
-        <div class="mb-4">
-            <label for="type" class="block text-gray-700 font-medium mb-2">Type</label>
-            <select id="type" name="type" required 
-                class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                <option value="1">IN</option>
-                <option value="2">OUT</option>
-            </select>
-        </div>
-        <button type="submit" 
-            class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            Add Stock
-        </button>
-    </form>
+<div class="w-full h-full">
+    <h1 class="text-3xl font-bold text-gray-800 ">Create Stock</h1>
+    <div class="w-full h-auto bg-white p-8 my-4">
+        <form action="{{ route('stocks.store') }}" method="POST">
+            @csrf
+            <div class="mb-4">
+                <label for="item_id" class="block text-gray-700 font-medium mb-2">Item ID</label>
+                <input type="number" id="item_id" name="item_id" required 
+                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+            <div class="mb-4">
+                <label for="quantity" class="block text-gray-700 font-medium mb-2">Quantity</label>
+                <input type="number" id="quantity" name="quantity" required 
+                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+            <div class="mb-4">
+                <label for="unit" class="block text-gray-700 font-medium mb-2">Unit</label>
+                <input type="text" id="unit" name="unit" 
+                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+            <div class="mb-4">
+                <label for="price" class="block text-gray-700 font-medium mb-2">Price</label>
+                <input type="number" step="0.01" id="price" name="price" required 
+                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+            <div class="mb-4">
+                <label for="total" class="block text-gray-700 font-medium mb-2">Total</label>
+                <input type="number" step="0.01" id="total" name="total" required 
+                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+            <div class="mb-4">
+                <label for="type" class="block text-gray-700 font-medium mb-2">Type</label>
+                <select id="type" name="type" required 
+                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="1">IN</option>
+                    <option value="2">OUT</option>
+                </select>
+            </div>
+            <div class="flex items-center justify-end">
+                <a href="{{ route('stocks.index') }}" class="bg-gray-300 text-black py-2 px-4 mr-2 rounded hover:bg-gray-400">Cancel</a>
+                <button type="submit" 
+                    class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Create
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 @endsection
