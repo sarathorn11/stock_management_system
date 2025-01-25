@@ -12,15 +12,21 @@ class PurchaseOrderController extends Controller
      */
     public function index()
     {
-        //
+        // Fetch all purchase orders with their related items
+        // $purchase_orders = purchase_order::get();
+    
+        // Ensure the view exists and use the correct variable name
+        return view('purchase_order.index');
     }
+    
+    
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        //
+        return view('purchase_order.create');
     }
 
     /**

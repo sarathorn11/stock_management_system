@@ -39,11 +39,13 @@
           <i class="mr-3 nav-icon fas fa-tachometer-alt"></i>
           Dashboard
         </a>
-        <a class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6">
+        <a href="{{ route('purchase-order.index') }}"
+          class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('purchase-order.index') ? 'bg-white text-[#3c8dbc]' : '' }}">
           <i class="mr-3 nav-icon fas fa-th-list"></i>
           Purchase Order
         </a>
-        <a class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 ">
+        <a  href="{{ route('receiving.index') }}"
+          class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6  {{ request()->routeIs('receiving.index') ? 'bg-white text-[#3c8dbc]' : '' }}">
           <i class="mr-3 nav-icon fas fa-boxes"></i>
           Receiving
         </a>
