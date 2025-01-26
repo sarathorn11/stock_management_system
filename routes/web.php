@@ -11,7 +11,7 @@ use App\Http\Controllers\SalesController;
 use App\Http\Controllers\SupplierListController;
 use App\Http\Controllers\ItemListController;
 use App\Http\Controllers\UserListController;
-use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SettingController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -56,4 +56,4 @@ Route::resource('item', ItemListController::class);
 Route::resource('user', UserListController::class);
 
 // Settings Routes
-Route::resource('settings', SettingsController::class);
+Route::resource('setting', SettingController::class);

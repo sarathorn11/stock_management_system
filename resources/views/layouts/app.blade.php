@@ -44,7 +44,7 @@
           <i class="mr-3 nav-icon fas fa-th-list"></i>
           Purchase Order
         </a>
-        <a  href="{{ route('receiving.index') }}"
+        <a href="{{ route('receiving.index') }}"
           class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6  {{ request()->routeIs('receiving.index') ? 'bg-white text-[#3c8dbc]' : '' }}">
           <i class="mr-3 nav-icon fas fa-boxes"></i>
           Receiving
@@ -63,7 +63,7 @@
           Stock List
         </a>
         <a href="{{ route('sales.index') }}"
-          class="ajax-link flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('sales.*') ? 'bg-white text-[#3C8BDC]' : '' }}">
+          class="ajax-link flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('sales.*') ? 'bg-white text-[#3c8Bdc]' : '' }}">
           <i class="mr-3 nav-icon fas fa-file-invoice-dollar"></i>
           Sale List
         </a>
@@ -82,7 +82,8 @@
           <i class="mr-3 nav-icon fas fa-users"></i>
           User List
         </a>
-        <a class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6">
+        <a href="{{ route('setting.index') }}"
+          class="ajax-link flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('setting.*') ? 'bg-white text-[#3C8BDC]' : '' }}">
           <i class="mr-3 nav-icon fas fa-cogs"></i>
           Settings
         </a>
@@ -104,47 +105,41 @@
     </div>
   </div>
   <script>
-  $(document).ready(function () {
+  $(document).ready(function() {
     console.log('Document is ready');
-    $('.ajax-link').on('click', function (e) {
-      e.preventDefault();
-      console.log('Link clicked');
-
+    $('.ajax-link').on('click', function(e) {
+      e.preventDefault(); 
       const url = $(this).attr('href');
-      console.log('Fetching URL:', url);
-
       $.ajax({
         url: url,
         type: 'GET',
-        beforeSend: function () {
+        beforeSend: function() {
           console.log('AJAX request is being sent');
           $('#content').html('<div>Loading...</div>');
         },
-        success: function (response) {
+        success: function(response) {
           console.log('AJAX request successful');
           const newContent = $(response).find('#content').html();
           $('#content').html(newContent);
           history.pushState(null, '', url);
         },
-        error: function () {
+        error: function() {
           console.log('AJAX request failed');
           alert('Failed to load the page.');
         },
       });
     });
 
-    window.addEventListener('popstate', function () {
+    window.addEventListener('popstate', function() {
       console.log('Handling popstate event');
       $.ajax({
         url: location.href,
         type: 'GET',
-        success: function (response) {
-          console.log('Popstate AJAX successful');
+        success: function(response) {
           const newContent = $(response).find('#content').html();
           $('#content').html(newContent);
         },
-        error: function () {
-          console.log('Popstate AJAX failed');
+        error: function() {
           alert('Failed to load the page.');
         },
       });
