@@ -62,8 +62,9 @@
           <i class="mr-3 nav-icon fas fa-table"></i>
           Stocks
         </a>
-        <a class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6">
-          <i class="mr-3 nav-icon fas fa-undo"></i>
+        <a href="{{ route('sales.index') }}"
+          class="ajax-link flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('sales.*') ? 'bg-white text-[#3C8BDC]' : '' }}">
+          <i class="mr-3 nav-icon fas fa-file-invoice-dollar"></i>
           Sale List
         </a>
 
@@ -97,7 +98,7 @@
           </div>
         </div>
       </nav>
-      <div id="content" class="content p-8 bg-[#F4F6F9]">
+      <div id="content" class="content p-8 bg-[#f3f6f9]">
         @yield('content')
       </div>
     </div>
