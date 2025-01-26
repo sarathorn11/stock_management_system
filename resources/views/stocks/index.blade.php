@@ -18,7 +18,7 @@
   @endif
   <div class="w-full h-auto">
     <table class="table-auto w-full">
-      <thead class="bg-blue-500 text-white">
+      <thead class="bg-[#001f3f] text-white">
         <tr>
           <th class="p-4">
             <input type="checkbox" id="select-all" class="select-all-checkbox w-[20px] h-[20px]">
@@ -70,7 +70,7 @@
     </table>
   </div>
   @if($stocks->count() > 0)
-  <x-pagination :pagination="$stocks" :per-page="$perPage" :per-page-options="[$perPage, 5, 10, 25, 50]" />
+  <x-pagination :pagination="$stocks" :per-page="$perPage" :per-page-options="[$perPage, 10, 20, 30, 50]" />
   @endif
 </div>
 

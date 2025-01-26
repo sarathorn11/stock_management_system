@@ -19,7 +19,7 @@ class StockController extends Controller
         return view('stocks.index', [
             'stocks' => $stocks,
             'perPage' => $perPage,
-            'perPageOptions' => [5, 10, 25, 50]
+            'perPageOptions' => [10, 20, 30, 50]
         ]);
     }
 

@@ -3,7 +3,7 @@
   <div>
     <label for="perPage" class="mr-2 text-gray-700">Items per page:</label>
     <select id="perPage" name="perPage" class="rounded px-5 py-2" onchange="updatePerPage(this.value)">
-      @foreach([5, 10, 20, 25] as $option)
+      @foreach([10, 20, 30, 50] as $option)
       <option value="{{ $option }}" {{ request('perPage') == $option ? 'selected' : '' }}>
         {{ $option }}
       </option>
