@@ -64,7 +64,7 @@
         </a>
         <a href="{{ route('sales.index') }}"
           class="ajax-link flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('sales.*') ? 'bg-white text-[#3c8Bdc]' : '' }}">
-          <i class="mr-3 nav-icon fas fa-file-invoice-dollar"></i>
+          <i class="mr-3 nav-icon fas fa-file-invoice-dollar" style="font-size: 20px"></i>
           Sale List
         </a>
 
