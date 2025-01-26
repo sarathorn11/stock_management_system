@@ -70,7 +70,7 @@
     </table>
   </div>
   @if($stocks->count() > 0)
-  <x-pagination :pagination="$stocks" :per-page="$perPage" :per-page-options="[$perPage, 5, 10, 25, 50]" />
+  <x-pagination :pagination="$stocks" :per-page="$perPage" :per-page-options="[$perPage, 10, 20, 30, 50]" />
   @endif
 </div>
 

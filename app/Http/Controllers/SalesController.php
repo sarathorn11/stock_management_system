@@ -14,7 +14,7 @@ class SalesController extends Controller
         return view('sales.index', [
             'sales' => $sales,
             'perPage' => $perPage,
-            'perPageOptions' => [5, 10, 25, 50]
+            'perPageOptions' => [10, 20, 30, 50]
         ]);
     }
 

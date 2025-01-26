@@ -17,7 +17,7 @@ class Pagination extends Component
      * @param array $perPageOptions Options for items per page
      * @param int $perPage The current per-page value
      */
-    public function __construct($pagination, $perPage = 10, $perPageOptions = [5, 10, 25, 50])
+    public function __construct($pagination, $perPage = 10, $perPageOptions = [10, 20, 30, 50])
     {
         $this->pagination = $pagination;
         $this->perPage = $perPage;
