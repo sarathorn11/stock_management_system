@@ -12,7 +12,7 @@ class ReceivingController extends Controller
      */
     public function index()
     {
-        //
+        return view('receiving.index');
     }
 
     /**
@@ -20,7 +20,7 @@ class ReceivingController extends Controller
      */
     public function create()
     {
-        //
+        return view('receiving.create');
     }
 
     /**
