@@ -69,4 +69,12 @@ class Stock extends Model
     {
         $this->attributes['total'] = (float) $value;
     }
+
+    public function getFormattedDateCreatedAttribute()
+    {
+        if ($this->attributes['date_created']) {
+            return \Carbon\Carbon::parse($this->attributes['date_created'])->format('d-m-Y') . ' ' . now()->format('H:i:s');
+        }
+        return null;
+    }    
 }

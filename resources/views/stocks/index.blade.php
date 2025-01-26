@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="w-full h-full">
+<div id="content" class="w-full h-full">
   <h1 class="text-3xl font-bold text-gray-800">Stock List</h1>
   <div class="flex items-center justify-between my-4">
-    <input type="text" placeholder="Search..." class="px-3 py-2 w-[350px] rounded border-gray-300">
+    <input id="search" type="text" placeholder="Search by Item ID..." class="px-3 py-2 w-[350px] rounded border">
     <div class="flex items-center justify-between">
       <a href="{{ route('stocks.create') }}"
         class="inline-block bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600">Create</a>
@@ -16,78 +16,105 @@
   @if(session('success'))
   <div class="bg-green-100 text-green-800 p-4 rounded mb-4">{{ session('success') }}</div>
   @endif
-  <div class="w-full h-full">
+  <div class="w-full h-auto">
     <table class="table-auto w-full">
       <thead class="bg-blue-500 text-white">
         <tr>
-          <th class="px-4 py-4">ID</th>
-          <th class="px-4 py-4">Item ID</th>
-          <th class="px-4 py-4">Quantity</th>
-          <th class="px-4 py-4">Unit</th>
-          <th class="px-4 py-4">Price</th>
-          <th class="px-4 py-4">Total</th>
-          <th class="px-4 py-4">Type</th>
-          <th class="px-4 py-4">Date Created</th>
-          <th class="px-4 py-4">Actions</th>
+          <th class="p-4">ID</th>
+          <th class="p-4">Item ID</th>
+          <th class="p-4">Quantity</th>
+          <th class="p-4">Unit</th>
+          <th class="p-4">Price</th>
+          <th class="p-4">Total</th>
+          <th class="p-4">Type</th>
+          <th class="p-4">Date Created</th>
+          <th class="p-4">Actions</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="stockResults">
         @foreach($stocks as $stock)
         <tr class="bg-white hover:bg-gray-200">
-          <td class="px-4 py-2 text-center">{{ $stock->id }}</td>
-          <td class="px-4 py-2 text-center">{{ $stock->item_id }}</td>
-          <td class="px-4 py-2 text-center">{{ $stock->quantity }}</td>
-          <td class="px-4 py-2 text-center">{{ $stock->unit }}</td>
-          <td class="px-4 py-2 text-center">{{ $stock->price }}</td>
-          <td class="px-4 py-2 text-center">{{ $stock->total }}</td>
-          <td class="px-4 py-2 text-center">{{ $stock->type == 1 ? 'IN' : 'OUT' }}</td>
-          <td class="px-4 py-2 text-center">{{ $stock->date_created }}</td>
-          <td class="px-4 py-2 text-center">
-            <div class="relative inline-block text-left">
-              <button type="button"
-                class="text-gray-500 px-2 py-1 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                id="dropdownMenuButton{{ $stock->id }}">
-                <i class="fas fa-chevron-down"></i>
+          <td class="p-4 text-center">{{ $stock->id }}</td>
+          <td class="p-4 text-center">{{ $stock->item_id }}</td>
+          <td class="p-4 text-center">{{ $stock->quantity }}</td>
+          <td class="p-4 text-center">{{ $stock->unit }}</td>
+          <td class="p-4 text-center">{{ $stock->price }}</td>
+          <td class="p-4 text-center">{{ $stock->total }}</td>
+          <td class="p-4 text-center">{{ $stock->type == 1 ? 'IN' : 'OUT' }}</td>
+          <td class="p-4 text-center">{{ \Carbon\Carbon::parse($stock->date_created)->format('Y-m-d h:i A') }}</td>
+          <td class="p-4 flex items-center justify-center">
+            <a href="{{ route('stocks.show', $stock->id) }}" class="text-blue-500 text-[24px] mx-1">
+              <i class="fa fa-eye mr-2"></i>
+            </a>
+            <a href="{{ route('stocks.edit', $stock->id) }}" class="text-yellow-500 text-[24px] mx-1">
+              <i class="fa fa-pencil mr-2"></i>
+            </a>
+            <form action="{{ route('stocks.destroy', $stock->id) }}" method="POST"
+              onsubmit="return confirm('Are you sure you want to delete this stock?')" class="m-0">
+              @csrf
+              @method('DELETE')
+              <button type="submit" class="text-red-500 text-[24px] mx-1">
+                <i class="fa fa-trash mr-2"></i>
               </button>
-              <div class="dropdown-menu hidden absolute right-0 w-48 mt-2 bg-white shadow-lg rounded-md z-10"
-                aria-labelledby="dropdownMenuButton{{ $stock->id }}">
-                <div class="py-1">
-                  <a href="{{ route('stocks.show', $stock->id) }}"
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View</a>
-                  <a href="{{ route('stocks.edit', $stock->id) }}"
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</a>
-                  <form action="{{ route('stocks.destroy', $stock->id) }}" method="POST"
-                    onsubmit="return confirm('Are you sure you want to delete this stock?')" class="m-0">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                      class="block w-full px-4 py-2 text-sm text-red-500 hover:bg-red-100 text-left border-0 bg-transparent cursor-pointer">
-                      Delete
-                    </button>
-                  </form>
-                </div>
-              </div>
-            </div>
+            </form>
           </td>
-          <script>
-          document.getElementById('dropdownMenuButton{{ $stock->id }}').addEventListener('click', function() {
-            const dropdown = document.querySelector('#dropdownMenuButton{{ $stock->id }}').nextElementSibling;
-            dropdown.classList.toggle('hidden');
-          });
-          window.addEventListener('click', function(event) {
-            if (!event.target.closest('.relative')) {
-              const dropdowns = document.querySelectorAll('.dropdown-menu');
-              dropdowns.forEach(dropdown => {
-                dropdown.classList.add('hidden');
-              });
-            }
-          });
-          </script>
         </tr>
         @endforeach
       </tbody>
     </table>
   </div>
+  <x-pagination :pagination="$stocks" :per-page="$perPage" :per-page-options="[$perPage, 5, 10, 25, 50]" />
 </div>
+
+<script>
+document.getElementById('search').addEventListener('keyup', function() {
+  let query = this.value;
+  const searchUrl = '{{ route("stocks.search") }}'; // This will generate the correct URL
+
+  // Make the AJAX request
+  fetch(`${searchUrl}?query=${query}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      let stockResults = document.getElementById('stockResults');
+      stockResults.innerHTML = ''; // Clear the current results
+
+      data.stocks.data.forEach(stock => {
+        let row = document.createElement('tr');
+        row.classList.add('bg-white', 'hover:bg-gray-200');
+
+        row.innerHTML = `
+          <td class="p-4 text-center">${stock.id}</td>
+          <td class="p-4 text-center">${stock.item_id}</td>
+          <td class="p-4 text-center">${stock.quantity}</td>
+          <td class="p-4 text-center">${stock.unit}</td>
+          <td class="p-4 text-center">${stock.price}</td>
+          <td class="p-4 text-center">${stock.total}</td>
+          <td class="p-4 text-center">${stock.type === 1 ? 'IN' : 'OUT'}</td>
+          <td class="p-4 text-center">${new Date(stock.date_created).toLocaleString()}</td>
+          <td class="p-4 flex items-center justify-center">
+            <a href="/stocks/${stock.id}" class="text-blue-500 text-[24px] mx-1">
+              <i class="fa fa-eye mr-2"></i>
+            </a>
+            <a href="/stocks/${stock.id}/edit" class="text-yellow-500 text-[24px] mx-1">
+              <i class="fa fa-pencil mr-2"></i>
+            </a>
+            <form action="/stocks/${stock.id}" method="POST" onsubmit="return confirm('Are you sure you want to delete this stock?')" class="m-0">
+              <input type="hidden" name="_method" value="DELETE">
+              <button type="submit" class="text-red-500 text-[24px] mx-1">
+                <i class="fa fa-trash mr-2"></i>
+              </button>
+            </form>
+          </td>
+        `;
+        stockResults.appendChild(row);
+      });
+    });
+});
+</script>
 
 @endsection

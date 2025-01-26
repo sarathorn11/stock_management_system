@@ -38,6 +38,7 @@ Route::resource('back-order', BackOrderController::class);
 Route::resource('return', ReturnListController::class);
 
 // Stock List Routes
+Route::get('/stocks/search', [StockController::class, 'search'])->name('stocks.search');
 Route::resource('stocks', StockController::class);
 
 // Supplier List Routes

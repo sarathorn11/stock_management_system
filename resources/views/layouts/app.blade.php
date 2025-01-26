@@ -35,7 +35,7 @@
       <nav class="flex-1 space-y-2">
         <!-- Sidebar links -->
         <a href="{{ url('/') }}"
-          class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('dashboard') ? 'bg-white text-[#3c8dbc]' : '' }}">
+          class="ajax-link flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('dashboard') ? 'bg-white text-[#3c8dbc]' : '' }}">
           <i class="mr-3 nav-icon fas fa-tachometer-alt"></i>
           Dashboard
         </a>
@@ -58,7 +58,7 @@
           Return List
         </a>
         <a href="{{ route('stocks.index') }}"
-          class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('stocks.index') ? 'bg-white text-[#3c8dbc]' : '' }}">
+          class="ajax-link flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('stocks.*') ? 'bg-white text-[#3C8BDC]' : '' }}">
           <i class="mr-3 nav-icon fas fa-table"></i>
           Stocks
         </a>
@@ -97,32 +97,56 @@
           </div>
         </div>
       </nav>
-      <div class="content p-8 bg-[#F4F6F9]">
+      <div id="content" class="content p-8 bg-[#F4F6F9]">
         @yield('content')
       </div>
     </div>
   </div>
   <script>
-  $(document).ready(function() {
-    $('.ajax-link').on('click', function(e) {
+  $(document).ready(function () {
+    console.log('Document is ready');
+    $('.ajax-link').on('click', function (e) {
       e.preventDefault();
+      console.log('Link clicked');
+
       const url = $(this).attr('href');
+      console.log('Fetching URL:', url);
 
       $.ajax({
         url: url,
         type: 'GET',
-        success: function(response) {
-          $('#content').html($(response).find('#content').html());
+        beforeSend: function () {
+          console.log('AJAX request is being sent');
+          $('#content').html('<div>Loading...</div>');
+        },
+        success: function (response) {
+          console.log('AJAX request successful');
+          const newContent = $(response).find('#content').html();
+          $('#content').html(newContent);
           history.pushState(null, '', url);
         },
-        error: function() {
+        error: function () {
+          console.log('AJAX request failed');
           alert('Failed to load the page.');
         },
       });
     });
 
-    window.addEventListener('popstate', function() {
-      location.reload();
+    window.addEventListener('popstate', function () {
+      console.log('Handling popstate event');
+      $.ajax({
+        url: location.href,
+        type: 'GET',
+        success: function (response) {
+          console.log('Popstate AJAX successful');
+          const newContent = $(response).find('#content').html();
+          $('#content').html(newContent);
+        },
+        error: function () {
+          console.log('Popstate AJAX failed');
+          alert('Failed to load the page.');
+        },
+      });
     });
   });
   </script>
