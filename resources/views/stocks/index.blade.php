@@ -63,13 +63,15 @@
       </tbody>
     </table>
   </div>
+  @if($stocks->count() > 0)
   <x-pagination :pagination="$stocks" :per-page="$perPage" :per-page-options="[$perPage, 5, 10, 25, 50]" />
+  @endif
 </div>
 
 <script>
 document.getElementById('search').addEventListener('keyup', function() {
   let query = this.value;
-  const searchUrl = '{{ route("stocks.search") }}'; // This will generate the correct URL
+  const searchUrl = '{{ route("stocks.search") }}';
 
   // Make the AJAX request
   fetch(`${searchUrl}?query=${query}`, {
