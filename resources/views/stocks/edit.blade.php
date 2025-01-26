@@ -1,8 +1,13 @@
 @extends('layouts.app')
 @section('content')
 <div class="w-full h-full">
-  <h1 class="text-3xl font-bold text-gray-800 ">Update Stock</h1>
-  <div class="w-full h-auto bg-white p-8 my-4">
+  <div class="flex items-center gap-2">
+    <a href="{{ route('stocks.index') }}"
+      class="text-2xl font-bold text-gray-800 hover:text-blue-500 hover:underline hover:cursor-pointer">Stock</a>
+    <h1 class="text-2xl font-bold text-gray-800 ">/</h1>
+    <h1 class="text-2xl font-bold text-gray-800 underline">Update</h1>
+  </div>
+  <div class="w-full h-auto bg-white p-8 mt-8">
     <form action="{{ route('stocks.update', $stock->id) }}" method="POST" class="m-0">
       @csrf
       @method('PUT')

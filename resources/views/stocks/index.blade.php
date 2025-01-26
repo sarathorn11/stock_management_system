@@ -2,7 +2,7 @@
 
 @section('content')
 <div id="content" class="w-full h-full">
-  <h1 class="text-3xl font-bold text-gray-800">Stock List</h1>
+  <h1 class="text-2xl font-bold text-gray-800">Stock List</h1>
   <div class="flex items-center justify-between my-4">
     <input id="search" type="text" placeholder="Search by Item ID..." class="px-3 py-2 w-[350px] rounded border">
     <div class="flex items-center justify-between">
