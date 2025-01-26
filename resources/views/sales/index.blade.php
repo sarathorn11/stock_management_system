@@ -23,7 +23,10 @@
     <table class="table-auto w-full">
       <thead class="bg-blue-500 text-white">
         <tr>
-          <th class="p-4">ID</th>
+          <th class="p-4">
+            <input type="checkbox" id="select-all" class="select-all-checkbox w-[20px] h-[20px]">
+          </th>
+          <th class="p-4">No.</th>
           <th class="p-4">Sales Code</th>
           <th class="p-4">Client</th>
           <th class="p-4">Amount</th>
@@ -33,9 +36,12 @@
         </tr>
       </thead>
       <tbody id="salesResults">
-        @foreach($sales as $sale)
+        @foreach($sales as $index => $sale)
         <tr class="bg-white hover:bg-gray-200">
-          <td class="p-4 text-center">{{ $sale->id }}</td>
+          <td class="p-4 text-center">
+            <input type="checkbox" class="sale-checkbox w-[20px] h-[20px]" data-id="{{ $sale->id }}">
+          </td>
+          <td class="p-4 text-center">{{ $index + 1 }}</td>
           <td class="p-4 text-center">{{ $sale->sales_code }}</td>
           <td class="p-4 text-center">{{ $sale->client }}</td>
           <td class="p-4 text-center">{{ $sale->formattedAmount }}</td>
@@ -67,6 +73,24 @@
   @endif
 </div>
 <script>
+// Select/Deselect all checkboxes
+document.getElementById('select-all').addEventListener('change', function() {
+  const checkboxes = document.querySelectorAll('.sale-checkbox');
+  checkboxes.forEach(checkbox => {
+    checkbox.checked = this.checked;
+  });
+});
+
+// Handle individual checkbox selection
+document.querySelectorAll('.sale-checkbox').forEach(checkbox => {
+  checkbox.addEventListener('change', function() {
+    const selectAllCheckbox = document.getElementById('select-all');
+    const allChecked = document.querySelectorAll('.sale-checkbox:checked').length === document
+      .querySelectorAll('.sale-checkbox').length;
+    selectAllCheckbox.checked = allChecked;
+  });
+});
+
 document.getElementById('search').addEventListener('keyup', function() {
   let query = this.value;
   const searchUrl = '{{ route("sales.search") }}';
@@ -82,12 +106,15 @@ document.getElementById('search').addEventListener('keyup', function() {
       let salesResults = document.getElementById('salesResults');
       salesResults.innerHTML = '';
 
-      data.sales.data.forEach(sale => {
+      data.sales.data.forEach((sale, index) => {
         let row = document.createElement('tr');
         row.classList.add('bg-white', 'hover:bg-gray-200');
 
         row.innerHTML = `
-          <td class="p-4 text-center">${sale.id}</td>
+          <td class="p-4 text-center">
+            <input type="checkbox" class="sale-checkbox w-[20px] h-[20px]" data-id="{{ $sale->id }}">
+          </td>
+          <td class="p-4 text-center">${index + 1}</td>
           <td class="p-4 text-center">${sale.sales_code}</td>
           <td class="p-4 text-center">${sale.client}</td>
           <td class="p-4 text-center">${sale.formattedAmount}</td>
