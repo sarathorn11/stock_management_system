@@ -60,7 +60,7 @@
         <a href="{{ route('stocks.index') }}"
           class="ajax-link flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('stocks.*') ? 'bg-white text-[#3C8BDC]' : '' }}">
           <i class="mr-3 nav-icon fas fa-table"></i>
-          Stocks
+          Stock List
         </a>
         <a href="{{ route('sales.index') }}"
           class="ajax-link flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('sales.*') ? 'bg-white text-[#3C8BDC]' : '' }}">
