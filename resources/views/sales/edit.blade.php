@@ -1,8 +1,13 @@
 @extends('layouts.app')
 @section('content')
 <div class="w-full h-full">
-  <h1 class="text-3xl font-bold text-gray-800">Edit Sale</h1>
-  <div class="w-full h-auto bg-white p-8 my-4">
+  <div class="flex items-center gap-2">
+    <a href="{{ route('sales.index') }}"
+      class="text-2xl font-bold text-gray-800 hover:text-blue-500 hover:underline hover:cursor-pointer">Sale</a>
+    <h1 class="text-2xl font-bold text-gray-800 ">/</h1>
+    <h1 class="text-2xl font-bold text-gray-800 underline">Update</h1>
+  </div>
+  <div class="w-full h-auto bg-white p-8 my-8">
     <form action="{{ route('sales.update', $sale->id) }}" method="POST" class="m-0">
       @csrf
       @method('PUT')
@@ -52,7 +57,7 @@
         <a href="{{ route('sales.index') }}"
           class="bg-gray-300 text-black py-2 px-4 mr-2 rounded hover:bg-gray-400">Cancel</a>
         <button type="submit"
-          class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Update</button>
+          class="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Update</button>
       </div>
     </form>
   </div>
