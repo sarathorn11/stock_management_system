@@ -62,9 +62,10 @@
       </tbody>
     </table>
   </div>
+  @if($sales->count() > 0)
   <x-pagination :pagination="$sales" :per-page="$perPage" :per-page-options="[$perPage, 5, 10, 25, 50]" />
+  @endif
 </div>
-
 <script>
 document.getElementById('search').addEventListener('keyup', function() {
   let query = this.value;
