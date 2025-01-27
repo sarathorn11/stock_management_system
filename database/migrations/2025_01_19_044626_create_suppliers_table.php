@@ -18,8 +18,9 @@ return new class extends Migration
             $table->text('cperson')->nullable(); 
             $table->text('contact'); 
             $table->tinyInteger('status')->default(1); 
-            $table->dateTime('date_created')->useCurrent(); 
-            $table->dateTime('date_updated')->useCurrent()->useCurrentOnUpdate(); 
+            // $table->dateTime('date_created')->useCurrent(); 
+            // $table->dateTime('date_updated')->useCurrent()->useCurrentOnUpdate(); 
+            $table->timestamps();
         });
     }
 

@@ -40,4 +40,9 @@ class BackOrder extends Model
     {
         return $this->belongsTo(Supplier::class);
     }
+
+    public function items()
+    {
+        return $this->hasMany(PoItem::class, 'id');
+    }
 }

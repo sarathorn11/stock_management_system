@@ -49,7 +49,7 @@
           <i class="mr-3 nav-icon fas fa-boxes"></i>
           Receiving
         </a>
-        <a class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6">
+        <a href="{{ route('back-order.index') }}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('back-order.index') ? 'bg-white text-[#3C8BDC]' : '' }}">
           <i class="mr-3 nav-icon fas fa-exchange-alt"></i>
           Back Order
         </a>
