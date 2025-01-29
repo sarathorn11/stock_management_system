@@ -26,7 +26,7 @@
 
 <body>
   <div class="bg-gray-100 min-h-screen flex">
-    <div class="bg-gray-800 w-64 flex flex-col">
+    <div class="bg-gray-800 min-w-64 max-w-64 flex flex-col">
       <div class="p-4 flex items-center">
         <img src="{{ asset('static/assets/images/logo.png') }}" alt="Logo" class="h-[50px] w-[50px] mr-3">
         <span class="font-bold text-md text-[#3c8dbc]">Stock Management <span
@@ -99,7 +99,7 @@
           </div>
         </div>
       </nav>
-      <div id="content" class="content p-8 bg-[#f3f6f9]">
+      <div id="content" class="content p-6 bg-[#f3f6f9]">
         @yield('content')
       </div>
     </div>

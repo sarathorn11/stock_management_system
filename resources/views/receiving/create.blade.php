@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="bg-white shadow-md rounded-lg p-6 max-w-3xl mx-auto">
-    <h1 class="text-2xl font-bold mb-6 text-gray-800">Add Receiving</h1>
+    <h1 class="text-xl font-bold mb-6 text-gray-800">Add Receiving</h1>
     <form action="" method="POST">
         @csrf
         <!-- <div class="mb-4">
