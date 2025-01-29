@@ -12,6 +12,7 @@ class Stock extends Model
     protected $primaryKey = 'id';
     protected $keyType = 'int';
     public $incrementing = true;
+    public $timestamps = false;
     protected $fillable = [
         'item_id',
         'quantity',
@@ -20,8 +21,7 @@ class Stock extends Model
         'total',
         'type',
         'date_created',
-    ];
-    public $timestamps = false;
+    ];    
 
     /**
      * Relationship with the Item model.

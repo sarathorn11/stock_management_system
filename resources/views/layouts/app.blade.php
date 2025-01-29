@@ -21,12 +21,16 @@
     overflow-y: auto;
     height: calc(100vh - 64px);
   }
+
+  .space-y-2> :not([hidden])~ :not([hidden]) {
+    margin-top: unset !important;
+  }
   </style>
 </head>
 
 <body>
   <div class="bg-gray-100 min-h-screen flex">
-    <div class="bg-gray-800 w-64 flex flex-col">
+    <div class="bg-gray-800 min-w-64 max-w-64 flex flex-col">
       <div class="p-4 flex items-center">
         <img src="{{ asset('static/assets/images/logo.png') }}" alt="Logo" class="h-[50px] w-[50px] mr-3">
         <span class="font-bold text-md text-[#3c8dbc]">Stock Management <span
@@ -35,55 +39,55 @@
       <nav class="flex-1 space-y-2">
         <!-- Sidebar links -->
         <a href="{{ url('/') }}"
-          class="ajax-link flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('dashboard') ? 'bg-white text-[#3c8dbc]' : '' }}">
+          class="ajax-link flex items-center p-3 pl-6 {{ request()->routeIs('dashboard') ? 'bg-white text-[#3c8dbc]' : 'text-gray-300 hover:text-white hover:bg-gray-700' }}">
           <i class="mr-3 nav-icon fas fa-tachometer-alt"></i>
           Dashboard
         </a>
         <a href="{{ route('purchase-order.index') }}"
-          class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('purchase-order.index') ? 'bg-white text-[#3c8dbc]' : '' }}">
+          class="flex items-center p-3 pl-6 {{ request()->routeIs('purchase-order.index') ? 'bg-white text-[#3c8dbc]' : 'text-gray-300 hover:text-white hover:bg-gray-700' }}">
           <i class="mr-3 nav-icon fas fa-th-list"></i>
           Purchase Order
         </a>
         <a href="{{ route('receiving.index') }}"
-          class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6  {{ request()->routeIs('receiving.index') ? 'bg-white text-[#3c8dbc]' : '' }}">
+          class="flex items-center p-3 pl-6  {{ request()->routeIs('receiving.index') ? 'bg-white text-[#3c8dbc]' : 'text-gray-300 hover:text-white hover:bg-gray-700' }}">
           <i class="mr-3 nav-icon fas fa-boxes"></i>
           Receiving
         </a>
-        <a class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6">
+        <a class="flex items-center p-3 text-gray-300 hover:text-white hover:bg-gray-700 pl-6">
           <i class="mr-3 nav-icon fas fa-exchange-alt"></i>
           Back Order
         </a>
-        <a class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6">
+        <a class="flex items-center p-3 text-gray-300 hover:text-white hover:bg-gray-700 pl-6">
           <i class="mr-3 nav-icon fas fa-undo"></i>
           Return List
         </a>
         <a href="{{ route('stocks.index') }}"
-          class="ajax-link flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('stocks.*') ? 'bg-white text-[#3C8BDC]' : '' }}">
+          class="ajax-link flex items-center p-3 pl-6 {{ request()->routeIs('stocks.*') ? 'bg-white text-[#3C8BDC]' : 'text-gray-300 hover:text-white hover:bg-gray-700' }}">
           <i class="mr-3 nav-icon fas fa-table"></i>
           Stock List
         </a>
         <a href="{{ route('sales.index') }}"
-          class="ajax-link flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('sales.*') ? 'bg-white text-[#3c8Bdc]' : '' }}">
+          class="ajax-link flex items-center p-3 pl-6 {{ request()->routeIs('sales.*') ? 'bg-white text-[#3c8Bdc]' : 'text-gray-300 hover:text-white hover:bg-gray-700' }}">
           <i class="mr-3 nav-icon fas fa-file-invoice-dollar" style="font-size: 20px"></i>
           Sale List
         </a>
 
         <!-- Maintenance Section -->
-        <div class="mt-6 text-gray-400 uppercase text-xs tracking-wider ml-5">Maintenance</div>
-        <a class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6">
+        <div class="mt-6 text-gray-400 uppercase text-xs tracking-wider ml-5 p-3">Maintenance</div>
+        <a class="flex items-center p-3 text-gray-300 hover:text-white hover:bg-gray-700 pl-6">
           <i class="mr-3 nav-icon fas fa-truck-loading"></i>
           Supplier List
         </a>
-        <a class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6">
+        <a class="flex items-center p-3 text-gray-300 hover:text-white hover:bg-gray-700 pl-6">
           <i class="mr-3 nav-icon fas fa-boxes"></i>
           Item List
         </a>
-        <a class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6">
+        <a class="flex items-center p-3 text-gray-300 hover:text-white hover:bg-gray-700 pl-6">
           <i class="mr-3 nav-icon fas fa-users"></i>
           User List
         </a>
         <a href="{{ route('setting.index') }}"
-          class="ajax-link flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('setting.*') ? 'bg-white text-[#3C8BDC]' : '' }}">
+          class="ajax-link flex items-center p-3 pl-6 {{ request()->routeIs('setting.*') ? 'bg-white text-[#3C8BDC]' : 'text-gray-300 hover:text-white hover:bg-gray-700' }}">
           <i class="mr-3 nav-icon fas fa-cogs"></i>
           Settings
         </a>
@@ -99,7 +103,7 @@
           </div>
         </div>
       </nav>
-      <div id="content" class="content p-8 bg-[#f3f6f9]">
+      <div id="content" class="content p-6 bg-[#f3f6f9]">
         @yield('content')
       </div>
     </div>
@@ -108,7 +112,7 @@
   $(document).ready(function() {
     console.log('Document is ready');
     $('.ajax-link').on('click', function(e) {
-      e.preventDefault(); 
+      e.preventDefault();
       const url = $(this).attr('href');
       $.ajax({
         url: url,
