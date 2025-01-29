@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('back_order', function (Blueprint $table) {
             $table->id();
             $table->foreignId('receiving_id')->constrained();
-            $table->foreignId('po_id')->constrained('purchase_order')->onDelete('cascade');
+            $table->foreignId('po_id')->constrained('purchase_orders')->onDelete('cascade');
             $table->foreignId('supplier_id')->constrained();
             $table->string('bo_code');
             $table->decimal('amount', 15, 2);
