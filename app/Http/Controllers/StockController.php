@@ -11,11 +11,16 @@ class StockController extends Controller
     /**
      * Display a listing of the stocks.
      */
-    public function index()
+
+    public function index(Request $request)
     {
-        // Fetch all stock records with their related item
-        $stocks = Stock::with('item')->get();
-        return view('stocks.index', compact('stocks')); // Ensure the view exists
+        $perPage = $request->input('perPage', 10);
+        $stocks = Stock::with('item')->paginate($perPage);
+        return view('stocks.index', [
+            'stocks' => $stocks,
+            'perPage' => $perPage,
+            'perPageOptions' => [10, 20, 30, 50]
+        ]);
     }
 
     /**
@@ -41,12 +46,15 @@ class StockController extends Controller
             'price' => 'required|numeric|min:0',
             'total' => 'required|numeric|min:0',
             'type' => 'required|integer|in:1,2',
-            'date_created' => 'required|date',
+            'date_created' => 'nullable|date', // Allow null if not provided
         ]);
-
+    
+        // If date_created is not provided, default it to the current timestamp
+        $validated['date_created'] = $validated['date_created'] ?? now();
+    
         // Create a new stock record
         Stock::create($validated);
-
+    
         // Redirect to the stock list with a success message
         return redirect()->route('stocks.index')->with('success', 'Stock added successfully.');
     }
@@ -84,12 +92,15 @@ class StockController extends Controller
             'price' => 'required|numeric|min:0',
             'total' => 'required|numeric|min:0',
             'type' => 'required|integer|in:1,2',
-            'date_created' => 'required|date',
+            'date_created' => 'nullable|date', // Allow null if not provided
         ]);
-
+    
+        // If date_created is provided in the request, we use it. Otherwise, we preserve the existing one.
+        $validated['date_created'] = $request->has('date_created') ? $validated['date_created'] : $stock->date_created;
+    
         // Update the stock record
         $stock->update($validated);
-
+    
         // Redirect to the stock list with a success message
         return redirect()->route('stocks.index')->with('success', 'Stock updated successfully.');
     }
@@ -114,11 +125,11 @@ class StockController extends Controller
         $query = $request->input('query');
         $stocks = Stock::with('item')
             ->whereHas('item', function ($q) use ($query) {
-                $q->where('name', 'LIKE', "%{$query}%");
+                $q->where('item_id', 'LIKE', "%{$query}%"); // Search by item_id
             })
             ->orWhere('unit', 'LIKE', "%{$query}%")
             ->paginate(10);
 
-        return view('stocks.index', compact('stocks')); // Ensure the view exists
+        return response()->json(['stocks' => $stocks]);
     }
 }

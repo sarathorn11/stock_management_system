@@ -1,65 +1,86 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\sales;
+use App\Models\Sale;
+use App\Models\Stock;
 use Illuminate\Http\Request;
 
 class SalesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $perPage = $request->input('perPage', 10);
+        $sales = Sale::with('stock')->paginate($perPage);
+        return view('sales.index', [
+            'sales' => $sales,
+            'perPage' => $perPage,
+            'perPageOptions' => [10, 20, 30, 50]
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $stocks = Stock::all();
+        return view('sales.create', compact('stocks'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'sales_code' => 'required|string|max:255',
+            'client' => 'required|string|max:255',
+            'amount' => 'required|numeric|min:0',
+            'stock_id' => 'required|exists:stocks,id',
+            'remarks' => 'nullable|string|max:500',
+        ]);
+        Sale::create($validated); 
+        return redirect()->route('sales.index')->with('success', 'Sale added successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(sales $sales)
+
+    public function show(Sale $sale)
     {
-        //
+        $sale->load('stock');
+        return view('sales.show', compact('sale'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(sales $sales)
+    public function edit(Sale $sale)
     {
-        //
+        $stocks = Stock::all();
+        return view('sales.edit', compact('sale', 'stocks'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, sales $sales)
+
+    public function update(Request $request, Sale $sale)
     {
-        //
+        $validated = $request->validate([
+            'sales_code' => 'required|string|max:255',
+            'client' => 'required|string|max:255',
+            'amount' => 'required|numeric|min:0',
+            'stock_id' => 'required|exists:stocks,id',
+            'remarks' => 'nullable|string|max:500',
+        ]);
+        $sale->update($validated); 
+
+        return redirect()->route('sales.index')->with('success', 'Sale updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(sales $sales)
+
+    public function destroy(Sale $sale)
     {
-        //
+        $sale->delete();
+
+        return redirect()->route('sales.index')->with('success', 'Sale deleted successfully.');
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $sales = Sale::with('stock')
+            ->where('sales_code', 'LIKE', "%{$query}%")
+            ->orWhere('client', 'LIKE', "%{$query}%")
+            ->paginate(10);
+
+        return response()->json(['sales' => $sales]);
     }
 }

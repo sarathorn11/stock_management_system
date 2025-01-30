@@ -7,10 +7,11 @@ use App\Http\Controllers\ReceivingController;
 use App\Http\Controllers\BackOrderController;
 use App\Http\Controllers\ReturnListController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\UserListController;
-use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SettingController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -38,7 +39,12 @@ Route::resource('back-order', BackOrderController::class);
 Route::resource('return', ReturnListController::class);
 
 // Stock List Routes
+Route::get('/stocks/search', [StockController::class, 'search'])->name('stocks.search');
 Route::resource('stocks', StockController::class);
+
+// Sale List Routes
+Route::resource('sales', SalesController::class);
+Route::get('sales/search', [SalesController::class, 'search'])->name('sales.search');
 
 // Supplier List Routes
 Route::resource('supplier', SupplierController::class);
@@ -50,4 +56,4 @@ Route::post('/items/delete', [ItemController::class, 'deleteSelected'])->name('i
 Route::resource('user', UserListController::class);
 
 // Settings Routes
-Route::resource('settings', SettingsController::class);
+Route::resource('setting', SettingController::class);
