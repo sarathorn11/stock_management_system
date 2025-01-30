@@ -7,8 +7,8 @@ use App\Http\Controllers\ReceivingController;
 use App\Http\Controllers\BackOrderController;
 use App\Http\Controllers\ReturnListController;
 use App\Http\Controllers\StockController;
-use App\Http\Controllers\SupplierListController;
-use App\Http\Controllers\ItemListController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\UserListController;
 use App\Http\Controllers\SettingsController;
 /*
@@ -41,11 +41,11 @@ Route::resource('return', ReturnListController::class);
 Route::resource('stocks', StockController::class);
 
 // Supplier List Routes
-Route::resource('supplier', SupplierListController::class);
+Route::resource('supplier', SupplierController::class);
 
 // Item List Routes
-Route::resource('item', ItemListController::class);
-
+Route::resource('items', ItemController::class);
+Route::post('/items/delete', [ItemController::class, 'deleteSelected'])->name('items.deleteSelected');
 // User List Routes
 Route::resource('user', UserListController::class);
 
