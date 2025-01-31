@@ -50,7 +50,8 @@ Route::get('sales/search', [SaleController::class, 'search'])->name('sales.searc
 Route::resource('supplier', SupplierController::class);
 
 // Item List Routes
-Route::resource('item', ItemController::class);
+Route::resource('items', ItemController::class);
+Route::post('/items/delete', [ItemController::class, 'deleteSelected'])->name('items.deleteSelected');
 
 // User List Routes
 Route::resource('user', UserController::class);

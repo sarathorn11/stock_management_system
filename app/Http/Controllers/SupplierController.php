@@ -10,11 +10,22 @@ class SupplierController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // return $request;
+        if ($request->ajax()) {
+            $suppliers = supplier::all();
+            return response()->json($suppliers);
+        }
+        $suppliers = supplier::all();
+        return view('suppliers.index', compact('suppliers'));
     }
 
+    public function getSuppliers()
+    {
+        $suppliers = Supplier::all();
+        return response()->json($suppliers);
+    }
     /**
      * Show the form for creating a new resource.
      */
