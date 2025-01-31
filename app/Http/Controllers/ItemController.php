@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\item;
+use App\Models\Item;
 use Illuminate\Http\Request;
 
 class ItemController extends Controller
@@ -34,7 +34,7 @@ class ItemController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(item $item)
+    public function show(Item $item)
     {
         //
     }
@@ -42,7 +42,7 @@ class ItemController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(item $item)
+    public function edit(Item $item)
     {
         //
     }
@@ -50,7 +50,7 @@ class ItemController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, item $item)
+    public function update(Request $request, Item $item)
     {
         //
     }
@@ -58,7 +58,7 @@ class ItemController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(item $item)
+    public function destroy(Item $item)
     {
         //
     }

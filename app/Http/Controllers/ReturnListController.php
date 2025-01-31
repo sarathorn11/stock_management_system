@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\return_list;
+use App\Models\ReturnList;
 use Illuminate\Http\Request;
 
 class ReturnListController extends Controller
@@ -34,7 +34,7 @@ class ReturnListController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(return_list $return_list)
+    public function show(ReturnList $returnList)
     {
         //
     }
@@ -42,7 +42,7 @@ class ReturnListController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(return_list $return_list)
+    public function edit(ReturnList $returnList)
     {
         //
     }
@@ -50,7 +50,7 @@ class ReturnListController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, return_list $return_list)
+    public function update(Request $request, ReturnList $returnList)
     {
         //
     }
@@ -58,7 +58,7 @@ class ReturnListController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(return_list $return_list)
+    public function destroy(ReturnList $returnList)
     {
         //
     }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\supplier;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 
 class SupplierController extends Controller
@@ -34,7 +34,7 @@ class SupplierController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(supplier $supplier)
+    public function show(Supplier $supplier)
     {
         //
     }
@@ -42,7 +42,7 @@ class SupplierController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(supplier $supplier)
+    public function edit(Supplier $supplier)
     {
         //
     }
@@ -50,7 +50,7 @@ class SupplierController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, supplier $supplier)
+    public function update(Request $request, Supplier $supplier)
     {
         //
     }
@@ -58,7 +58,7 @@ class SupplierController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(supplier $supplier)
+    public function destroy(Supplier $supplier)
     {
         //
     }

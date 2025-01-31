@@ -9,6 +9,8 @@ class BoItem extends Model
 {
     use HasFactory;
 
+    protected $table = 'bo_items';
+
     protected $fillable = [
         'item_id',
         'quantity',

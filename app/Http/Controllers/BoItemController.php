@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\po_items;
+use App\Models\BoItem;
 use Illuminate\Http\Request;
 
-class PoItemsController extends Controller
+class BoItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class PoItemsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(po_items $po_items)
+    public function show(BoItem $boItem)
     {
         //
     }
@@ -42,7 +42,7 @@ class PoItemsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(po_items $po_items)
+    public function edit(BoItem $boItem)
     {
         //
     }
@@ -50,7 +50,7 @@ class PoItemsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, po_items $po_items)
+    public function update(Request $request, BoItem $boItem)
     {
         //
     }
@@ -58,7 +58,7 @@ class PoItemsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(po_items $po_items)
+    public function destroy(BoItem $boItem)
     {
         //
     }

@@ -10,7 +10,7 @@ class Receiving extends Model
     use HasFactory;
 
     // Table associated with the model
-    protected $table = 'receiving_list';
+    protected $table = 'receivings';
 
     // The attributes that are mass assignable
     protected $fillable = [

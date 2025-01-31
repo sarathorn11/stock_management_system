@@ -5,7 +5,7 @@ use App\Models\Sale;
 use App\Models\Stock;
 use Illuminate\Http\Request;
 
-class SalesController extends Controller
+class SaleController extends Controller
 {
     public function index(Request $request)
     {
@@ -33,7 +33,7 @@ class SalesController extends Controller
             'stock_id' => 'required|exists:stocks,id',
             'remarks' => 'nullable|string|max:500',
         ]);
-        Sale::create($validated); 
+        Sale::create($validated);
         return redirect()->route('sales.index')->with('success', 'Sale added successfully.');
     }
 
@@ -60,7 +60,7 @@ class SalesController extends Controller
             'stock_id' => 'required|exists:stocks,id',
             'remarks' => 'nullable|string|max:500',
         ]);
-        $sale->update($validated); 
+        $sale->update($validated);
 
         return redirect()->route('sales.index')->with('success', 'Sale updated successfully.');
     }
