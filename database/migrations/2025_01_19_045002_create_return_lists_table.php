@@ -18,8 +18,7 @@ return new class extends Migration
             $table->foreignId('stock_id')->constrained();
             $table->float('amount');
             $table->text('remarks')->nullable();
-            $table->dateTime('date_created')->useCurrent();
-            $table->dateTime('date_updated')->useCurrent()->useCurrentOnUpdate();
+            $table->timestamps();
         });
     }
 
