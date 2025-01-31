@@ -47,10 +47,15 @@ class PurchaseOrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(purchase_order $purchaseOrder) // Ensure type hinting is correct
+    public function show($id)
     {
-        return view('purchase-order.show', compact('purchaseOrder'));
+        $purchaseOrder = purchase_order::findOrFail($id);
+
+        // Pass the ID when redirecting to the show route
+        return view('purchase_order.show', compact('purchaseOrder'));
+
     }
+
 
     /**
      * Show the form for editing the specified resource.
