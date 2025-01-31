@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class return_list extends Model
+class ReturnList extends Model
 {
     use HasFactory;
+    protected $table = 'return_lists';
+
     protected $fillable = [
         'return_code',
         'supplier_id',

@@ -63,7 +63,7 @@ class ItemController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(item $item)
+    public function edit(Item $item)
     {
         //
     }
