@@ -11,11 +11,18 @@ class PurchaseOrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $purchaseOrders = PurchaseOrder::all(); // Use PascalCase for model name
-        return view('purchase_order.index', compact('purchaseOrders'));
+        // Set the number of records per page (you can adjust the value or make it dynamic)
+        $perPage = $request->get('per_page', 10); // Default to 10 if not provided
+
+        // Paginate the PurchaseOrder model
+        $purchaseOrders = PurchaseOrder::paginate($perPage);
+
+        // Pass the paginated result to the view
+        return view('purchase_order.index', compact('purchaseOrders', 'perPage'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -86,10 +93,17 @@ class PurchaseOrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PurchaseOrder $purchaseOrder) // Ensure type hinting is correct
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Request $request)
     {
-        $purchaseOrder->delete();
-
-        return redirect()->route('purchase-order.index')->with('success', 'Purchase Order deleted successfully!');
+        $ids = explode(',', $request->input('ids'));
+    
+        // Delete the purchase orders by IDs
+        PurchaseOrder::whereIn('id', $ids)->delete();
+    
+        return redirect()->route('purchase-order.index')->with('success', 'Selected purchase orders deleted successfully.');
     }
+
 }
