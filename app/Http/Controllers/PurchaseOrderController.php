@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\purchase_order; // Corrected model name to PascalCase
+use App\Models\PurchaseOrder; // Corrected model name to PascalCase
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 
@@ -13,7 +13,7 @@ class PurchaseOrderController extends Controller
      */
     public function index()
     {
-        $purchaseOrders = purchase_order::all(); // Use PascalCase for model name
+        $purchaseOrders = PurchaseOrder::all(); // Use PascalCase for model name
         return view('purchase_order.index', compact('purchaseOrders'));
     }
 
@@ -49,7 +49,7 @@ class PurchaseOrderController extends Controller
      */
     public function show($id)
     {
-        $purchaseOrder = purchase_order::findOrFail($id);
+        $purchaseOrder = PurchaseOrder::findOrFail($id);
 
         // Pass the ID when redirecting to the show route
         return view('purchase_order.show', compact('purchaseOrder'));
@@ -60,7 +60,7 @@ class PurchaseOrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(purchase_order $purchaseOrder) // Ensure type hinting is correct
+    public function edit(PurchaseOrder $purchaseOrder) // Ensure type hinting is correct
     {
         $suppliers = Supplier::all(); // Fetch suppliers for the dropdown
         return view('purchase-order.edit', compact('purchaseOrder', 'suppliers'));
@@ -69,7 +69,7 @@ class PurchaseOrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, purchase_order $purchaseOrder) // Ensure type hinting is correct
+    public function update(Request $request, PurchaseOrder $purchaseOrder) // Ensure type hinting is correct
     {
         $request->validate([
             'po_code' => 'required|unique:purchase_orders,po_code,' . $purchaseOrder->id, // Use correct table name
@@ -86,7 +86,7 @@ class PurchaseOrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(purchase_order $purchaseOrder) // Ensure type hinting is correct
+    public function destroy(PurchaseOrder $purchaseOrder) // Ensure type hinting is correct
     {
         $purchaseOrder->delete();
 
