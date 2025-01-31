@@ -39,7 +39,7 @@ class PurchaseOrderController extends Controller
             'remarks' => 'nullable|string', // Add validation for remarks
         ]);
     
-        purchase_order::create($request->all());
+        PurchaseOrder::create($request->all());
     
         return redirect()->route('purchase-order.index')->with('success', 'Purchase Order created successfully!');
     }
