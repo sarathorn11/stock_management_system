@@ -43,7 +43,7 @@
         </thead>
         <tbody>
             @foreach ($purchaseOrders as $purchaseOrder)
-                <tr>
+                <tr onclick="window.location='{{ route('purchase-order.show', $purchaseOrder->id) }}'" class="cursor-pointer hover:bg-gray-200">
                     <td class="border px-4 py-2 text-center">
                         <input type="checkbox" class="select-record cursor-pointer transform scale-125" value="{{ $purchaseOrder->id }}">
                     </td>

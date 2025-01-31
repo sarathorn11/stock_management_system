@@ -2,7 +2,7 @@
 
 @section('content')
 <div id="content" class="w-full h-full">
-  <h1 class="text-2xl font-bold text-gray-800 mb-4">Dashboard</h1>
+  <h1 class="text-xl font-bold text-gray-800 mb-4">Dashboard</h1>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
     <div class="bg-white text-black rounded-lg shadow-lg p-3 flex hover:shadow-2xl transition duration-300 ease-in-out">
       <div class="min-w-[66px] min-h-[66px] flex items-center justify-center bg-[#17a2b8] mr-3 rounded text-white">
