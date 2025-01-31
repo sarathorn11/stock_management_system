@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\back_orde;
+use App\Models\PoItem;
 use Illuminate\Http\Request;
 
-class BackOrdeController extends Controller
+class PoItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class BackOrdeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(back_orde $back_orde)
+    public function show(PoItem $poItem)
     {
         //
     }
@@ -42,7 +42,7 @@ class BackOrdeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(back_orde $back_orde)
+    public function edit(PoItem $poItem)
     {
         //
     }
@@ -50,7 +50,7 @@ class BackOrdeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, back_orde $back_orde)
+    public function update(Request $request, PoItem $poItem)
     {
         //
     }
@@ -58,7 +58,7 @@ class BackOrdeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(back_orde $back_orde)
+    public function destroy(PoItem $poItem)
     {
         //
     }

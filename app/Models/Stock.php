@@ -21,7 +21,7 @@ class Stock extends Model
         'total',
         'type',
         'date_created',
-    ];    
+    ];
 
     /**
      * Relationship with the Item model.
@@ -76,5 +76,5 @@ class Stock extends Model
             return \Carbon\Carbon::parse($this->attributes['date_created'])->format('d-m-Y') . ' ' . now()->format('H:i:s');
         }
         return null;
-    }    
+    }
 }

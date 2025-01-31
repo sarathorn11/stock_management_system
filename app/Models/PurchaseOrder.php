@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class purchase_order extends Model
 {
     use HasFactory;
+    protected $table = 'purchase_orders';  // Specify the table name
 
     // Define the fillable attributes for mass assignment
     protected $fillable = [

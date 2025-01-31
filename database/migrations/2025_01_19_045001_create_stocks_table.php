@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->decimal('total', 10, 2)->default(0);
             $table->tinyInteger('type')->default(1)->comment('1=IN , 2=OUT');
             $table->timestamp('date_created')->useCurrent();
+            $table->timestamps();  // Add created_at and updated_at fields
         });
     }
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\receiving;
+use App\Models\Receiving;
 use Illuminate\Http\Request;
 
 class ReceivingController extends Controller
@@ -34,7 +34,7 @@ class ReceivingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(receiving $receiving)
+    public function show(Receiving $receiving)
     {
         //
     }
@@ -42,7 +42,7 @@ class ReceivingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(receiving $receiving)
+    public function edit(Receiving $receiving)
     {
         //
     }
@@ -50,7 +50,7 @@ class ReceivingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, receiving $receiving)
+    public function update(Request $request, Receiving $receiving)
     {
         //
     }
@@ -58,7 +58,7 @@ class ReceivingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(receiving $receiving)
+    public function destroy(Receiving $receiving)
     {
         //
     }
