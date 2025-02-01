@@ -24,6 +24,7 @@
                 class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition duration-300">
                 Print
             </button>
+            
         </div>
     </div>
 
