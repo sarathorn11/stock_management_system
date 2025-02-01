@@ -12,7 +12,7 @@ class ReturnListController extends Controller
      */
     public function index()
     {
-        //
+        return view('return.index');
     }
 
     /**
@@ -20,7 +20,7 @@ class ReturnListController extends Controller
      */
     public function create()
     {
-        //
+        return view('return.create');
     }
 
     /**
@@ -36,7 +36,7 @@ class ReturnListController extends Controller
      */
     public function show(return_list $return_list)
     {
-        //
+        return view('return.show');
     }
 
     /**
