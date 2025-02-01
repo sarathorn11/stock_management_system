@@ -10,11 +10,25 @@ class ItemController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $items = Item::all();
-        // $items = Item::with('supplier')->get();
-        return view('items.index', compact('items'));
+        $query = $request->input('query'); // Get search input
+        $perPage = $request->input('perPage', 10); // Get perPage input, default is 10
+
+        // Query items with search filter
+        $items = Item::with('supplier')
+            ->when($query, function ($queryBuilder) use ($query) {
+                return $queryBuilder->where('name', 'LIKE', "%{$query}%")
+                    ->orWhere('description', 'LIKE', "%{$query}%");
+            })
+            ->paginate($perPage); // Apply pagination
+
+        return view('items.index', [
+            'items' => $items,
+            'query' => $query,
+            'perPage' => $perPage,
+            'perPageOptions' => [10, 20, 30, 50]
+        ]);
     }
 
     /**
