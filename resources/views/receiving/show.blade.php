@@ -73,9 +73,15 @@
         </table>
 
         <div class="mt-6">
-            <p><strong>Remark:</strong></p>
-            <p>BO Receive (Partial)</p>
+            <div>
+                <p><strong>Remark:</strong></p>
+                <p>BO Receive (Partial)</p>
+            </div>
+            <div>
             <p>PARTIALLY RECEIVED</p>
+            </div>
+            
+           
         </div>
     </div>
 </div>
