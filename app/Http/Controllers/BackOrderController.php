@@ -10,10 +10,73 @@ class BackOrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $perPage = $request->input('perPage', 10);
+        $searchQuery = $request->input('query', '');
+
+        $backOrders = BackOrder::with(['supplier' => function($query) {
+                $query->select('id', 'name');
+            }, 'items' => function($query) {
+                $query->with('item');
+            },
+            'purchaseOrder' => function($query) {
+                $query->select('po_code');
+            }])
+            ->withCount('items')
+            ->when($searchQuery, function($query, $searchQuery) {
+                return $query->where('bo_code', 'like', '%' . $searchQuery . '%');
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage)
+            ->through(function($backOrder) {
+                $backOrder->supplier = $backOrder->supplier->name;
+                // $backOrder->items_count = $backOrder->items->count();
+                return $backOrder;
+            });
+
+        return view('backorder.index', [
+            'backOrders' => $backOrders,
+            'perPage' => $perPage,
+            'perPageOptions' => [10, 20, 30, 50]
+        ]);
     }
+    // public function index(Request $request)
+    // {
+    //     $perPage = $request->input('perPage', 10);
+    //     $searchQuery = $request->input('query', '');
+    
+    //     $backOrders = BackOrder::with(['supplier' => function($query) {
+    //             $query->select('id', 'name');
+    //         }, 'items' => function($query) {
+    //             $query->with('item');
+    //         },
+    //         'purchaseOrder' => function($query) {
+    //             $query->select('id', 'po_code');
+    //         }])
+    //         ->withCount('items')
+    //         ->when($searchQuery, function($query, $searchQuery) {
+    //             return $query->where('bo_code', 'like', '%' . $searchQuery . '%')
+    //                          ->orWhereHas('supplier', function($q) use ($searchQuery) {
+    //                              $q->where('name', 'like', '%' . $searchQuery . '%');
+    //                          })
+    //                          ->orWhereHas('purchaseOrder', function($q) use ($searchQuery) {
+    //                              $q->where('po_code', 'like', '%' . $searchQuery . '%');
+    //                          });
+    //         })
+    //         ->orderBy('created_at', 'desc')
+    //         ->paginate($perPage)
+    //         ->through(function($backOrder) {
+    //             $backOrder->supplier = $backOrder->supplier->name;
+    //             return $backOrder;
+    //         });
+    
+    //     return view('backorder.index', [
+    //         'backOrders' => $backOrders,
+    //         'perPage' => $perPage,
+    //         'perPageOptions' => [10, 20, 30, 50]
+    //     ]);
+    // }
 
     /**
      * Show the form for creating a new resource.
@@ -36,7 +99,8 @@ class BackOrderController extends Controller
      */
     public function show(BackOrder $backOrder)
     {
-        //
+        $backOrder->load(['supplier', 'items', 'purchaseOrder']);
+        return view('backorder.show', compact('backOrder'));
     }
 
     /**
@@ -44,7 +108,8 @@ class BackOrderController extends Controller
      */
     public function edit(BackOrder $backOrder)
     {
-        //
+        $backOrder->load(['supplier', 'items', 'purchaseOrder']);
+        // return view('backorder.edit', compact('backOrder'));
     }
 
     /**
@@ -52,7 +117,15 @@ class BackOrderController extends Controller
      */
     public function update(Request $request, BackOrder $backOrder)
     {
-        //
+        $request->validate([
+            'bo_code' => 'required|string|max:255',
+            'status' => 'required|integer',
+            // Add other validation rules as needed
+        ]);
+
+        $backOrder->update($request->all());
+
+        return redirect()->route('back-order.index')->with('success', 'Back order updated successfully.');
     }
 
     /**
@@ -60,6 +133,7 @@ class BackOrderController extends Controller
      */
     public function destroy(BackOrder $backOrder)
     {
-        //
+        $backOrder->delete();
+        return redirect()->route('back-order.index')->with('success', 'Back order deleted successfully.');
     }
 }
