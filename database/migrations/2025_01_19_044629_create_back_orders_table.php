@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('back_order', function (Blueprint $table) {
+        Schema::create('back_orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('receiving_id')->constrained();
-            $table->foreignId('po_id')->constrained('purchase_order')->onDelete('cascade');
+            $table->foreignId('po_id')->constrained('purchase_orders')->onDelete('cascade');
             $table->foreignId('supplier_id')->constrained();
             $table->string('bo_code');
             $table->decimal('amount', 15, 2);
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('back_order');
+        Schema::dropIfExists('back_orders');
     }
 };

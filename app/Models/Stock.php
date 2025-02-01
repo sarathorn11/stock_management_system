@@ -12,6 +12,7 @@ class Stock extends Model
     protected $primaryKey = 'id';
     protected $keyType = 'int';
     public $incrementing = true;
+    public $timestamps = false;
     protected $fillable = [
         'item_id',
         'quantity',
@@ -21,7 +22,6 @@ class Stock extends Model
         'type',
         'date_created',
     ];
-    public $timestamps = false;
 
     /**
      * Relationship with the Item model.
@@ -76,5 +76,5 @@ class Stock extends Model
             return \Carbon\Carbon::parse($this->attributes['date_created'])->format('d-m-Y') . ' ' . now()->format('H:i:s');
         }
         return null;
-    }    
+    }
 }

@@ -10,7 +10,7 @@ class Receiving extends Model
     use HasFactory;
 
     // Table associated with the model
-    protected $table = 'receiving_list';
+    protected $table = 'receivings';
 
     // The attributes that are mass assignable
     protected $fillable = [
@@ -25,10 +25,16 @@ class Receiving extends Model
         'remarks',
     ];
 
-    // If you have foreign relationships, you can define them here
+    // Polymorphic relation to 'from' (supplier, vendor, etc.)
     public function from()
     {
         return $this->morphTo(__FUNCTION__, 'from_order', 'from_id');
+    }
+
+    // Relationship for stock items (many-to-many)
+    public function stockItems()
+    {
+        return $this->belongsToMany(StockItem::class, 'receiving_stock_item', 'receiving_id', 'stock_item_id');
     }
 
     // Additional methods or logic can go here

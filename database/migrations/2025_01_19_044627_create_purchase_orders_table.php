@@ -13,7 +13,7 @@ class CreatePurchaseOrdersTable extends Migration
      */
     public function up()
     {
-        Schema::create('purchase_order', function (Blueprint $table) {
+        Schema::create('purchase_orders', function (Blueprint $table) {
             $table->id();
             $table->string('po_code', 50);  // Add po_code field
             $table->foreignId('supplier_id')->constrained('suppliers')->onDelete('cascade');  // Foreign key for supplier_id, with constraint and cascading delete
@@ -35,6 +35,6 @@ class CreatePurchaseOrdersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('purchase_order');
+        Schema::dropIfExists('purchase_orders');
     }
 }

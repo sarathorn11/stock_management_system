@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Item extends Model
 {
     use HasFactory;
+    protected $table = 'items';  // Specify the table name
 
     // Specify the attributes that are mass assignable
     protected $fillable = ['name', 'description', 'supplier_id', 'cost', 'status'];

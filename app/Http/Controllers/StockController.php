@@ -19,7 +19,7 @@ class StockController extends Controller
         return view('stocks.index', [
             'stocks' => $stocks,
             'perPage' => $perPage,
-            'perPageOptions' => [5, 10, 25, 50]
+            'perPageOptions' => [10, 20, 30, 50]
         ]);
     }
 
@@ -48,13 +48,13 @@ class StockController extends Controller
             'type' => 'required|integer|in:1,2',
             'date_created' => 'nullable|date', // Allow null if not provided
         ]);
-    
+
         // If date_created is not provided, default it to the current timestamp
         $validated['date_created'] = $validated['date_created'] ?? now();
-    
+
         // Create a new stock record
         Stock::create($validated);
-    
+
         // Redirect to the stock list with a success message
         return redirect()->route('stocks.index')->with('success', 'Stock added successfully.');
     }
@@ -94,13 +94,13 @@ class StockController extends Controller
             'type' => 'required|integer|in:1,2',
             'date_created' => 'nullable|date', // Allow null if not provided
         ]);
-    
+
         // If date_created is provided in the request, we use it. Otherwise, we preserve the existing one.
         $validated['date_created'] = $request->has('date_created') ? $validated['date_created'] : $stock->date_created;
-    
+
         // Update the stock record
         $stock->update($validated);
-    
+
         // Redirect to the stock list with a success message
         return redirect()->route('stocks.index')->with('success', 'Stock updated successfully.');
     }

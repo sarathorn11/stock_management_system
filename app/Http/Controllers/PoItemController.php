@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\sales;
+use App\Models\PoItem;
 use Illuminate\Http\Request;
 
-class SalesController extends Controller
+class PoItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class SalesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(sales $sales)
+    public function show(PoItem $poItem)
     {
         //
     }
@@ -42,7 +42,7 @@ class SalesController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(sales $sales)
+    public function edit(PoItem $poItem)
     {
         //
     }
@@ -50,7 +50,7 @@ class SalesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, sales $sales)
+    public function update(Request $request, PoItem $poItem)
     {
         //
     }
@@ -58,7 +58,7 @@ class SalesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(sales $sales)
+    public function destroy(PoItem $poItem)
     {
         //
     }

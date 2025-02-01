@@ -9,7 +9,7 @@ class BackOrder extends Model
 {
     use HasFactory;
 
-    protected $table = 'back_order';
+    protected $table = 'back_orders';
 
     protected $fillable = [
         'receiving_id',
