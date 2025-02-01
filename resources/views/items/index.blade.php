@@ -5,7 +5,11 @@
     <h2 class="text-2xl font-semibold mb-4">List Item</h2>
 
     <div class="flex justify-between mb-3">
-        <input type="text" class="border border-gray-300 rounded px-4 py-2 w-2/4" placeholder="Search ....">
+        <form action="{{ route('items.index') }}" method="GET">
+            <input type="text" name="query" class="border border-gray-300 rounded px-4 py-2 w-2/4"
+                placeholder="Search ...." value="{{ request('query') }}">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
+        </form>
         <div>
             <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                 onclick="fetchItemDetails()">Create</button>
@@ -23,7 +27,9 @@
             </div>
         </div>
     </div>
-
+    @if ($items->isEmpty())
+    <p class="text-center text-danger">No results found for "{{ request('query') }}"</p>
+    @else
     <div class="overflow-x-auto">
         <table class="w-full border border-gray-300 rounded-lg">
             <thead class="bg-gray-100">
@@ -61,23 +67,8 @@
             </tbody>
         </table>
     </div>
-
-    <div class="flex justify-between items-center mt-4">
-        <div>
-            Rows per page:
-            <select class="border border-gray-300 rounded px-2 py-1">
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="100">100</option>
-            </select>
-        </div>
-        <div class=" flex items-center space-x-2">
-            <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-200">&lt;</button>
-            <span>1-5 of 10</span>
-            <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-200">&gt;</button>
-        </div>
-    </div>
+    <x-pagination :pagination="$items" :per-page="$perPage" :per-page-options="[$perPage, 10, 20, 30, 50]" />
+    @endif
 </div>
 
 
@@ -120,10 +111,11 @@
                     <option value="0">Inactive</option>
                 </select>
             </div>
+            @if($items->count() > 0)
             <div>
                 <label id="created-at" class="block text-sm text-gray-700">Created at: {{$item->created_at}}</label>
             </div>
-
+            @endif
             <div class="flex justify-end space-x-2 mt-4">
                 <button type="button" class="px-4 py-2 bg-gray-300 rounded" onclick="toggleModal(false)">
                     Cancel
