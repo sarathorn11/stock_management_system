@@ -70,11 +70,14 @@ class ReceivingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Receiving $receiving)
+    public function show($id)
     {
-        //
-    }
+        // Find the receiving by its ID
+        $receiving = Receiving::findOrFail($id);
 
+        // Pass the receiving record to the view
+        return view('receiving.show', compact('receiving'));
+    }
     /**
      * Show the form for editing the specified resource.
      */
