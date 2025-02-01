@@ -36,9 +36,9 @@
         </thead>
         <tbody>
           @foreach($receivings as $receiving)
-          <tr class="bg-white hover:bg-gray-200">
+          <tr class="bg-white hover:bg-gray-200 cursor-pointer" onclick="window.location.href='{{ route('receiving.show', $receiving->id) }}'">
             <td class="px-4 py-2 text-center border border-gray-300">
-              <input type="checkbox" name="selected_ids[]" value="{{ $receiving->id }}" class="recordCheckbox">
+              <input type="checkbox" name="selected_ids[]" value="{{ $receiving->id }}" class="recordCheckbox" onclick="event.stopPropagation();">
             </td>
             <td class="px-4 py-2 text-center border border-gray-300">{{ $receiving->id }}</td>
             <td class="px-4 py-2 text-center border border-gray-300">{{ $receiving->created_at }}</td>
@@ -57,7 +57,6 @@
       @if($receivings->count() > 0)
           <x-pagination :pagination="$receivings" :per-page="$perPage" :per-page-options="[10, 20, 30, 50]" />
       @endif
-
     </form>
   </div>
 </div>
@@ -70,5 +69,4 @@
     });
   });
 </script>
-
 @endsection
