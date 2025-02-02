@@ -57,6 +57,8 @@ Route::post('/items/delete', [ItemController::class, 'deleteSelected'])->name('i
 
 // User List Routes
 Route::resource('user', UserController::class);
+Route::post('/user/delete', [UserController::class, 'deleteSelected'])->name('user.deleteSelected');
+
 
 // Settings Routes
 Route::resource('setting', SettingController::class);

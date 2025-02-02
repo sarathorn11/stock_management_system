@@ -2,10 +2,10 @@
 
 @section('content')
 <div class="container mx-auto p-6">
-    <h2 class="text-2xl font-semibold mb-4">List Item</h2>
+    <h2 class="text-2xl font-semibold mb-4">List User</h2>
 
     <div class="flex justify-between mb-3">
-        <form action="{{ route('items.index') }}" method="GET">
+        <form action="{{ route('user.index') }}" method="GET">
             <input type="text" name="query" class="border border-gray-300 rounded px-4 py-2 w-2/4"
                 placeholder="Search ...." value="{{ request('query') }}">
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
@@ -27,47 +27,41 @@
             </div>
         </div>
     </div>
-    @if ($items->isEmpty())
-    <p class="text-center text-danger">No results found for "{{ request('query') }}"</p>
+    @if ($users->isEmpty())
+    <p class="text-center text-danger">No results found 404</p>
     @else
     <div class="overflow-x-auto">
-        <table class="w-full border border-gray-300 rounded-lg">
+        <table class="w-full border rounded-lg shadow-sm text-left">
             <thead class="bg-gray-100">
                 <tr>
-                    <th class="px-4 py-2">
-                        <input type="checkbox" id="checkAll" onclick="toggleAllRows(this)">
-                    </th>
-                    <th class="px-4 py-2">No.</th>
-                    <th class="px-4 py-2">Name</th>
-                    <th class="px-4 py-2">Cost</th>
-                    <th class="px-4 py-2">Supplier</th>
-                    <th class="px-4 py-2">Date created</th>
-                    <th class="px-4 py-2">Status</th>
+                    <th class="p-3"><input type="checkbox" id="checkAll" onclick="toggleAllRows(this)"></th>
+                    <th class="p-3">No.</th>
+                    <th class="p-3">Avatar</th>
+                    <th class="p-3">Name</th>
+                    <th class="p-3">Gender</th>
+                    <th class="p-3">Email</th>
+                    <th class="p-3">Role</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach($items as $index => $item)
-                <tr data-id="{{$item->id}}" class="border-t hover:bg-gray-300 cursor-pointer border-gray-300"
-                    onclick="fetchItemDetails({{ $item->id }})">
-                    <td onclick="event.stopPropagation()" class="px-4 py-2 text-center"><input class="rowCheckbox"
-                            value="{{$item->id}}" type="checkbox"></td>
-                    <td class="px-4 py-2 text-center">{{ $index + 1 }}</td>
-                    <td class="px-4 py-2">{{ $item->name }}</td>
-                    <td class="px-4 py-2">{{ $item->cost }}$</td>
-                    <td class="px-4 py-2">{{ $item->supplier->name }}</td>
-                    <td class="px-4 py-2">{{ $item->created_at->format('Y-m-d h:i a') }}</td>
-                    <td class="px-4 py-2">
-                        <span
-                            class="px-3 py-1 text-white rounded-full {{ $item->status == '1' ? 'bg-green-500' : 'bg-red-500' }}">
-                            {{ $item->status == '1' ? 'Active' : 'Inactive' }}
-                        </span>
-                    </td>
+            <tbody class="bg-white divide-y">
+                @foreach($users as $index => $user)
+                <tr onclick="fetchItemDetails({{ $user->id }})" data-id="{{$user->id}}" class="hover:bg-gray-50">
+                    <td class="p-3"><input onclick="event.stopPropagation()" class="rowCheckbox" value="{{$user->id}}"
+                            type="checkbox"></td>
+                    <td class="p-3">{{1 + $index}}</td>
+                    <td class="p-3"><img
+                            src="{{$user->avatar ? asset('storage/avatars/'.basename($user->avatar)) : asset('static/assets/images/default-avatar.png')}}"
+                            class="w-10 h-10 rounded-full"></td>
+                    <td class="p-3">{{$user->name}}</td>
+                    <td class="p-3 capitalize">{{$user->gender}}</td>
+                    <td class="p-3">{{$user->email}}</td>
+                    <td class="p-3 capitalize">{{$user->role}}</td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
-    <x-pagination :pagination="$items" :per-page="$perPage" :per-page-options="[$perPage, 10, 20, 30, 50]" />
+    <x-pagination :pagination="$users" :per-page="$perPage" :per-page-options="[$perPage, 10, 20, 30, 50]" />
     @endif
 </div>
 
@@ -75,47 +69,69 @@
 <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white w-full max-w-md p-6 rounded-lg shadow-lg">
         <h2 class="text-lg font-bold mb-4">Add/Edit Item</h2>
-        <form id="itemForm" class="space-y-4" action="{{ route('items.store') }}" method="POST">
+        <form id="itemForm" class="space-y-4" action="{{ route('user.store') }}" method="POST"
+            enctype="multipart/form-data">
             @csrf
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
                 <input id="name" name="name" type="text" class="border border-gray-300 w-full rounded px-4 py-2"
-                    placeholder="Item name" required>
+                    placeholder="User name" required>
             </div>
             <div>
-                <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                <textarea name="description" id="description" placeholder="Description"
-                    class="border border-gray-300 w-full rounded px-4 py-2" required></textarea>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input id="email" name="email" type="email" class="border border-gray-300 w-full rounded px-4 py-2"
+                    placeholder="Email " required>
+            </div>
+            <select id="gender" name="gender" class="border border-gray-300 w-full rounded px-4 py-2" required>
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+
+            <div>
+                <label for="password" class="block text-gray-700 font-bold mb-2">Password</label>
+                <div class="relative">
+                    <input type="password" id="password" name="password" class="w-full px-4 py-2 border rounded-md"
+                        placeholder="Enter your password">
+                    <span class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                        onclick="togglePassword('password', 'eyeIcon1')">
+                        <i id="eyeIcon1" class="fas fa-eye-slash"></i>
+                    </span>
+                </div>
             </div>
 
             <div>
-                <label for="cost" class="block text-sm font-medium text-gray-700">Cost</label>
-                <input name="cost" step="0.001" type="number" id="cost" min="0" placeholder="Cost"
-                    class="border border-gray-300 w-full rounded px-4 py-2" required>
+                <label for="password_confirmation" class="block text-gray-700 font-bold mb-2">Confirm Password</label>
+                <div class="relative">
+                    <input type="password" id="password_confirmation" name="password_confirmation"
+                        class="w-full px-4 py-2 border rounded-md" placeholder="Confirm your password">
+                    <span class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                        onclick="togglePassword('password_confirmation', 'eyeIcon2')">
+                        <i id="eyeIcon2" class="fas fa-eye-slash"></i>
+                    </span>
+                </div>
             </div>
 
             <div>
-                <label for="supplier_id" class="block text-sm font-medium text-gray-700">Supplier</label>
-                <select id="supplier_id" name="supplier_id" class="border border-gray-300 w-full rounded px-4 py-2"
-                    required>
-                    <option value="">Select Supplier</option>
-                    <option value="1">Supplier 001</option>
-                    <option value="2">Supplier 002</option>
+                <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+                <select id="role" name="role" class="border border-gray-300 w-full rounded px-4 py-2" required>
+                    <option value="">Select Role</option>
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
                 </select>
             </div>
+            <div class="mb-6">
+                <label for="avatar" class="block text-gray-700 font-medium mb-2">Avatar(click here to change
+                    image)</label>
+                <input hidden type="file" id="avatar" name="avatar" class="w-full" accept="image/*"
+                    onchange="previewImage(this)">
 
-            <div>
-                <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                <select id="status" name="status" class="border border-gray-300 w-full rounded px-4 py-2" required>
-                    <option value="1">Active</option>
-                    <option value="0">Inactive</option>
-                </select>
+                <div for="avatar" id="image-preview" class="mt-2">
+                    <img id="avatar-preview" src="{{ asset('static/assets/images/default-avatar.png') }}"
+                        class="w-24 h-24 rounded-full object-cover" alt="Avatar">
+                </div>
             </div>
-            @if($items->count() > 0)
-            <div>
-                <label id="created-at" class="block text-sm text-gray-700">Created at: {{$item->created_at}}</label>
-            </div>
-            @endif
+
             <div class="flex justify-end space-x-2 mt-4">
                 <button type="button" class="px-4 py-2 bg-gray-300 rounded" onclick="toggleModal(false)">
                     Cancel
@@ -131,6 +147,36 @@
 <style>
 </style>
 <script>
+    function previewImage(input) {
+        const preview = document.getElementById("avatar-preview");
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.src = "default-avatar.png"; // Fallback to default avatar
+        }
+    }
+
+    function togglePassword(fieldId, iconId) {
+        const passwordInput = document.getElementById(fieldId);
+        const eyeIcon = document.getElementById(iconId);
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        }
+    }
+
+
     function toggleAllRows(source) {
         const checkboxes = document.querySelectorAll('.rowCheckbox');
         checkboxes.forEach(checkbox => {
@@ -149,7 +195,7 @@
         // Get selected item IDs
         const selectedIds = Array.from(checkboxes).map(checkbox => checkbox.value);
         // Send DELETE request to Laravel backend
-        fetch('/items/delete', {
+        fetch('/user/delete', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -170,7 +216,7 @@
 
                     // Uncheck the "Check All" checkbox if all items are removed
                     document.getElementById('checkAll').checked = false;
-                    window.location.assign('/items');
+                    window.location.assign('/user');
                 } else {
                     alert('Failed to delete items.');
                 }
@@ -202,45 +248,46 @@
     }
 
     function fetchItemDetails(id = null) {
+        console.log('Fetching item details:', id);
         toggleModal(true);
         if (id) {
             // Update action
-            fetch(`/items/${id}`)
+            fetch(`/user/${id}`)
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data);
                     // Populate modal fields with data
                     document.getElementById('name').value = data.name;
-                    document.getElementById('description').value = data.description;
-                    document.getElementById('cost').value = data.cost;
-                    document.getElementById('supplier_id').value = data.supplier_id;
-                    document.getElementById('status').value = data.status;
+                    document.getElementById('email').value = data.email;
+                    document.getElementById('gender').value = data.gender;
+                    document.getElementById('role').value = data.role;
+                    document.getElementById('password').value = '';
+                    document.getElementById('password_confirmation').value = '';
+                    const preview = document.getElementById("avatar-preview");
+                    preview.src = data.avatar ? `/storage/avatars/${data.avatar}` :
+                        "{{ asset('static/assets/images/default-avatar.png') }}";
 
                     // Set form action to the update route
-                    document.getElementById('itemForm').action = `/items/${id}`;
-                    document.getElementById('itemForm').method = 'POST';
-
+                    document.getElementById('itemForm').action = `/user/${id}`;
                     // Add a hidden input for the PUT method
                     const methodField = document.createElement('input');
                     methodField.type = 'hidden';
                     methodField.name = '_method';
                     methodField.value = 'PUT';
                     document.getElementById('itemForm').appendChild(methodField);
-                    fetchSuppliers(data.supplier_id);
 
                 })
                 .catch(error => console.error('Error fetching item details:', error));
         } else {
             // Clear modal fields
             document.getElementById('name').value = '';
-            document.getElementById('description').value = '';
-            document.getElementById('cost').value = '';
-            document.getElementById('supplier_id').value = '';
-            document.getElementById('status').value = '';
-            document.getElementById('created-at').textContent = '';
+            document.getElementById('email').value = '';
+            document.getElementById('gender').value = '';
+            document.getElementById('role').value = '';
+            document.getElementById('avatar').value = '';
             // Create action
-            document.getElementById('itemForm').action = '/items';
+            document.getElementById('itemForm').action = '/user';
             document.getElementById('itemForm').method = 'POST';
-            fetchSuppliers();
         }
     }
 

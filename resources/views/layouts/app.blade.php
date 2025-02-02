@@ -80,12 +80,13 @@
                     Supplier List
                 </a>
                 <a href="{{ route('items.index') }}"
-                    class="flex items-center p-3 text-gray-300 hover:text-white hover:bg-gray-700 pl-6">
+                    class="ajax-link flex items-center p-3 pl-6 {{ request()->routeIs('items.*') ? 'bg-white text-[#3c8Bdc]' : 'text-gray-300 hover:text-white hover:bg-gray-700' }}">
                     <i class="mr-3 nav-icon fas fa-boxes"></i>
                     Item List
                 </a>
-                <a class="flex items-center p-3 text-gray-300 hover:text-white hover:bg-gray-700 pl-6">
-                    <i class="mr-3 nav-icon fas fa-users"></i>
+                <a href="{{ route('user.index') }}"
+                    class="ajax-link flex items-center p-3 pl-6 {{ request()->routeIs('user.*') ? 'bg-white text-[#3c8Bdc]' : 'text-gray-300 hover:text-white hover:bg-gray-700' }}">
+                    <i class="mr-3 nav-icon fas fa-boxes"></i>
                     User List
                 </a>
                 <a href="{{ route('setting.index') }}"

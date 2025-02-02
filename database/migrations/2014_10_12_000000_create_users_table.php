@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('email', 191)->unique(); // Reduce column length to 191
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('role');
+            $table->string('avatar')->nullable();
+            $table->enum('gender', ['male', 'female']);
             $table->rememberToken();
             $table->timestamps();
         });
