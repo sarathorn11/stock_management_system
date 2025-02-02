@@ -69,21 +69,22 @@
         </a>
 
         <!-- Maintenance Section -->
-        <div class="mt-6 text-gray-400 uppercase text-xs tracking-wider ml-5">Maintenance</div>
-        <a class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6">
+        <div class="mt-6 text-gray-400 uppercase text-xs tracking-wider ml-5 p-3">Maintenance</div>
+        <a class="flex items-center p-3 text-gray-300 hover:text-white hover:bg-gray-700 pl-6">
           <i class="mr-3 nav-icon fas fa-truck-loading"></i>
           Supplier List
         </a>
-        <a class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6">
+        <a href="{{ route('items.index') }}"
+          class="flex items-center p-3 pl-6 {{ request()->routeIs('items.*') ? 'bg-white text-[#3C8BDC]' : 'text-gray-300 hover:text-white hover:bg-gray-700' }}">
           <i class="mr-3 nav-icon fas fa-boxes"></i>
           Item List
         </a>
-        <a class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6">
+        <a class="flex items-center p-3 text-gray-300 hover:text-white hover:bg-gray-700 pl-6">
           <i class="mr-3 nav-icon fas fa-users"></i>
           User List
         </a>
         <a href="{{ route('setting.index') }}"
-          class="ajax-link flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white pl-6 {{ request()->routeIs('setting.*') ? 'bg-white text-[#3C8BDC]' : '' }}">
+          class="ajax-link flex items-center p-3 pl-6 {{ request()->routeIs('setting.*') ? 'bg-white text-[#3C8BDC]' : 'text-gray-300 hover:text-white hover:bg-gray-700' }}">
           <i class="mr-3 nav-icon fas fa-cogs"></i>
           Settings
         </a>
@@ -108,7 +109,7 @@
   $(document).ready(function() {
     console.log('Document is ready');
     $('.ajax-link').on('click', function(e) {
-      e.preventDefault(); 
+      e.preventDefault();
       const url = $(this).attr('href');
       $.ajax({
         url: url,

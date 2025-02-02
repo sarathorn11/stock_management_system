@@ -55,5 +55,8 @@ Route::resource('item', ItemListController::class);
 // User List Routes
 Route::resource('user', UserListController::class);
 
-// Settings Routes
-Route::resource('setting', SettingController::class);
+// Setting Routes
+// Route for displaying the settings form (GET request)
+Route::get('setting', [SettingController::class, 'index'])->name('setting.index');
+// Route for updating the settings (PUT request)
+Route::put('/setting', [SettingController::class, 'update'])->name('setting.update');

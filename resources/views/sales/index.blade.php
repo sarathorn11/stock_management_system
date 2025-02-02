@@ -16,7 +16,7 @@
   </div>
 
   @if(session('success'))
-  <div class="bg-green-100 text-green-800 p-4 rounded mb-4">{{ session('success') }}</div>
+  <div id="successOrFailedMessage" class="bg-green-100 text-green-800 p-2 rounded mb-4">{{ session('success') }}</div>
   @endif
 
   <div class="w-full h-auto">
@@ -139,5 +139,11 @@ document.getElementById('search').addEventListener('keyup', function() {
       });
     });
 });
+setTimeout(function() {
+  var successMessage = document.getElementById('successOrFailedMessage');
+  if (successMessage) {
+    successMessage.style.display = 'none';
+  }
+}, 2000);
 </script>
 @endsection
