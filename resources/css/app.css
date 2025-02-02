@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.scroll-container {
+  display: block;
+  height: 100%;
+  --tab-height: 50px;
+  --header-height: 0px;
+  --footer-height: 0px;
+}
+
+.content-scroll {
+  max-height: calc(100% - var(--header-height) - var(--footer-height));
+  overflow: auto;
+}
+
+table.table>tr:first-child,
+table.table>thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+table.table .action {
+  position: sticky;
+  right: 0;
+}

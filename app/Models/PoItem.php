@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class PoItem extends Model
 {
     use HasFactory;
+    protected $table = 'po_items';  // Specify the table name
 
     // Define the fillable attributes for mass assignment
     protected $fillable = [

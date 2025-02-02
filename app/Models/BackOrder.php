@@ -9,7 +9,7 @@ class BackOrder extends Model
 {
     use HasFactory;
 
-    protected $table = 'back_order';
+    protected $table = 'back_orders';
 
     protected $fillable = [
         'receiving_id',
@@ -39,5 +39,10 @@ class BackOrder extends Model
     public function supplier()
     {
         return $this->belongsTo(Supplier::class);
+    }
+
+    public function items()
+    {
+        return $this->hasMany(BoItem::class, 'bo_id');
     }
 }

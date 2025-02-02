@@ -7,14 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Sale extends Model
 {
     use HasFactory;
-
     protected $table = 'sales';
     protected $primaryKey = 'id';
     protected $keyType = 'int';
     public $incrementing = true;
     public $timestamps = true; 
-
-
     protected $fillable = [
         'sales_code',
         'client',
