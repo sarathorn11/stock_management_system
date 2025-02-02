@@ -58,7 +58,8 @@
                     <i class="mr-3 nav-icon fas fa-exchange-alt"></i>
                     Back Order
                 </a>
-                <a class="flex items-center p-3 text-gray-300 hover:text-white hover:bg-gray-700 pl-6">
+                <a href="{{ route('return.index') }}"
+                  class="flex items-center p-3 text-gray-300 hover:text-white hover:bg-gray-700 pl-6">
                     <i class="mr-3 nav-icon fas fa-undo"></i>
                     Return List
                 </a>

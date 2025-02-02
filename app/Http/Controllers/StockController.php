@@ -20,7 +20,7 @@ class StockController extends Controller
             'stocks' => $stocks,
             'perPage' => $perPage,
             'perPageOptions' => [10, 20, 30, 50]
-        ]);
+        ],  compact('stocks'));
     }
 
     /**
