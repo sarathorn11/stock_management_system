@@ -8,6 +8,19 @@ use Illuminate\Support\Facades\Log;
 
 class SettingController extends Controller
 {
+    public function __construct()
+    {
+        // Share the setting data across all views
+        $setting = Setting::first();
+
+        if (!$setting) {
+            $setting = (object) [
+                'system_name' => 'Stock Management System',
+            ];
+        }
+        view()->share('setting', $setting);
+    }
+
     public function index()
     {
         $setting = Setting::first();
