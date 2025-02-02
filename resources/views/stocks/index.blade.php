@@ -74,28 +74,43 @@
   <x-pagination :pagination="$stocks" :per-page="$perPage" :per-page-options="[$perPage, 10, 20, 30, 50]" />
   @endif
 </div>
-
 <script>
 let selectedStockIds = JSON.parse(localStorage.getItem('selectedStockIds')) || [];
 
 function updateCheckboxSelections() {
-  document.querySelectorAll('.stock-checkbox').forEach(checkbox => {
+  let checkboxes = document.querySelectorAll('.stock-checkbox');
+  let selectAllCheckbox = document.getElementById('select-all');
+
+  // Uncheck "Select All" when no checkboxes exist
+  if (checkboxes.length === 0) {
+    selectAllCheckbox.checked = false;
+    selectAllCheckbox.disabled = true; // Disable when no checkboxes exist
+    return;
+  } else {
+    selectAllCheckbox.disabled = false;
+  }
+
+  checkboxes.forEach(checkbox => {
     checkbox.checked = selectedStockIds.includes(checkbox.getAttribute('data-id'));
   });
-  document.getElementById('select-all').checked = document.querySelectorAll('.stock-checkbox:checked').length ===
-    document.querySelectorAll('.stock-checkbox').length;
+
+  selectAllCheckbox.checked = checkboxes.length > 0 &&
+    document.querySelectorAll('.stock-checkbox:checked').length === checkboxes.length;
 }
 
 document.addEventListener('DOMContentLoaded', updateCheckboxSelections);
 
 document.getElementById('select-all').addEventListener('change', function() {
+  let checkboxes = document.querySelectorAll('.stock-checkbox');
   selectedStockIds = [];
-  document.querySelectorAll('.stock-checkbox').forEach(checkbox => {
+
+  checkboxes.forEach(checkbox => {
     checkbox.checked = this.checked;
     if (this.checked) {
       selectedStockIds.push(checkbox.getAttribute('data-id'));
     }
   });
+
   localStorage.setItem('selectedStockIds', JSON.stringify(selectedStockIds));
 });
 

@@ -44,7 +44,7 @@
           <td class="p-2 text-[14px] text-center">{{ $sale->client }}</td>
           <td class="p-2 text-[14px] text-center">{{ $sale->formattedAmount }}</td>
           <td class="p-2 text-[14px] text-center">{{ $sale->stock ? $sale->stock->item_id : 'N/A' }}</td>
-          <td class="p-2 text-[14px] text-center">{{ $sale->remarks }}</td>
+          <td class="p-2 text-[14px] text-center max-w-[100px]">{{ $sale->remarks }}</td>
           <td class="p-2 flex items-center justify-center">
             <a href="{{ route('sales.show', $sale->id) }}" class="text-blue-500 text-[18px] mx-1">
               <i class="fa fa-eye mr-2"></i>
@@ -70,28 +70,43 @@
   <x-pagination :pagination="$sales" :per-page="$perPage" :per-page-options="[$perPage, 10, 20, 30, 50]" />
   @endif
 </div>
-
 <script>
 let selectedSaleIds = JSON.parse(localStorage.getItem('selectedSaleIds')) || [];
 
 function updateCheckboxSelections() {
-  document.querySelectorAll('.sale-checkbox').forEach(checkbox => {
+  let checkboxes = document.querySelectorAll('.sale-checkbox');
+  let selectAllCheckbox = document.getElementById('select-all');
+
+  // Disable "Select All" if no checkboxes exist
+  if (checkboxes.length === 0) {
+    selectAllCheckbox.checked = false;
+    selectAllCheckbox.disabled = true; // Disable checkbox when no sales exist
+    return;
+  } else {
+    selectAllCheckbox.disabled = false;
+  }
+
+  checkboxes.forEach(checkbox => {
     checkbox.checked = selectedSaleIds.includes(checkbox.getAttribute('data-id'));
   });
-  document.getElementById('select-all').checked = document.querySelectorAll('.sale-checkbox:checked').length ===
-    document.querySelectorAll('.sale-checkbox').length;
+
+  selectAllCheckbox.checked = checkboxes.length > 0 &&
+    document.querySelectorAll('.sale-checkbox:checked').length === checkboxes.length;
 }
 
 document.addEventListener('DOMContentLoaded', updateCheckboxSelections);
 
 document.getElementById('select-all').addEventListener('change', function() {
+  let checkboxes = document.querySelectorAll('.sale-checkbox');
   selectedSaleIds = [];
-  document.querySelectorAll('.sale-checkbox').forEach(checkbox => {
+
+  checkboxes.forEach(checkbox => {
     checkbox.checked = this.checked;
     if (this.checked) {
       selectedSaleIds.push(checkbox.getAttribute('data-id'));
     }
   });
+
   localStorage.setItem('selectedSaleIds', JSON.stringify(selectedSaleIds));
 });
 
