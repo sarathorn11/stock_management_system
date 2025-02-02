@@ -4,11 +4,16 @@
 <form class="w-full h-full" action="{{ route('setting.update') }}" method="POST" enctype="multipart/form-data">
   @csrf
   @method('PUT')
-  <div class="flex justify-end">
-    <button type="submit"
-      class="bg-green-500 text-white font-bold px-4 py-[6px] rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-      Update
-    </button>
+  <div class="flex justify-between">
+    <div class="flex items-center gap-2">
+      <h1 class="text-xl font-bold text-gray-800">My Account</h1>
+    </div>
+    <div class="flex items-center justify-end">
+      <button type="submit"
+        class="bg-green-500 text-white font-bold px-4 py-[6px] rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        Update
+      </button>
+    </div>
   </div>
   <div class="w-full h-auto bg-white p-6 my-4">
     <!-- First Name -->
