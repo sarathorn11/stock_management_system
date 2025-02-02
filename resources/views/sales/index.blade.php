@@ -44,7 +44,7 @@
           <td class="p-2 text-[14px] text-center">{{ $sale->client }}</td>
           <td class="p-2 text-[14px] text-center">{{ $sale->formattedAmount }}</td>
           <td class="p-2 text-[14px] text-center">{{ $sale->stock ? $sale->stock->item_id : 'N/A' }}</td>
-          <td class="p-2 text-[14px] text-center max-w-[100px]">{{ $sale->remarks }}</td>
+          <td class="p-2 text-[14px] text-center max-w-[200px]">{{ \Illuminate\Support\Str::limit($sale->remarks, 20, '...') }}</td>
           <td class="p-2 flex items-center justify-center">
             <a href="{{ route('sales.show', $sale->id) }}" class="text-blue-500 text-[18px] mx-1">
               <i class="fa fa-eye mr-2"></i>

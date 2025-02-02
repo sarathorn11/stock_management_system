@@ -135,9 +135,17 @@
           </button>
           {{ $setting->system_name }}
         </div>
-        <div class="">
-          <div class="space-x-4">
-            Admin
+        <div class="relative">
+          <button id="admin-dropdown-btn" class="text-white">
+            Admin <i class="fas fa-caret-down ml-1"></i>
+          </button>
+          <div id="admin-dropdown" class="absolute right-0 mt-2 w-[140px] bg-white shadow-md rounded-md hidden">
+            <a href="{{ route('account.index') }}" class="block text-[14px] px-4 py-2 text-gray-700 hover:bg-gray-200">
+              <i class="fa fa-user mr-1"></i> My Account
+            </a>
+            <a class="w-full text-left block text-[14px] px-4 py-2 text-gray-700 hover:bg-gray-200">
+              <i class="fa fa-sign-out mr-1"></i> Logout
+            </a>
           </div>
         </div>
       </nav>
@@ -194,7 +202,20 @@
     $('#sidebar-toggle').on('click', function() {
       $('#sidebar').toggleClass('sidebar-collapsed sidebar-expanded');
     });
+
+    // Toggle dropdown on click
+    $('#admin-dropdown-btn').on('click', function() {
+      $('#admin-dropdown').toggle();
+    });
+
+    // Hide dropdown when clicking outside
+    $(document).on('click', function(e) {
+      if (!$(e.target).closest('#admin-dropdown-btn, #admin-dropdown').length) {
+        $('#admin-dropdown').hide();
+      }
+    });
   });
   </script>
 </body>
+
 </html>
