@@ -12,18 +12,22 @@ class SettingController extends Controller
     {
         // Share the setting data across all views
         $setting = Setting::first();
-
+    
         if (!$setting) {
-            $setting = (object) [
+            $setting = new Setting([
                 'system_name' => 'Stock Management System',
-            ];
+                'system_short_name' => 'SMS',
+                // Add other necessary defaults if needed
+            ]);
+            $setting->save();  // Save the new setting instance to the database
         }
         view()->share('setting', $setting);
     }
+    
 
     public function index()
     {
-        $setting = Setting::first();
+        $setting = Setting::first() ?? new Setting();
         return view('setting.index', compact('setting'));
     }
 
@@ -41,10 +45,7 @@ class SettingController extends Controller
     public function update(Request $request)
     {
         $setting = Setting::first();
-    
-        // Log the request data
-        Log::info('Update request data:', $request->all());
-    
+
         // Validate the request data
         $validatedData = $request->validate([
             'system_name' => 'required|string|max:255',
@@ -52,28 +53,28 @@ class SettingController extends Controller
             'system_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'system_cover' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-    
-        // Handle the logo file upload
+
+        // Handle logo file upload
         if ($request->hasFile('system_logo')) {
-            // Delete the old logo if exists
-            if ($setting->system_logo && Storage::exists($setting->system_logo)) {
-                Storage::delete($setting->system_logo);
+            // Delete old logo if exists
+            if ($setting->system_logo && Storage::disk('public')->exists($setting->system_logo)) {
+                Storage::disk('public')->delete($setting->system_logo);
             }
-            $validatedData['system_logo'] = $request->file('system_logo')->store('logos');
+            $validatedData['system_logo'] = $request->file('system_logo')->store('logos', 'public');
         }
-    
-        // Handle the cover file upload
+
+        // Handle cover file upload
         if ($request->hasFile('system_cover')) {
-            // Delete the old cover if exists
-            if ($setting->system_cover && Storage::exists($setting->system_cover)) {
-                Storage::delete($setting->system_cover);
+            // Delete old cover if exists
+            if ($setting->system_cover && Storage::disk('public')->exists($setting->system_cover)) {
+                Storage::disk('public')->delete($setting->system_cover);
             }
-            $validatedData['system_cover'] = $request->file('system_cover')->store('covers');
+            $validatedData['system_cover'] = $request->file('system_cover')->store('covers', 'public');
         }
-    
+
         // Update the settings with the new data
         $setting->update($validatedData);
-    
+
         return redirect()->route('setting.index')->with('success', 'Setting updated successfully.');
     }
 }

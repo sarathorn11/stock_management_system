@@ -61,10 +61,8 @@
   <div class="bg-gray-100 min-h-screen flex">
     <div id="sidebar" class="bg-gray-800 flex flex-col sidebar-expanded">
       <div class="p-4 flex items-center">
-        <img src="{{ asset('static/assets/images/logo.png') }}" alt="Logo"
-          class="min-h-[40px] min-w-[40px] max-h-[40px] max-w-[40px] mr-3">
-        <span id="system-title" class="font-bold text-md text-[#3c8dbc]">Stock Management <span
-            class="text-[#FFA100]">System</span></span>
+        <img src="{{ $setting && !empty($setting->system_logo) && Storage::disk('public')->exists($setting->system_logo) ? asset('storage/' . $setting->system_logo) : asset('static/assets/images/logo.png') }}" class="min-h-[35px] min-w-[35px] max-h-[35px] max-w-[35px] mr-3 object-cover rounded">
+        <span id="system-title" class="font-bold text-md text-[#3c8dbc]">Stock Management <span class="text-[#FFA100]">System</span></span>
       </div>
       <nav class="flex-1 space-y-2">
         <!-- Sidebar links -->
@@ -74,12 +72,12 @@
           <span id="system-title">Dashboard</span>
         </a>
         <a href="{{ route('purchase-order.index') }}"
-          class="flex items-center p-3 pl-6 {{ request()->routeIs('purchase-order.index') ? 'bg-white text-[#3c8dbc]' : 'text-gray-300 hover:text-white hover:bg-gray-700' }}">
+          class="flex items-center p-3 pl-6 {{ request()->routeIs('purchase-order.*') ? 'bg-white text-[#3c8dbc]' : 'text-gray-300 hover:text-white hover:bg-gray-700' }}">
           <i class="mr-3 nav-icon fas fa-th-list"></i>
           <span id="system-title">Purchase Order</span>
         </a>
         <a href="{{ route('receiving.index') }}"
-          class="flex items-center p-3 pl-6  {{ request()->routeIs('receiving.index') ? 'bg-white text-[#3c8dbc]' : 'text-gray-300 hover:text-white hover:bg-gray-700' }}">
+          class="flex items-center p-3 pl-6  {{ request()->routeIs('receiving.*') ? 'bg-white text-[#3c8dbc]' : 'text-gray-300 hover:text-white hover:bg-gray-700' }}">
           <i class="mr-3 nav-icon fas fa-boxes"></i>
           <span id="system-title">Receiving</span>
         </a>
