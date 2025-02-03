@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto p-6">
+<div class="w-full h-full">
     <h2 class="text-2xl font-semibold mb-4">List Item</h2>
 
     <div class="flex justify-between mb-3">

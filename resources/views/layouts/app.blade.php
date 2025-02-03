@@ -108,7 +108,7 @@
           <span id="system-title">Supplier List</span>
         </a>
         <a href="{{ route('items.index') }}"
-          class="flex items-center p-3 text-gray-300 hover:text-white hover:bg-gray-700 pl-6">
+        class="ajax-link flex items-center p-3 pl-6 {{ request()->routeIs('items.*') ? 'bg-white text-[#3C8BDC]' : 'text-gray-300 hover:text-white hover:bg-gray-700' }}">
           <i class="mr-3 nav-icon fas fa-boxes"></i>
           <span id="system-title">Item List</span>
         </a>
