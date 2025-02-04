@@ -21,6 +21,7 @@ class User extends Authenticatable
         'last_name',     // Added last name
         'username',      // Added username
         'email',
+        'gender', //
         'password',
         'profile_picture', // Added profile picture
     ];

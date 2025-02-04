@@ -61,6 +61,8 @@ Route::post('/items/delete', [ItemController::class, 'deleteSelected'])->name('i
 
 // User List Routes
 Route::resource('user', UserController::class);
+Route::post('/user/delete', [UserController::class, 'deleteSelected'])->name('user.deleteSelected');
+
 
 // Setting Routes
 // Route for displaying the settings form (GET request)

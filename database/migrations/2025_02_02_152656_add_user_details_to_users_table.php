@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('username')->unique();
+            $table->enum('gender', ['male', 'female']);
             $table->string('profile_picture')->nullable(); // For profile picture
         });
     }
@@ -25,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['first_name', 'last_name', 'username', 'profile_picture']);
+            $table->dropColumn(['first_name', 'last_name', 'username', 'profile_picture', 'gender']);
         });
-    }    
+    }
 };
