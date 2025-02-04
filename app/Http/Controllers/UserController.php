@@ -18,7 +18,8 @@ class UserController extends Controller
         $perPage = $request->input('perPage', 10);
 
         $users = User::orderBy('id', 'desc')->when($query, function ($queryBuilder) use ($query) {
-            return $queryBuilder->where('name', 'LIKE', "%{$query}%");
+            return $queryBuilder->where('username', 'LIKE', "%{$query}%")->orWhere('email', 'LIKE', "%{$query}%")
+                ->orWhere('first_name', 'LIKE', "%{$query}%")->orWhere('last_name', 'LIKE', "%{$query}%");
         })
             ->paginate($perPage); // Apply pagination
 
@@ -47,28 +48,33 @@ class UserController extends Controller
         try {
             // Validate user data
             $request->validate([
-                'name' => 'required|string|max:255',
+
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:8|confirmed',
-                'avatar' => 'nullable|image|mimes:jpg,jpeg,png,gif,svg|max:2048',
                 'role' => 'required|string',
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'username' => 'required|string|max:255',
                 'gender' => 'required|string',
+                'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png,gif,svg|max:2048',
             ]);
 
             $filename = null;
-            if ($request->hasFile('avatar')) {
-                $file = $request->file('avatar');
+            if ($request->hasFile('profile_picture')) {
+                $file = $request->file('profile_picture');
                 $filename = time() . '_' . $file->getClientOriginalName();
                 $file->storeAs('public/avatars', $filename);
             }
 
-            $user = User::create([
-                'name' => $request->name,
+            User::create([
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'role' => $request->role,
+                'username' => $request->username,
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
                 'gender' => $request->gender,
-                'avatar' => $filename,
+                'profile_picture' => $filename,
             ]);
 
             return redirect()->route('user.index')->with('success', 'User created successfully.');
@@ -102,29 +108,33 @@ class UserController extends Controller
         try {
             // Validate user data
             $request->validate([
-                'name' => 'required|string|max:255',
+                'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email,' . $user->id,
                 'password' => 'nullable|string|min:8|confirmed',
-                'avatar' => 'nullable|image|mimes:jpg,jpeg,png,gif,svg|max:2048',
+                'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png,gif,svg|max:2048',
                 'role' => 'required|string',
                 'gender' => 'required|string',
             ]);
 
             // Handle avatar upload
-            if ($request->hasFile('avatar')) {
+            if ($request->hasFile('profile_picture')) {
                 // Delete the old avatar if it exists
-                if ($user->avatar) {
-                    Storage::delete('public/avatars/' . $user->avatar);
+                if ($user->profile_picture) {
+                    Storage::delete('public/avatars/' . $user->profile_picture);
                 }
 
-                $file = $request->file('avatar');
+                $file = $request->file('profile_picture');
                 $filename = time() . '_' . $file->getClientOriginalName();
                 $file->storeAs('public/avatars', $filename);
-                $user->avatar = $filename;
+                $user->profile_picture = $filename;
             }
 
             // Update user data
-            $user->name = $request->name;
+            $user->username = $request->username;
+            $user->first_name = $request->first_name;
+            $user->last_name = $request->last_name;
             $user->email = $request->email;
             if ($request->filled('password')) {
                 $user->password = Hash::make($request->password);
@@ -138,6 +148,7 @@ class UserController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
 
     /**
      * Remove the specified resource from storage.

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto p-6">
+<div class="w-full h-full">
     <h2 class="text-2xl font-semibold mb-4">List Item</h2>
 
     <div class="flex justify-between mb-3">
@@ -12,7 +12,7 @@
         </form>
         <div>
             <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                onclick="fetchItemDetails()">Create</button>
+                onclick="fetchItemDetails(null)">Create</button>
             <div class="relative inline-block">
                 <button onclick="clickAction()" class="flex items-center px-4 py-2 bg-gray-500 text-white rounded">
                     <i class="fas fa-cog"></i>
@@ -28,7 +28,10 @@
         </div>
     </div>
     @if ($items->isEmpty())
-    <p class="text-center text-danger">No results found for "{{ request('query') }}"</p>
+    <div class="text-center">
+        <p class="mt-4 text-gray-600">No results found (404)</p>
+        <a href="{{ route('items.index') }}" class="text-blue-500 hover:underline">Refresh</a>
+    </div>
     @else
     <div class="overflow-x-auto">
         <table class="w-full border border-gray-300 rounded-lg">
@@ -113,14 +116,21 @@
             </div>
             @if($items->count() > 0)
             <div>
-                <label id="created-at" class="block text-sm text-gray-700">Created at: {{$item->created_at}}</label>
+                <label id="created-at" class="block text-sm text-gray-700">
+                    Created at: {{ $item->created_at }}
+                </label>
+            </div>
+            @else
+            <div>
+                <label id="created-at" class="block text-sm text-gray-700">
+                </label>
             </div>
             @endif
             <div class="flex justify-end space-x-2 mt-4">
                 <button type="button" class="px-4 py-2 bg-gray-300 rounded" onclick="toggleModal(false)">
                     Cancel
                 </button>
-                <button id="saveButton" type="submit"
+                <button id="saveItemForm" type="submit"
                     class="px-4 py-2 bg-blue-500 text-white rounded opacity-50 cursor-not-allowed" disabled>
                     Save
                 </button>
@@ -128,8 +138,6 @@
         </form>
     </div>
 </div>
-<style>
-</style>
 <script>
     function toggleAllRows(source) {
         const checkboxes = document.querySelectorAll('.rowCheckbox');
@@ -202,6 +210,7 @@
     }
 
     function fetchItemDetails(id = null) {
+        console.log('Fetching item details:', id);
         toggleModal(true);
         if (id) {
             // Update action
@@ -291,7 +300,7 @@
 
     function validateForm() {
         const form = document.getElementById('itemForm');
-        const saveButton = document.getElementById('saveButton');
+        const saveButton = document.getElementById('saveItemForm');
 
         if (form.checkValidity()) {
             saveButton.disabled = false;
@@ -304,12 +313,14 @@
 
     // Attach event listeners to input fields to trigger validation
     document.addEventListener("DOMContentLoaded", function() {
-        const formElements = document.querySelectorAll("#itemForm input, #itemForm textarea, #itemForm select");
+        console.log("DOMContentLoaded");
 
-        formElements.forEach(element => {
-            element.addEventListener("input", validateForm);
-            element.addEventListener("change", validateForm);
-        });
+        const itemForm = document.getElementById("itemForm");
+
+        if (itemForm) {
+            itemForm.addEventListener("input", validateForm);
+            itemForm.addEventListener("change", validateForm);
+        }
 
         // Run validation on page load (in case of pre-filled data)
         validateForm();

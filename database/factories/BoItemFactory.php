@@ -17,6 +17,7 @@ class BoItemFactory extends Factory
     public function definition(): array
     {
         return [
+            'bo_id' => \App\Models\BackOrder::factory(), // Assumes you have an BackOrder model and factory
             'item_id' => \App\Models\Item::factory(), // Assumes you have an Item model and factory
             'quantity' => $this->faker->numberBetween(1, 100), // Random quantity between 1 and 100
             'price' => $this->faker->randomFloat(2, 10, 1000), // Random price between 10 and 1,000

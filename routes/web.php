@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\ReceivingController;
@@ -23,13 +25,15 @@ use App\Http\Controllers\SettingController;
 |
 */
 
+// Account Route
+Route::get('/account', [AccountController::class, 'index'])->name('account.index');
+
 // Dashboard Route
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 // Purchase Order Routes
 Route::resource('purchase-order', PurchaseOrderController::class);
 Route::delete('purchase-order', [PurchaseOrderController::class, 'destroy'])->name('purchase-order.destroy');
-
 
 // Receiving Routes
 Route::resource('receiving', ReceivingController::class);
@@ -60,5 +64,8 @@ Route::resource('user', UserController::class);
 Route::post('/user/delete', [UserController::class, 'deleteSelected'])->name('user.deleteSelected');
 
 
-// Settings Routes
-Route::resource('setting', SettingController::class);
+// Setting Routes
+// Route for displaying the settings form (GET request)
+Route::get('setting', [SettingController::class, 'index'])->name('setting.index');
+// Route for updating the settings (PUT request)
+Route::put('/setting', [SettingController::class, 'update'])->name('setting.update');

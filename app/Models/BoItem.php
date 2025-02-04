@@ -12,6 +12,7 @@ class BoItem extends Model
     protected $table = 'bo_items';
 
     protected $fillable = [
+        'bo_id',
         'item_id',
         'quantity',
         'price',
