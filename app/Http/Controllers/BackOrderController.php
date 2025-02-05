@@ -15,23 +15,23 @@ class BackOrderController extends Controller
         $perPage = $request->input('perPage', 10);
         $searchQuery = $request->input('query', '');
 
-        $backOrders = BackOrder::with(['supplier' => function($query) {
-                $query->select('id', 'name');
-            }, 'items' => function($query) {
-                $query->with('item');
-            },
-            'purchaseOrder' => function($query) {
-                $query->select('po_code');
-            }])
+        $backOrders = BackOrder::with([
+                'supplier:id,name',
+                'items.item',
+                'purchaseOrder:po_code'
+            ])
             ->withCount('items')
             ->when($searchQuery, function($query, $searchQuery) {
-                return $query->where('bo_code', 'like', '%' . $searchQuery . '%');
+                return $query->where('bo_code', 'like', '%' . $searchQuery . '%')
+                             ->orWhere('created_at', 'like', '%' . $searchQuery . '%')
+                             ->orWhereHas('supplier', function($q) use ($searchQuery) {
+                                 $q->where('name', 'like', '%' . $searchQuery . '%');
+                             });
             })
             ->orderBy('created_at', 'desc')
             ->paginate($perPage)
-            ->through(function($backOrder) {
+            ->through(function ($backOrder) {
                 $backOrder->supplier = $backOrder->supplier->name;
-                // $backOrder->items_count = $backOrder->items->count();
                 return $backOrder;
             });
 
@@ -41,42 +41,6 @@ class BackOrderController extends Controller
             'perPageOptions' => [10, 20, 30, 50]
         ]);
     }
-    // public function index(Request $request)
-    // {
-    //     $perPage = $request->input('perPage', 10);
-    //     $searchQuery = $request->input('query', '');
-    
-    //     $backOrders = BackOrder::with(['supplier' => function($query) {
-    //             $query->select('id', 'name');
-    //         }, 'items' => function($query) {
-    //             $query->with('item');
-    //         },
-    //         'purchaseOrder' => function($query) {
-    //             $query->select('id', 'po_code');
-    //         }])
-    //         ->withCount('items')
-    //         ->when($searchQuery, function($query, $searchQuery) {
-    //             return $query->where('bo_code', 'like', '%' . $searchQuery . '%')
-    //                          ->orWhereHas('supplier', function($q) use ($searchQuery) {
-    //                              $q->where('name', 'like', '%' . $searchQuery . '%');
-    //                          })
-    //                          ->orWhereHas('purchaseOrder', function($q) use ($searchQuery) {
-    //                              $q->where('po_code', 'like', '%' . $searchQuery . '%');
-    //                          });
-    //         })
-    //         ->orderBy('created_at', 'desc')
-    //         ->paginate($perPage)
-    //         ->through(function($backOrder) {
-    //             $backOrder->supplier = $backOrder->supplier->name;
-    //             return $backOrder;
-    //         });
-    
-    //     return view('backorder.index', [
-    //         'backOrders' => $backOrders,
-    //         'perPage' => $perPage,
-    //         'perPageOptions' => [10, 20, 30, 50]
-    //     ]);
-    // }
 
     /**
      * Show the form for creating a new resource.

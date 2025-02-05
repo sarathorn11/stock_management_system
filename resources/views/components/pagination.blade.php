@@ -32,7 +32,7 @@
       </li>
       @foreach ($pagination->getUrlRange(1, $pagination->lastPage()) as $page => $url)
       <li>
-        <a href="{{ $url }}" class="px-3 py-1 text-[14px] border rounded {{ $pagination->currentPage() == $page ? 'bg-blue-500 text-white' : '
+        <a href="{{ $url . (strpos($url, '?') !== false ? '&' : '?') . http_build_query(request()->except('page')) }}" class="px-3 py-1 text-[14px] border rounded {{ $pagination->currentPage() == $page ? 'bg-blue-500 text-white' : '
                      hover:bg-gray-200' }}">{{ $page }}</a>
       </li>
       @endforeach

@@ -4,7 +4,7 @@
 <div id="content" class="w-full h-full">
   <h1 class="text-xl font-bold text-gray-800">List of Back Orders</h1>
   <div class="flex items-center justify-between my-4">
-    <input id="searching" type="text" placeholder="Search by BO Code..." class="px-3 py-2 w-[350px] rounded border">
+    <input id="searching" type="text" placeholder="Search by BO Code..." class="px-3 py-2 w-[350px] rounded border" value="{{ request('query') }}">
     <div class="flex items-center justify-between">
       <a class="inline-block bg-gray-300 text-black px-4 py-2 rounded mb-4 hover:bg-gray-400 ml-2">
         <i class="fa fa-cog mr-2"></i>Option
@@ -97,56 +97,18 @@ document.querySelectorAll('.backorder-checkbox').forEach(checkbox => {
     selectAllCheckbox.checked = allChecked;
   });
 });
-console.log('🫡🫡🫡🫡🫡🫡🫡🫡🫡🫡🫡🫡🫡', document.getElementById('searching'))
+
 document.getElementById('searching').addEventListener('keyup', function() {
-  console.log('HI--------------')
   let query = this.value;
   const searchUrl = '{{ route("back-order.index") }}';
 
-  // Make the AJAX request
-  fetch(`${searchUrl}?query=${query}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-      },
-    })
-    .then(response => response.json())
-    .then(data => {
-      let backOrderResults = document.getElementById('backOrderResults');
-      backOrderResults.innerHTML = ''; // Clear the current results
+  // Construct the new URL with the search query
+  const url = new URL(searchUrl);
+  url.searchParams.set('query', query);
+  url.searchParams.set('perPage', '{{ $perPage }}');
 
-      data.backOrders.forEach((row, index) => {
-        let tr = document.createElement('tr');
-        tr.classList.add('bg-white', 'hover:bg-gray-200');
-
-        tr.innerHTML = `
-          <td class="p-4 text-center">
-            <input type="checkbox" class="backorder-checkbox w-[20px] h-[20px]" data-id="${row.id}">
-          </td>
-          <td class="p-4 text-center">${index + 1}</td>
-          <td class="p-4 text-center">${new Date(row.date_created).toLocaleString()}</td>
-          <td class="p-4 text-center">${row.bo_code}</td>
-          <td class="p-4 text-center">${row.supplier}</td>
-          <td class="p-4 text-right">${row.items}</td>
-          <td class="p-4 text-center">${row.status == 0 ? '<span class="bg-blue-500 text-white px-2 py-1 rounded-full inline-block text-center">Pending</span>' : row.status == 1 ? '<span class="bg-orange-500 text-white px-2 py-1 rounded-full inline-block text-center">Partially received</span>' : row.status == 2 ? '<span class="bg-green-500 text-white px-2 py-1 rounded-full inline-block text-center">Received</span>' : '<span class="bg-red-500 text-white px-2 py-1 rounded-full inline-block text-center">N/A</span>'}</td>
-          <td class="p-4 flex items-center justify-center">
-            <a href="/admin/back_order/view_bo?id=${row.id}" class="text-blue-500 text-[24px] mx-1">
-              <i class="fa fa-eye mr-2"></i>
-            </a>
-            ${row.status == 0 ? `<a href="/admin/receiving/manage_receiving?bo_id=${row.id}" class="text-yellow-500 text-[24px] mx-1">
-              <i class="fa fa-pencil mr-2"></i>
-            </a>` : ''}
-            <form action="/admin/back_order/delete_bo?id=${row.id}" method="POST" onsubmit="return confirm('Are you sure you want to delete this back order?')" class="m-0">
-              <input type="hidden" name="_method" value="DELETE">
-              <button type="submit" class="text-red-500 text-[24px] mx-1">
-                <i class="fa fa-trash mr-2"></i>
-              </button>
-            </form>
-          </td>
-        `;
-        backOrderResults.appendChild(tr);
-      });
-    });
+  // Redirect to the new URL
+  window.location.href = url.toString();
 });
 
 // Hide success message after 5 seconds
