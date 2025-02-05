@@ -4,7 +4,12 @@
 <div id="content" class="w-full h-full">
   <h1 class="text-xl font-bold text-gray-800">Stock List</h1>
   <div class="flex items-center justify-between my-4">
-    <input id="search" type="text" placeholder="Search by Item ID..." class="px-3 py-[5px] w-[350px] rounded border">
+    <form action="{{ route('stocks.index') }}" method="GET">
+      <input type="text" name="query" class="px-3 py-[5px] w-[350px] rounded border" placeholder="Search ...."
+        value="{{ request('query') }}">
+      <button type="submit"
+        class="inline-block bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600">Search</button>
+    </form>
     <div class="flex items-center justify-between">
       <a href="{{ route('stocks.create') }}"
         class="inline-block bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600">Create</a>
