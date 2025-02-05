@@ -9,10 +9,18 @@ class SaleController extends Controller
 {
     public function index(Request $request)
     {
+        $query = $request->input('query');
         $perPage = $request->input('perPage', 10);
-        $sales = Sale::with('stock')->paginate($perPage);
+        $sales = Sale::with('stock')->when($query, function ($queryBuilder) use ($query) { 
+            return $queryBuilder->where('sales_code', 'LIKE', "%{$query}%")
+                ->orWhere('client', 'LIKE', "%{$query}%");
+            })
+            ->orderBy('id', 'desc')
+            ->paginate($perPage);
+
         return view('sales.index', [
             'sales' => $sales,
+            'query' => $query,
             'perPage' => $perPage,
             'perPageOptions' => [10, 20, 30, 50]
         ]);

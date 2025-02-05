@@ -4,8 +4,11 @@
 <div id="content" class="w-full h-full">
   <h1 class="text-xl font-bold text-gray-800">Sale List</h1>
   <div class="flex items-center justify-between my-4">
-    <input id="search" type="text" placeholder="Search by Sales Code or Client..."
-      class="px-3 py-[5px] w-[350px] rounded border">
+    <form action="{{ route('sales.index') }}" method="GET">
+      <input type="text" name="query" class="px-3 py-[5px] w-[350px] rounded border" placeholder="Search ...."
+        value="{{ request('query') }}">
+      <button type="submit" class="inline-block bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600">Search</button>
+    </form>
     <div class="flex items-center justify-between">
       <a href="{{ route('sales.create') }}"
         class="inline-block bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600">Create</a>
@@ -44,7 +47,8 @@
           <td class="p-2 text-[14px] text-center">{{ $sale->client }}</td>
           <td class="p-2 text-[14px] text-center">{{ $sale->formattedAmount }}</td>
           <td class="p-2 text-[14px] text-center">{{ $sale->stock ? $sale->stock->item_id : 'N/A' }}</td>
-          <td class="p-2 text-[14px] text-center max-w-[200px]">{{ \Illuminate\Support\Str::limit($sale->remarks, 20, '...') }}</td>
+          <td class="p-2 text-[14px] text-center max-w-[200px]">
+            {{ \Illuminate\Support\Str::limit($sale->remarks, 20, '...') }}</td>
           <td class="p-2 flex items-center justify-center">
             <a href="{{ route('sales.show', $sale->id) }}" class="text-blue-500 text-[18px] mx-1">
               <i class="fa fa-eye mr-2"></i>
