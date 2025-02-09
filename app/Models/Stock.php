@@ -20,7 +20,7 @@ class Stock extends Model
         'price',
         'total',
         'type',
-        'date_created',
+        // 'date_created',
     ];
 
     /**

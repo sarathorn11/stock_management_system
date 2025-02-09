@@ -25,7 +25,7 @@ class StockFactory extends Factory
                 return $attributes['quantity'] * $attributes['price']; // Calculate total as quantity * price
             },
             'type' => $this->faker->numberBetween(1, 2), // Random type (1 = IN, 2 = OUT)
-            'date_created' => $this->faker->dateTimeThisYear(), // Random date within the current year
+            // 'date_created' => $this->faker->dateTimeThisYear(), // Random date within the current year
         ];
     }
 }

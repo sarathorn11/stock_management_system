@@ -11,20 +11,20 @@ class Sale extends Model
     protected $primaryKey = 'id';
     protected $keyType = 'int';
     public $incrementing = true;
-    public $timestamps = true; 
+    public $timestamps = true;
     protected $fillable = [
         'sales_code',
         'client',
         'amount',
-        'stock_id',
+        'stock_ids',
         'remarks',
-        'date_created',
+        // 'date_created',
     ];
 
-    public function stock()
-    {
-        return $this->belongsTo(Stock::class, 'stock_id');
-    }
+    // public function stock()
+    // {
+    //     return $this->belongsTo(Stock::class, 'stock_id');
+    // }
 
     public function getFormattedAmountAttribute()
     {

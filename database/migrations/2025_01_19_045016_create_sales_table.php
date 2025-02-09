@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('sales_code', 50);
             $table->text('client');
             $table->float('amount');
-            $table->foreignId('stock_id')->constrained();
+            $table->text('stock_ids')->nullable();
             $table->text('remarks')->nullable();
             $table->timestamps();
         });

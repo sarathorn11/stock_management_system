@@ -13,7 +13,7 @@ class ReturnList extends Model
     protected $fillable = [
         'return_code',
         'supplier_id',
-        'stock_id',
+        'stock_ids',
         'amount',
         'remarks',
     ];
@@ -21,8 +21,8 @@ class ReturnList extends Model
     {
         return $this->belongsTo(Supplier::class, 'supplier_id');
     }
-    public function stock()
-    {
-        return $this->belongsTo(Stock::class, 'stock_id');
-    }
+    // public function stock()
+    // {
+    //     return $this->belongsTo(Stock::class, 'stock_id');
+    // }
 }
