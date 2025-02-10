@@ -48,7 +48,7 @@
       </div>
       <div class="flex-col w-full">
         <div class="text-lg font-semibold">Sales Records</div>
-        <div class="text-right text-[30px]">1</div>
+        <div class="text-right text-[30px]">{{ $totalSales }}</div>
       </div>
     </div>
     <div class="bg-white text-black rounded-lg shadow-lg p-3 flex hover:shadow-2xl transition duration-300 ease-in-out">

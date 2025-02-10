@@ -14,10 +14,26 @@ class StockController extends Controller
 
     public function index(Request $request)
     {
+        $query = $request->input('query');
         $perPage = $request->input('perPage', 10);
-        $stocks = Stock::with('item')->paginate($perPage);
+    
+        $stocks = Stock::with('item')
+            ->when($query, function ($queryBuilder) use ($query) {
+                return $queryBuilder->where(function ($q) use ($query) {
+                    $q->whereHas('item', function ($subQuery) use ($query) {
+                        $subQuery->where('name', 'LIKE', "%{$query}%");
+                    })->orWhere('unit', 'LIKE', "%{$query}%")
+                    ->orWhere('price', 'LIKE', "%{$query}%")
+                    ->orWhere('total', 'LIKE', "%{$query}%")
+                    ->orWhere('type', 'LIKE', "%{$query}%");
+                });
+            })
+            ->orderBy('id', 'desc')
+            ->paginate($perPage);
+    
         return view('stocks.index', [
             'stocks' => $stocks,
+            'query' => $query,
             'perPage' => $perPage,
             'perPageOptions' => [10, 20, 30, 50]
         ],  compact('stocks'));

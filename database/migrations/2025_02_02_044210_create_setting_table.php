@@ -9,15 +9,14 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('sales', function (Blueprint $table) {
+        Schema::create('setting', function (Blueprint $table) {
             $table->id();
-            $table->string('sales_code', 50);
-            $table->text('client');
-            $table->float('amount');
-            $table->text('stock_ids')->nullable();
-            $table->text('remarks')->nullable();
+            $table->string('system_name');
+            $table->string('system_short_name');
+            $table->string('system_logo')->nullable();
+            $table->string('system_cover')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sales');
+        Schema::dropIfExists('setting');
     }
 };
