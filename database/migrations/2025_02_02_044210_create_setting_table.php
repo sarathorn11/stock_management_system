@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('setting', function (Blueprint $table) {
             $table->id();
-            $table->string('system_name');
-            $table->string('system_short_name');
+            $table->string('system_name')->default('Stock Management System');
+            $table->string('system_short_name')->nullable();
             $table->string('system_logo')->nullable();
             $table->string('system_cover')->nullable();
             $table->timestamps();
