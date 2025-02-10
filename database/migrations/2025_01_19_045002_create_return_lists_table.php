@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('return_code', 50);
             $table->foreignId('supplier_id')->constrained();
-            $table->foreignId('stock_id')->constrained();
+            $table->text('stock_ids')->nullable();
             $table->float('amount');
             $table->text('remarks')->nullable();
             $table->timestamps();

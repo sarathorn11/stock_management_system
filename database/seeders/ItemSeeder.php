@@ -14,6 +14,17 @@ class ItemSeeder extends Seeder
     public function run(): void
     {
         // Create 10 items using the ItemFactory
-        Item::factory()->count(10)->create();
+        // Item::factory()->count(10)->create();
+
+        // Create 20 items manually
+        for ($i = 1; $i <= 20; $i++) {
+            Item::create([
+                'name' => 'Item ' . $i,
+                'description' => 'Description for item ' . $i,
+                'supplier_id' => rand(1, 5),
+                'cost' => rand(10, 100),
+                'status' => 1
+            ]);
+        }
     }
 }
