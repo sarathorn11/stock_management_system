@@ -22,15 +22,10 @@ class ViewServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        $setting = Setting::first();
-
-        if (!$setting) {
-            $setting = (object) [
-                'system_name' => 'Stock Management System',
-            ];
-        }
-
-        // Share setting data across all views
+        $setting = Setting::firstOrCreate([
+            'system_name' => 'Stock Management System',
+            'system_short_name' => 'SMS',
+        ]);
         View::share('setting', $setting);
     }
 }
