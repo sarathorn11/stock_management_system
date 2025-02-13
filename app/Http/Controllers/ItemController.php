@@ -65,7 +65,7 @@ class ItemController extends Controller
         // Redirect back with success message
         return redirect()->route('items.index')->with('success', 'Item created successfully.');
     }
-
+    
     /**
      * Display the specified resource.
      */

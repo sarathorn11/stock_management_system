@@ -27,9 +27,9 @@
           <th class="p-2">No.</th>
           <th class="p-2">Return Code</th>
           <th class="p-2">Supplier</th>
-          <th class="p-2">Stock</th>
-          <th class="p-2">Amount</th>
-          <th class="p-2">Remarks</th>
+          {{-- <th class="p-2">Stock</th> --}}
+          {{-- <th class="p-2">Amount</th> --}}
+          <th class="p-2">Items</th>
           <th class="p-2">Actions</th>
         </tr>
       </thead>
@@ -41,9 +41,9 @@
           </td>
           <td class="p-2 text-[14px] text-center">{{ $return->return_code }}</td>
           <td class="p-2 text-[14px] text-center">{{ $return->supplier_id }}</td>
-          <td class="p-2 text-[14px] text-center">{{ $return->stock_id }}</td>
-          <td class="p-2 text-[14px] text-center">{{ $return->amount }}</td>
-          <td class="p-2 text-[14px] text-center">{{ $return->remarks }}</td>
+          {{-- <td class="p-2 text-[14px] text-center">{{ $return->stock_id }}</td> --}}
+          {{-- <td class="p-2 text-[14px] text-center">{{ $return->amount }}</td> --}}
+          <td class="p-2 text-[14px] text-center">{{ $return->Items }}</td>
           <td class="p-2 text-[14px] text-center">
             {{-- {{ \Carbon\Carbon::parse($return->date_created)->format('Y-m-d h:i A') }}</td> --}}
           <td class="p-2 flex items-center justify-center">
