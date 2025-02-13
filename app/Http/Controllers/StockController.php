@@ -36,7 +36,7 @@ class StockController extends Controller
             'query' => $query,
             'perPage' => $perPage,
             'perPageOptions' => [10, 20, 30, 50]
-        ]);
+        ],  compact('stocks'));
     }
 
     /**
