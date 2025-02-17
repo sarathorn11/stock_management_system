@@ -28,10 +28,9 @@
         </div>
         <div>
           <label for="stock_id" class="block text-gray-700 font-medium mb-2">Stock</label>
-          <select id="stock_id" name="stock_id" required
-            class="w-full border border-gray-300 rounded-lg h-[36px] p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-            @foreach ($stocks as $stock)
-            <option value="{{ $stock->id }}">{{ $stock->item_id }} ({{ $stock->quantity }} {{ $stock->unit }})</option>
+          <select name="stock_ids[]" class="w-full border border-gray-300 rounded-lg h-[36px] p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            @foreach($stocks as $stock)
+            <option value="{{ $stock->id }}">{{ $stock->item->name }}</option>
             @endforeach
           </select>
         </div>

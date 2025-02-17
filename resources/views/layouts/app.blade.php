@@ -89,7 +89,7 @@
                     <span id="system-title">Back Order</span>
                 </a>
                 <a href="{{ route('return.index') }}"
-                  class="flex items-center p-3 text-gray-300 hover:text-white hover:bg-gray-700 pl-6">
+                  class="ajax-link flex items-center p-3 pl-6 {{ request()->routeIs('return.*') ? 'bg-white text-[#3c8Bdc]' : 'text-gray-300 hover:text-white hover:bg-gray-700' }}">
                     <i class="mr-3 nav-icon fas fa-undo"></i>
                     <span id="system-title">Return List</span>
                 </a>
