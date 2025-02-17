@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Sale extends Model
 {
@@ -16,15 +17,14 @@ class Sale extends Model
         'sales_code',
         'client',
         'amount',
-        'stock_ids',
         'remarks',
-        // 'date_created',
     ];
 
-    // public function stock()
-    // {
-    //     return $this->belongsTo(Stock::class, 'stock_id');
-    // }
+    // Define the many-to-many relationship with Stock
+    public function stocks()
+    {
+        return $this->belongsToMany(Stock::class, 'sale_stock', 'sale_id', 'stock_id');
+    }  
 
     public function getFormattedAmountAttribute()
     {
@@ -38,9 +38,6 @@ class Sale extends Model
 
     public function getFormattedDateCreatedAttribute()
     {
-        if ($this->attributes['date_created']) {
-            return \Carbon\Carbon::parse($this->attributes['date_created'])->format('d-m-Y') . ' ' . now()->format('H:i:s');
-        }
-        return null;
+        return $this->created_at ? Carbon::parse($this->created_at)->format('d-m-Y H:i:s') : null;
     }
 }

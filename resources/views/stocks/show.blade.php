@@ -27,7 +27,7 @@
       <p><strong class="text-gray-600">Price:</strong> {{ $stock->price }}</p>
       <p><strong class="text-gray-600">Total:</strong> {{ $stock->total }}</p>
       <p><strong class="text-gray-600">Type:</strong> {{ $stock->type == 1 ? 'IN' : 'OUT' }}</p>
-      <p><strong class="text-gray-600">Date Created:</strong> {{ $stock->date_created }}</p>
+      <!-- <p><strong class="text-gray-600">Date Created:</strong> {{ $stock->date_created }}</p> -->
     </div>
   </div>
 </div>

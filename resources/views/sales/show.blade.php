@@ -1,4 +1,5 @@
 @extends('layouts.app')
+
 @section('content')
 <div class="w-full h-full">
   <div class="flex justify-between">
@@ -24,8 +25,11 @@
       <p><strong class="text-gray-600">Amount:</strong> {{ $sale->amount }}</p>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-      <p><strong class="text-gray-600">Stock:</strong> {{ $sale->stock->item_id }} ({{ $sale->stock->quantity }}
-        {{ $sale->stock->unit }})</p>
+      <p><strong class="text-gray-600">Stock:</strong>
+        @foreach ($sale->stocks as $stock)
+        {{ $stock->item->name }}
+        @endforeach
+      </p>
     </div>
     <div class="w-full">
       <p><strong class="text-gray-600">Remarks:</strong> {{ $sale->remarks }}</p>

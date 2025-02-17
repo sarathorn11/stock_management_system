@@ -7,7 +7,8 @@
     <form action="{{ route('sales.index') }}" method="GET">
       <input type="text" name="query" class="px-3 py-[5px] w-[350px] rounded border" placeholder="Search ...."
         value="{{ request('query') }}">
-      <button type="submit" class="inline-block bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600">Search</button>
+      <button type="submit"
+        class="inline-block bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600">Search</button>
     </form>
     <div class="flex items-center justify-between">
       <a href="{{ route('sales.create') }}"
@@ -46,7 +47,11 @@
           <td class="p-2 text-[14px] text-center">{{ $sale->sales_code }}</td>
           <td class="p-2 text-[14px] text-center">{{ $sale->client }}</td>
           <td class="p-2 text-[14px] text-center">{{ $sale->formattedAmount }}</td>
-          <td class="p-2 text-[14px] text-center">{{ $sale->stock ? $sale->stock->item_id : 'N/A' }}</td>
+          <td class="p-2 text-[14px] text-center">
+            @foreach($sale->stocks as $stock)
+            <span>{{ $stock->item->name }}</span><br>
+            @endforeach
+          </td>
           <td class="p-2 text-[14px] text-center max-w-[200px]">
             {{ \Illuminate\Support\Str::limit($sale->remarks, 20, '...') }}</td>
           <td class="p-2 flex items-center justify-center">

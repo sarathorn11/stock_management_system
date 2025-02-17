@@ -47,11 +47,11 @@
             <option value="2" {{ $stock->type == 2 ? 'selected' : '' }}>OUT</option>
           </select>
         </div>
-        <div class="">
+        <!-- <div class="">
           <label for="date_created" class="block text-gray-700 font-medium mb-2">Date Created</label>
           <input type="datetime-local" id="date_created" name="date_created"
             class="w-full border border-gray-300 rounded-lg h-[36px] p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        </div>
+        </div> -->
       </div>
       <div class="flex items-center justify-end">
         <a href="{{ route('stocks.index') }}"

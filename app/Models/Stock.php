@@ -20,8 +20,13 @@ class Stock extends Model
         'price',
         'total',
         'type',
-        // 'date_created',
     ];
+
+    // Define the many-to-many relationship with Sale
+    public function sales()
+    {
+        return $this->belongsToMany(Sale::class, 'sale_stock', 'stock_id', 'sale_id');
+    }
 
     /**
      * Relationship with the Item model.

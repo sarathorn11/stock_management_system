@@ -10,10 +10,14 @@ class SaleController extends Controller
     public function index(Request $request)
     {
         $query = $request->input('query');
-        $perPage = $request->input('perPage', 10);
-        $sales = Sale::with('stock')->when($query, function ($queryBuilder) use ($query) { 
-            return $queryBuilder->where('sales_code', 'LIKE', "%{$query}%")
-                ->orWhere('client', 'LIKE', "%{$query}%");
+        $perPage = $request->input('perPage', 10); // Default to 10 if no value provided
+
+        $sales = Sale::with('stocks') // Eager load the stocks relationship
+            ->when($query, function ($queryBuilder) use ($query) {
+                return $queryBuilder->where(function ($q) use ($query) {
+                    $q->where('sales_code', 'LIKE', "%{$query}%")
+                    ->orWhere('client', 'LIKE', "%{$query}%");
+                });
             })
             ->orderBy('id', 'desc')
             ->paginate($perPage);
@@ -22,7 +26,7 @@ class SaleController extends Controller
             'sales' => $sales,
             'query' => $query,
             'perPage' => $perPage,
-            'perPageOptions' => [10, 20, 30, 50]
+            'perPageOptions' => [10, 20, 30, 50] // Options for number of items per page
         ]);
     }
 
@@ -38,17 +42,22 @@ class SaleController extends Controller
             'sales_code' => 'required|string|max:255',
             'client' => 'required|string|max:255',
             'amount' => 'required|numeric|min:0',
-            'stock_id' => 'required|exists:stocks,id',
+            'stock_ids' => 'required|array',
             'remarks' => 'nullable|string|max:500',
         ]);
-        Sale::create($validated);
-        return redirect()->route('sales.index')->with('success', 'Sale added successfully.');
-    }
 
+        // Create the Sale
+        $sale = Sale::create($validated);
+
+        // Attach the selected stock IDs to the Sale (many-to-many relationship)
+        $sale->stocks()->attach($validated['stock_ids']);
+
+        return redirect()->route('sales.index')->with('success', 'Sale created successfully.');
+    }
 
     public function show(Sale $sale)
     {
-        $sale->load('stock');
+        $sale->load('stocks'); // Eager load the 'stocks' relationship
         return view('sales.show', compact('sale'));
     }
 
@@ -65,10 +74,16 @@ class SaleController extends Controller
             'sales_code' => 'required|string|max:255',
             'client' => 'required|string|max:255',
             'amount' => 'required|numeric|min:0',
-            'stock_id' => 'required|exists:stocks,id',
+            'stock_ids' => 'required|array', // Ensure it's an array of stock IDs
+            'stock_ids.*' => 'exists:stocks,id', // Validate each stock_id in the array
             'remarks' => 'nullable|string|max:500',
         ]);
+
+        // Update the sale
         $sale->update($validated);
+
+        // Sync the stocks for the sale (this will replace the previous stocks)
+        $sale->stocks()->sync($validated['stock_ids']);
 
         return redirect()->route('sales.index')->with('success', 'Sale updated successfully.');
     }

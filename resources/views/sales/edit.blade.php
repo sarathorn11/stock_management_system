@@ -29,21 +29,14 @@
         </div>
         <div>
           <label for="stock_id" class="block text-gray-700 font-medium mb-2">Stock</label>
-          <select id="stock_id" name="stock_id" required
-            class="w-full border border-gray-300 rounded-lg h-[36px] p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          <select name="stock_ids[]" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm shadow-sm">
             @foreach($stocks as $stock)
-            <option value="{{ $stock->id }}" {{ $sale->stock_id == $stock->id ? 'selected' : '' }}>{{ $stock->item_id }}
+            <option value="{{ $stock->id }}"
+              {{ isset($sale) && in_array($stock->id, $sale->stocks->pluck('id')->toArray()) ? 'selected' : '' }}>
+              {{ $stock->item->name }}
             </option>
             @endforeach
           </select>
-        </div>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <div>
-          <label for="date_created" class="block text-gray-700 font-medium mb-2">Date Created</label>
-          <input type="datetime-local" id="date_created" name="date_created"
-            value="{{ \Carbon\Carbon::parse($sale->date_created)->format('Y-m-d\TH:i') }}"
-            class="w-full border border-gray-300 rounded-lg h-[36px] p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
         </div>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
