@@ -13,11 +13,11 @@ class SettingSeeder extends Seeder
      */
     public function run()
     {
-        Setting::create([
+        DB::table('setting')->insert([
             'system_name' => 'Stock Management System',
             'system_short_name' => 'SMS',
-            'system_logo' => 'uploads/logo.png', // Path to the logo
-            'system_cover' => 'uploads/cover.png', // Path to the cover image
+            'system_logo' => null, // Keep null if there's no default logo
+            'system_cover' => null, // Keep null if there's no default cover
         ]);
     }
 }
