@@ -9,15 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
- 
+
     public function up(): void
     {
-        Schema::create('sale_stock', function (Blueprint $table) {
+        Schema::create('sale_item', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sale_id')->constrained()->onDelete('cascade');
-            $table->foreignId('stock_id')->constrained()->onDelete('cascade');
+            $table->foreignId('item_id')->constrained()->onDelete('cascade');
             $table->timestamps();
-        }); 
+        });
     }
 
     /**

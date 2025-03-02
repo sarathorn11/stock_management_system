@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('sales_code', 50);
             $table->text('client');
             $table->float('amount');
-            $table->text('stock_ids')->nullable();
             $table->text('remarks')->nullable();
             $table->timestamps();
         });
