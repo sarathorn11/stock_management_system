@@ -11,7 +11,7 @@ class Item extends Model
     protected $table = 'items';  // Specify the table name
 
     // Specify the attributes that are mass assignable
-    protected $fillable = ['name', 'description', 'supplier_id', 'cost', 'status'];
+    protected $fillable = ['name', 'description', 'supplier_id', 'cost', 'unit', 'status'];
 
     /**
      * Get the supplier that owns the item.

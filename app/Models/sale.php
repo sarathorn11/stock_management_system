@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,8 +24,8 @@ class Sale extends Model
     // Define the many-to-many relationship with Stock
     public function stocks()
     {
-        return $this->belongsToMany(Stock::class, 'sale_stock', 'sale_id', 'stock_id');
-    }  
+        return $this->belongsToMany(Stock::class, 'sale_item', 'sale_id', 'item_id');
+    }
 
     public function getFormattedAmountAttribute()
     {

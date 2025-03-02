@@ -16,7 +16,6 @@ class Stock extends Model
     protected $fillable = [
         'item_id',
         'quantity',
-        'unit',
         'price',
         'total',
         'type',
@@ -25,7 +24,7 @@ class Stock extends Model
     // Define the many-to-many relationship with Sale
     public function sales()
     {
-        return $this->belongsToMany(Sale::class, 'sale_stock', 'stock_id', 'sale_id');
+        return $this->belongsToMany(Sale::class, 'sale_item', 'item_id', 'sale_id');
     }
 
     /**

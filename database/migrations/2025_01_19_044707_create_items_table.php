@@ -19,6 +19,7 @@ class CreateItemsTable extends Migration
             $table->text('description'); // Description of the item
             $table->foreignId('supplier_id')->constrained()->onDelete('cascade'); // Supplier ID
             $table->decimal('cost', 8, 2); // Cost of the item
+            $table->string('unit', 250)->nullable();
             $table->tinyInteger('status'); // Status of the item
             $table->timestamps(); // Created and updated timestamps
         });
