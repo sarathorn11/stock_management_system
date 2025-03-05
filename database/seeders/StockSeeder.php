@@ -24,7 +24,7 @@ class StockSeeder extends Seeder
                 'item_id' => rand(1, 20),
                 'quantity' => $quantity,
                 'price' => $price,
-                'unit' => ['kg', 'g', 'lb', 'pcs'][array_rand(['kg', 'g', 'lb', 'pcs'])],
+                // 'unit' => ['kg', 'g', 'lb', 'pcs'][array_rand(['kg', 'g', 'lb', 'pcs'])],
                 'total' => $quantity * $price,
                 'type' => rand(1, 2),
             ]);
