@@ -22,7 +22,7 @@ class CreatePurchaseOrdersTable extends Migration
             $table->float('discount', 8, 2)->default(0);  // Add discount amount
             $table->float('tax_perc', 8, 2)->default(0);  // Add tax percentage
             $table->float('tax', 8, 2)->default(0);  // Add tax amount
-            $table->text('remarks');  // Add remarks field
+            $table->text('remarks')->nullable();  // Add remarks field
             $table->tinyInteger('status')->default(0)->comment('0 = pending, 1 = partially received, 2 = received');  // Add status field
             $table->timestamps();  // Add created_at and updated_at fields
         });

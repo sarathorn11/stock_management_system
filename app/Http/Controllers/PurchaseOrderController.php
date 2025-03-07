@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PurchaseOrder; // Corrected model name to PascalCase
+use App\Models\PurchaseOrder;
 use App\Models\Supplier;
+use App\Models\Item;
+use App\Models\PoItem;
 use Illuminate\Http\Request;
 
 class PurchaseOrderController extends Controller
@@ -17,12 +19,11 @@ class PurchaseOrderController extends Controller
         $perPage = $request->get('per_page', 10); // Default to 10 if not provided
 
         // Paginate the PurchaseOrder model
-        $purchaseOrders = PurchaseOrder::paginate($perPage);
+        $purchaseOrders = PurchaseOrder::with('supplier')->paginate($perPage);
 
         // Pass the paginated result to the view
         return view('purchase_order.index', compact('purchaseOrders', 'perPage'));
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -30,7 +31,8 @@ class PurchaseOrderController extends Controller
     public function create()
     {
         $suppliers = Supplier::all(); // Fetch suppliers for the dropdown
-        return view('purchase_order.create', compact('suppliers'));
+        $items = Item::all(); // Fetch items for the dropdown
+        return view('purchase_order.create', compact('items', 'suppliers'));
     }
 
     /**
@@ -38,72 +40,162 @@ class PurchaseOrderController extends Controller
      */
     public function store(Request $request)
     {
+        // Validate the request data
         $request->validate([
-            'po_code' => 'required|unique:purchase_orders,po_code', // Use correct table name
-            'supplier_id' => 'required|exists:suppliers,id',
-            'amount' => 'required|numeric|min:0',
-            'status' => 'required|integer|in:0,1,2',
-            'remarks' => 'nullable|string', // Add validation for remarks
+            'supplier_id' => 'required|exists:suppliers,id', // Ensure supplier exists
+            'remarks' => 'nullable|string', // Remarks are optional
+            'discount_perc' => 'nullable|numeric|min:0|max:100', // Discount percentage (0-100)
+            'tax_perc' => 'nullable|numeric|min:0|max:100', // Tax percentage (0-100)
+            'item_id' => 'required|array', // Ensure items are provided
+            'qty' => 'required|array', // Ensure quantities are provided
+            'unit' => 'required|array', // Ensure units are provided
+            'price' => 'required|array', // Ensure prices are provided
+            'total' => 'required|array', // Ensure totals are provided
         ]);
     
-        PurchaseOrder::create($request->all());
+        // Generate the next PO code
+        $lastPO = PurchaseOrder::orderBy('id', 'desc')->first(); // Get the last PO by ID
+        if ($lastPO) {
+            $lastCode = $lastPO->po_code;
+            // Extract the numeric part of the PO code
+            $lastNumber = (int) substr($lastCode, 3); // Assumes format is "PO-XXXXX"
+            $nextNumber = $lastNumber + 1; // Increment by 1
+
+            // Check if the nextNumber already exists in the database
+            $existingCodes = PurchaseOrder::pluck('po_code')->toArray();
+            while (in_array('PO-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT), $existingCodes)) {
+                $nextNumber++; // Increment until we find a unique code
+            }
+
+            $poCode = 'PO-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT); // Format as PO-00001, PO-00002, etc.
+        } else {
+            $poCode = 'PO-00001'; // Default if no POs exist
+        }
+    
+        // Calculate subtotal, discount, tax, and grand total
+        $subtotal = array_sum($request->input('total'));
+        $discountPerc = $request->input('discount_perc', 0);
+        $taxPerc = $request->input('tax_perc', 0);
+        $discount = ($subtotal * $discountPerc) / 100;
+        $tax = ($subtotal * $taxPerc) / 100;
+        $grandTotal = $subtotal - $discount + $tax;
+    
+        // Create the purchase order
+        $purchaseOrder = PurchaseOrder::create([
+            'po_code' => $poCode, // Use the generated PO code
+            'supplier_id' => $request->input('supplier_id'),
+            'remarks' => $request->input('remarks', ''),
+            'discount_perc' => $discountPerc,
+            'discount' => $discount,
+            'tax_perc' => $taxPerc,
+            'tax' => $tax,
+            'subtotal' => $subtotal,
+            // 'grand_total' => $grandTotal,
+            'amount' => $grandTotal,
+        ]);
+    
+        // Attach items to the purchase order using the PoItem model
+        foreach ($request->input('item_id') as $index => $itemId) {
+            $quantity = $request->input('qty')[$index];
+            $price = $request->input('price')[$index];
+            $unit = $request->input('unit')[$index];
+            $total = $request->input('total')[$index];
+    
+            PoItem::create([
+                'po_id' => $purchaseOrder->id, // Link to the created purchase order
+                'item_id' => $itemId, // Item ID
+                'quantity' => $quantity, // Quantity
+                'price' => $price, // Price per unit
+                'unit' => $unit, // Unit of measurement
+                'total' => $total, // Total cost (quantity * price)
+            ]);
+        }
     
         return redirect()->route('purchase-order.index')->with('success', 'Purchase Order created successfully!');
     }
-
     /**
      * Display the specified resource.
      */
     public function show($id)
     {
-        $purchaseOrder = PurchaseOrder::findOrFail($id);
-
-        // Pass the ID when redirecting to the show route
+        $purchaseOrder = PurchaseOrder::with(['supplier','items'])->findOrFail($id);
         return view('purchase_order.show', compact('purchaseOrder'));
-
     }
-
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(PurchaseOrder $purchaseOrder) // Ensure type hinting is correct
+    public function edit($id)
     {
-        $suppliers = Supplier::all(); // Fetch suppliers for the dropdown
-        return view('purchase-order.edit', compact('purchaseOrder', 'suppliers'));
+        $purchaseOrder = PurchaseOrder::with(['supplier', 'items.item'])->findOrFail($id);
+        $suppliers = Supplier::all(); // Fetch all suppliers for the dropdown
+        $items = Item::all(); // Fetch all items for the dropdown
+        return view('purchase_order.edit', compact('purchaseOrder', 'suppliers', 'items'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, PurchaseOrder $purchaseOrder) // Ensure type hinting is correct
+    public function update(Request $request, PurchaseOrder $purchaseOrder)
     {
+        // Validate the request data
         $request->validate([
-            'po_code' => 'required|unique:purchase_orders,po_code,' . $purchaseOrder->id, // Use correct table name
-            'supplier_id' => 'required|exists:suppliers,id',
-            'amount' => 'required|numeric|min:0',
-            'status' => 'required|integer|in:0,1,2',
+            'po_code' => 'required|unique:purchase_orders,po_code,' . $purchaseOrder->id, // Ensure PO code is unique, excluding the current record
+            'supplier_id' => 'required|exists:suppliers,id', // Ensure supplier exists
+            'remarks' => 'nullable|string', // Remarks are optional
+            'item_id' => 'required|array', // Ensure at least one item is selected
+            'qty' => 'required|array', // Ensure quantities are provided
+            'unit' => 'required|array', // Ensure units are provided
+            'price' => 'required|array', // Ensure prices are provided
+            'total' => 'required|array', // Ensure totals are provided
+            'discount_perc' => 'nullable|numeric|min:0|max:100', // Discount percentage (0-100)
+            'tax_perc' => 'nullable|numeric|min:0|max:100', // Tax percentage (0-100)
         ]);
-
-        $purchaseOrder->update($request->all());
-
+    
+        // Calculate subtotal, discount, tax, and grand total
+        $subtotal = array_sum($request->input('total'));
+        $discount = ($subtotal * $request->input('discount_perc', 0)) / 100;
+        $tax = ($subtotal * $request->input('tax_perc', 0)) / 100;
+        $grandTotal = $subtotal - $discount + $tax;
+    
+        // Update the purchase order
+        $purchaseOrder->update([
+            'po_code' => $request->input('po_code'),
+            'supplier_id' => $request->input('supplier_id'),
+            'remarks' => $request->input('remarks'),
+            'subtotal' => $subtotal,
+            'discount' => $discount,
+            'tax' => $tax,
+            'grand_total' => $grandTotal,
+        ]);
+    
+        // Delete existing items for the purchase order
+        $purchaseOrder->items()->delete();
+    
+        // Add new items for the purchase order
+        foreach ($request->input('item_id') as $index => $itemId) {
+            $purchaseOrder->items()->create([
+                'item_id' => $itemId,
+                'quantity' => $request->input('qty')[$index],
+                'unit' => $request->input('unit')[$index],
+                'price' => $request->input('price')[$index],
+                'total' => $request->input('total')[$index],
+            ]);
+        }
+    
         return redirect()->route('purchase-order.index')->with('success', 'Purchase Order updated successfully!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Request $request)
     {
         $ids = explode(',', $request->input('ids'));
-    
+
         // Delete the purchase orders by IDs
         PurchaseOrder::whereIn('id', $ids)->delete();
-    
+
         return redirect()->route('purchase-order.index')->with('success', 'Selected purchase orders deleted successfully.');
     }
-
 }

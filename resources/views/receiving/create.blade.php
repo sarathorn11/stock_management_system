@@ -1,108 +1,105 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-white shadow-md rounded-lg p-6 max-w-3xl mx-auto">
-    <h1 class="text-xl font-bold mb-6 text-gray-800">Add Receiving</h1>
-    
-    <form action="{{ route('receiving.store') }}" method="POST">
-        @csrf
-        
-        <!-- From Field (Relationship to Supplier/Vendor) -->
-        <div class="mb-4">
-            <label for="from_id" class="block text-gray-700 font-medium mb-2">From</label>
-            <input type="text" id="from_id" name="from_id" value="{{ old('from_id') }}" required 
-                class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none @error('from_id') border-red-500 @enderror">
-            @error('from_id')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
+<div>
+    <h1 class="text-xl font-bold text-gray-800">Receive Order from PO-...</h1>
+    <form id="receive-form" action="" class="mt-8">
+      <input type="hidden" name="id" value="">
+      <input type="hidden" name="from_order" value="">
+      <input type="hidden" name="form_id" value="">
+      <input type="hidden" name="po_id" value="">
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="text-blue-500 font-medium">P.O. Code</label>
+          <input type="text" class="w-full border rounded-md p-2" value="PO-002" readonly>
         </div>
 
-        <!-- From Order Field (1 = PO, 2 = BO) -->
-        <div class="mb-4">
-            <label for="from_order" class="block text-gray-700 font-medium mb-2">From Order</label>
-            <select id="from_order" name="from_order" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none @error('from_order') border-red-500 @enderror">
-                <option value="1" {{ old('from_order') == 1 ? 'selected' : '' }}>PO</option>
-                <option value="2" {{ old('from_order') == 2 ? 'selected' : '' }}>BO</option>
-            </select>
-            @error('from_order')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
+        <div>
+          <label for="supplier_id" class="text-blue-500 font-medium">Supplier</label>
+          <select id="supplier_id" name="supplier_id" class="w-full border rounded-md p-2">
+            <option disabled></option>
+            <option selected value="">Supplier 01</option>
+          </select>
         </div>
+      </div>
 
-        <!-- Amount Field -->
-        <div class="mb-4">
-            <label for="amount" class="block text-gray-700 font-medium mb-2">Amount</label>
-            <input type="number" step="0.01" id="amount" name="amount" value="{{ old('amount') }}" required 
-                class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none @error('amount') border-red-500 @enderror">
-            @error('amount')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
-        </div>
+      <hr class="my-4">
 
-        <!-- Discount Percentage Field -->
-        <div class="mb-4">
-            <label for="discount_perc" class="block text-gray-700 font-medium mb-2">Discount Percentage</label>
-            <input type="number" step="0.01" id="discount_perc" name="discount_perc" value="{{ old('discount_perc') }}" 
-                class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none @error('discount_perc') border-red-500 @enderror">
-            @error('discount_perc')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
-        </div>
+      <table class="w-full border-collapse border border-gray-300">
+        <colgroup>
+          <col class="w-[5%]">
+          <col class="w-[10%]">
+          <col class="w-[10%]">
+          <col class="w-[25%]">
+          <col class="w-[25%]">
+          <col class="w-[25%]">
+        </colgroup>
+        <thead>
+          <tr class="bg-gray-300">
+            <th class="py-2 px-3 text-center border border-gray-400"></th>
+            <th class="py-2 px-3 text-center border border-gray-400">Qty</th>
+            <th class="py-2 px-3 text-center border border-gray-400">Unit</th>
+            <th class="py-2 px-3 text-center border border-gray-400">Item</th>
+            <th class="py-2 px-3 text-center border border-gray-400">Cost</th>
+            <th class="py-2 px-3 text-center border border-gray-400">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="py-2 px-3 text-center border border-gray-400">
+              <button class="border border-red-500 text-red-500 px-2 py-1 rounded hover:bg-red-500 hover:text-white" type="button">
+                <i class="fa fa-times"></i>
+              </button>
+            </td>
+            <td class="py-2 px-3 text-center border border-gray-400">
+              <input type="number" name="qty[]" class="w-12 border rounded-md p-1 text-center" value="10" max="10" min="0">
+              <input type="hidden" name="item_id[]" value="">
+              <input type="hidden" name="unit[]" value="">
+              <input type="hidden" name="oqty[]" value="">
+              <input type="hidden" name="price[]" value="">
+              <input type="hidden" name="total[]" value="">
+            </td>
+            <td class="py-2 px-3 text-center border border-gray-400">pcs</td>
+            <td class="py-2 px-3 border border-gray-400">name <br> description</td>
+            <td class="py-2 px-3 text-right border border-gray-400">100</td>
+            <td class="py-2 px-3 text-right border border-gray-400">1000</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th class="text-right py-2 px-3 border border-gray-400" colspan="5">Sub Total</th>
+            <th class="text-right py-2 px-3 sub-total border border-gray-400">0</th>
+          </tr>
+          <tr>
+            <th class="text-right py-2 px-3 border border-gray-400" colspan="5">
+              Discount <input class="w-12 border rounded-md p-1 text-center" type="number" name="discount_perc" min="0" max="100" value="0">%
+              <input type="hidden" name="discount" value="0">
+            </th>
+            <th class="text-right py-2 px-3 discount border border-gray-400">0</th>
+          </tr>
+          <tr>
+            <th class="text-right py-2 px-3 border border-gray-400" colspan="5">
+              Tax <input class="w-12 border rounded-md p-1 text-center" type="number" name="tax_perc" min="0" max="100" value="0">%
+              <input type="hidden" name="tax" value="0">
+            </th>
+            <th class="text-right py-2 px-3 tax border border-gray-400">0</th>
+          </tr>
+          <tr>
+            <th class="text-right py-2 px-3 border border-gray-400" colspan="5">Total</th>
+            <th class="text-right py-2 px-3 grand-total border border-gray-400">1000</th>
+          </tr>
+        </tfoot>
+      </table>
 
-        <!-- Discount Field -->
-        <div class="mb-4">
-            <label for="discount" class="block text-gray-700 font-medium mb-2">Discount</label>
-            <input type="number" step="0.01" id="discount" name="discount" value="{{ old('discount') }}" 
-                class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none @error('discount') border-red-500 @enderror">
-            @error('discount')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
-        </div>
-
-        <!-- Tax Percentage Field -->
-        <div class="mb-4">
-            <label for="tax_perc" class="block text-gray-700 font-medium mb-2">Tax Percentage</label>
-            <input type="number" step="0.01" id="tax_perc" name="tax_perc" value="{{ old('tax_perc') }}" 
-                class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none @error('tax_perc') border-red-500 @enderror">
-            @error('tax_perc')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
-        </div>
-
-        <!-- Tax Field -->
-        <div class="mb-4">
-            <label for="tax" class="block text-gray-700 font-medium mb-2">Tax</label>
-            <input type="number" step="0.01" id="tax" name="tax" value="{{ old('tax') }}" 
-                class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none @error('tax') border-red-500 @enderror">
-            @error('tax')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
-        </div>
-
-        <!-- Stock IDs Field -->
-        <div class="mb-4">
-            <label for="stock_ids" class="block text-gray-700 font-medium mb-2">Stock Items (IDs)</label>
-            <input type="text" id="stock_ids" name="stock_ids" value="{{ old('stock_ids') }}" required 
-                class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none @error('stock_ids') border-red-500 @enderror">
-            @error('stock_ids')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
-        </div>
-
-        <!-- Remarks Field -->
-        <div class="mb-4">
-            <label for="remarks" class="block text-gray-700 font-medium mb-2">Remarks</label>
-            <textarea id="remarks" name="remarks" rows="4" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none @error('remarks') border-red-500 @enderror">{{ old('remarks') }}</textarea>
-            @error('remarks')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
-        </div>
-
-        <!-- Submit Button -->
-        <button type="submit" 
-            class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            Add Receiving
-        </button>
+      <div class="my-4">
+        <label for="remarks" class="text-blue-500 font-medium">Remarks</label>
+        <textarea id="remarks" name="remarks" rows="3" class="w-full border rounded-md p-2"></textarea>
+      </div>
     </form>
+  <div class="bg-gray-100 p-4 text-center">
+    <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700" type="submit" form="receive-form">Save</button>
+    <a href="#" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700">Cancel</a>
+  </div>
 </div>
 @endsection
