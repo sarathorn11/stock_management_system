@@ -8,23 +8,29 @@ use Illuminate\Database\Eloquent\Model;
 class PurchaseOrder extends Model
 {
     use HasFactory;
-    protected $table = 'purchase_orders';  // Specify the table name
+    
+    protected $table = 'purchase_orders'; // Explicit table definition
 
-    // Define the fillable attributes for mass assignment
+    // Define fillable attributes for mass assignment
     protected $fillable = [
         'po_code',        // Purchase order code
         'supplier_id',    // Supplier ID
         'amount',         // Total amount
         'discount_perc',  // Discount percentage
-        'discount',       // Discount amount
         'tax_perc',       // Tax percentage
-        'tax',            // Tax amount
         'remarks',        // Remarks
         'status',         // Status of the purchase order
     ];
 
+    // Cast attributes to proper types
+    protected $casts = [
+        'discount_perc' => 'float',
+        'tax_perc' => 'float',
+        'amount' => 'float',
+    ];
+
     /**
-     * Define the relationship: A purchase order belongs to a supplier.
+     * A purchase order belongs to a supplier.
      */
     public function supplier()
     {
@@ -32,7 +38,7 @@ class PurchaseOrder extends Model
     }
 
     /**
-     * Define the relationship: A purchase order has many PO items.
+     * A purchase order has many PO items.
      */
     public function poItems()
     {
@@ -40,7 +46,39 @@ class PurchaseOrder extends Model
     }
 
     /**
-     * Accessor to format the amount as currency.
+     * Alias for poItems() to resolve "undefined relationship: items" error.
+     */
+    public function items()
+    {
+        return $this->hasMany(PoItem::class, 'po_id');
+    }
+
+    /**
+     * Calculate and return the discount amount.
+     */
+    public function getDiscountAmountAttribute()
+    {
+        return ($this->amount * $this->discount_perc) / 100;
+    }
+
+    /**
+     * Calculate and return the tax amount.
+     */
+    public function getTaxAmountAttribute()
+    {
+        return ($this->amount * $this->tax_perc) / 100;
+    }
+
+    /**
+     * Calculate and return the grand total.
+     */
+    public function getGrandTotalAttribute()
+    {
+        return $this->amount - $this->discount_amount + $this->tax_amount;
+    }
+
+    /**
+     * Format the amount as currency.
      */
     public function getFormattedAmountAttribute()
     {
@@ -68,6 +106,6 @@ class PurchaseOrder extends Model
      */
     public function setStatusAttribute($value)
     {
-        $this->attributes['status'] = (int)$value;
+        $this->attributes['status'] = (int) $value;
     }
 }

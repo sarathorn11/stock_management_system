@@ -23,6 +23,7 @@ class ItemSeeder extends Seeder
                 'description' => 'Description for item ' . $i,
                 'supplier_id' => rand(1, 5),
                 'cost' => rand(10, 100),
+                'unit' => ['kg', 'g', 'lb', 'pcs'][array_rand(['kg', 'g', 'lb', 'pcs'])],
                 'status' => 1
             ]);
         }

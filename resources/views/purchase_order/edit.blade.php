@@ -1,22 +1,46 @@
 @extends('layouts.app')
 
 @section('content')
-<div>
-    <h1 class="text-xl font-bold text-gray-800">Create Purchase Order</h1>
-    <form id="receive-form" action="{{ route('purchase-order.store') }}" method="POST" class="mt-8">
+<div class="w-full h-full p-8">
+    <!-- Header with Breadcrumb and Buttons -->
+    <div class="flex justify-between items-center mb-6">
+        <!-- Breadcrumb -->
+        <div class="flex items-center gap-2">
+            <a href="{{ route('purchase-order.index') }}"
+                class="text-xl font-bold text-gray-800 hover:text-blue-500 hover:underline hover:cursor-pointer">
+                Purchase Order
+            </a>
+            <h1 class="text-xl font-bold text-gray-800">/</h1>
+            <h1 class="text-xl font-bold text-gray-800 underline">Edit</h1>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex space-x-4">
+            <a href="{{ route('purchase-order.index') }}"
+                class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 transition duration-300">
+                Cancel
+            </a>
+        </div>
+    </div>
+
+    <!-- Edit Form -->
+    <form id="edit-form" action="{{ route('purchase-order.update', $purchaseOrder->id) }}" method="POST" class="mt-8">
         @csrf
+        @method('PUT') <!-- Use PUT method for updates -->
+
+        <!-- P.O. Code and Supplier -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label class="text-blue-500 font-medium">P.O. Code</label>
-                <input type="text" name="po_code" class="w-full border rounded-md p-2" value="{{ old('po_code') }}" readonly>
+                <input type="text" name="po_code" class="w-full border rounded-md p-2" value="{{ $purchaseOrder->po_code }}" readonly>
             </div>
 
             <div>
                 <label for="supplier_id" class="text-blue-500 font-medium">Supplier</label>
                 <select id="supplier_id" name="supplier_id" class="w-full border rounded-md p-2">
-                    <option disabled selected>Select Supplier</option>
+                    <option disabled>Select Supplier</option>
                     @foreach($suppliers as $supplier)
-                        <option value="{{ $supplier->id }}" {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>
+                        <option value="{{ $supplier->id }}" {{ $purchaseOrder->supplier_id == $supplier->id ? 'selected' : '' }}>
                             {{ $supplier->name }}
                         </option>
                     @endforeach
@@ -26,6 +50,7 @@
 
         <hr class="my-4">
 
+        <!-- Items Section -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
             <div class="col-span-1">
                 <div class="form-group">
@@ -66,6 +91,7 @@
 
         <hr class="my-4">
 
+        <!-- Items Table -->
         <table class="w-full border-collapse border border-gray-300">
             <colgroup>
                 <col class="w-[5%]">
@@ -86,48 +112,68 @@
                 </tr>
             </thead>
             <tbody id="item-list">
-                <!-- Rows will be dynamically added here -->
+                <!-- Pre-fill with existing items -->
+                @foreach($purchaseOrder->items as $item)
+                    <tr>
+                        <td class="py-2 px-3 text-center border border-gray-400">
+                            <button class="border border-red-500 text-red-500 px-2 py-1 rounded hover:bg-red-500 hover:text-white" type="button" onclick="deleteRow(this)">
+                                <i class="fa fa-times"></i>
+                            </button>
+                        </td>
+                        <td class="py-2 px-3 text-center border border-gray-400">
+                            <input type="number" name="qty[]" class="w-12 border rounded-md p-1 text-center" value="{{ $item->quantity }}" min="0">
+                            <input type="hidden" name="item_id[]" value="{{ $item->item_id }}">
+                            <input type="hidden" name="unit[]" value="{{ $item->unit }}">
+                            <input type="hidden" name="price[]" value="{{ $item->price }}">
+                            <input type="hidden" name="total[]" value="{{ $item->total }}">
+                        </td>
+                        <td class="py-2 px-3 text-center border border-gray-400">{{ $item->unit }}</td>
+                        <td class="py-2 px-3 border border-gray-400">{{ $item->item->name }}</td>
+                        <td class="py-2 px-3 text-right border border-gray-400">{{ number_format($item->price, 2) }}</td>
+                        <td class="py-2 px-3 text-right border border-gray-400">{{ number_format($item->total, 2) }}</td>
+                    </tr>
+                @endforeach
             </tbody>
             <tfoot>
                 <tr>
                     <th class="text-right py-2 px-3 border border-gray-400" colspan="5">Sub Total</th>
-                    <th class="text-right py-2 px-3 sub-total border border-gray-400">0</th>
+                    <th class="text-right py-2 px-3 sub-total border border-gray-400">{{ number_format($purchaseOrder->subtotal, 2) }}</th>
                 </tr>
                 <tr>
                     <th class="text-right py-2 px-3 border border-gray-400" colspan="5">
-                        Discount <input class="w-12 border rounded-md p-1 text-center" type="number" name="discount_perc" min="0" max="100" value="0">%
-                        <input type="hidden" name="discount" value="0">
+                        Discount <input class="w-12 border rounded-md p-1 text-center" type="number" name="discount_perc" min="0" max="100" value="{{ $purchaseOrder->discount_perc }}">%
+                        <input type="hidden" name="discount" value="{{ $purchaseOrder->discount }}">
                     </th>
-                    <th class="text-right py-2 px-3 discount border border-gray-400">0</th>
+                    <th class="text-right py-2 px-3 discount border border-gray-400">{{ number_format($purchaseOrder->discount, 2) }}</th>
                 </tr>
                 <tr>
                     <th class="text-right py-2 px-3 border border-gray-400" colspan="5">
-                        Tax <input class="w-12 border rounded-md p-1 text-center" type="number" name="tax_perc" min="0" max="100" value="0">%
-                        <input type="hidden" name="tax" value="0">
+                        Tax <input class="w-12 border rounded-md p-1 text-center" type="number" name="tax_perc" min="0" max="100" value="{{ $purchaseOrder->tax_perc }}">%
+                        <input type="hidden" name="tax" value="{{ $purchaseOrder->tax }}">
                     </th>
-                    <th class="text-right py-2 px-3 tax border border-gray-400">0</th>
+                    <th class="text-right py-2 px-3 tax border border-gray-400">{{ number_format($purchaseOrder->tax, 2) }}</th>
                 </tr>
                 <tr>
                     <th class="text-right py-2 px-3 border border-gray-400" colspan="5">Total</th>
-                    <th class="text-right py-2 px-3 grand-total border border-gray-400">0</th>
+                    <th class="text-right py-2 px-3 grand-total border border-gray-400">{{ number_format($purchaseOrder->grand_total, 2) }}</th>
                 </tr>
             </tfoot>
         </table>
 
+        <!-- Remarks -->
         <div class="my-4">
             <label for="remarks" class="text-blue-500 font-medium">Remarks</label>
-            <textarea id="remarks" name="remarks" rows="3" class="w-full border rounded-md p-2">{{ old('remarks') }}</textarea>
+            <textarea id="remarks" name="remarks" rows="3" class="w-full border rounded-md p-2">{{ $purchaseOrder->remarks }}</textarea>
         </div>
+
+        <!-- Save Button -->
         <div class="bg-gray-100 p-4 text-center">
-            <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700" type="submit" form="receive-form">Save</button>
-            <a href="{{ route('purchase-order.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700">Cancel</a>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700" type="submit" form="edit-form">Save</button>
         </div>
-       
     </form>
-   
-   
 </div>
 
+<!-- JavaScript for Dynamic Item Addition -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const addToListButton = document.getElementById('add_to_list');
@@ -143,7 +189,6 @@
             const unit = selectedItem.getAttribute('data-unit');
             const price = parseFloat(selectedItem.getAttribute('data-price'));
             const qty = parseFloat(qtyInput.value);
-
 
             if (!itemId || !qty || qty <= 0) {
                 alert('Please select an item and enter a valid quantity.');
@@ -194,7 +239,7 @@
             const taxPerc = parseFloat(document.querySelector('input[name="tax_perc"]').value) || 0;
             const tax = (subtotal * taxPerc) / 100;
 
-            const grandTotal = subtotal - discount - tax;
+            const grandTotal = subtotal - discount + tax;
 
             document.querySelector('.sub-total').textContent = subtotal.toFixed(2);
             document.querySelector('.discount').textContent = discount.toFixed(2);

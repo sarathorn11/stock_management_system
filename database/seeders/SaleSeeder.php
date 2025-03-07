@@ -25,7 +25,7 @@ class SaleSeeder extends Seeder
             Sale::create([
                 'sales_code' => 'SALE' . str_pad($i + 1, 4, '0', STR_PAD_LEFT),
                 'client' => 'Client ' . $i,
-                'stock_ids' => json_encode($stockIds[$i - 1]), // Store multiple stock_ids as JSON
+                // 'stock_ids' => json_encode($stockIds[$i - 1]), // Store multiple stock_ids as JSON
                 'amount' => rand(100, 1000),
                 'remarks' => 'Remarks for sale ' . $i,
             ]);
