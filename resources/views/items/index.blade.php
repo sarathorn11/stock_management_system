@@ -260,7 +260,7 @@
         supplierSelect.innerHTML = '';
 
         // Fetch suppliers from the server
-        fetch('/supplier', {
+        fetch('/suppliers', {
                 headers: {
                     "X-Requested-With": "XMLHttpRequest"
                 }
