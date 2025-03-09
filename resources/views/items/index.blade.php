@@ -6,7 +6,7 @@
 
     <div class="flex justify-between mb-3">
         <form action="{{ route('items.index') }}" method="GET">
-            <input type="text" name="query" class="border border-gray-300 rounded px-4 py-2 w-2/4"
+            <input type="text" name="query" class=" rounded px-4 py-2 w-2/4"
                 placeholder="Search ...." value="{{ request('query') }}">
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
         </form>
@@ -34,8 +34,8 @@
     </div>
     @else
     <div class="overflow-x-auto">
-        <table class="w-full border border-gray-300 rounded-lg">
-            <thead class="bg-gray-100">
+        <table class="w-full  rounded-lg">
+            <thead class="bg-[#001f3f] text-white">
                 <tr>
                     <th class="px-4 py-2">
                         <input type="checkbox" id="checkAll" onclick="toggleAllRows(this)">
@@ -50,16 +50,16 @@
             </thead>
             <tbody>
                 @foreach($items as $index => $item)
-                <tr data-id="{{$item->id}}" class="border-t hover:bg-gray-300 cursor-pointer border-gray-300"
+                <tr data-id="{{$item->id}}" class="hover:bg-gray-300 cursor-pointer text-center"
                     onclick="fetchItemDetails({{ $item->id }})">
                     <td onclick="event.stopPropagation()" class="px-4 py-2 text-center"><input class="rowCheckbox"
                             value="{{$item->id}}" type="checkbox"></td>
                     <td class="px-4 py-2 text-center">{{ $index + 1 }}</td>
-                    <td class="px-4 py-2">{{ $item->name }}</td>
-                    <td class="px-4 py-2">{{ $item->cost }}$</td>
-                    <td class="px-4 py-2">{{ $item->supplier->name }}</td>
-                    <td class="px-4 py-2">{{ $item->created_at->format('Y-m-d h:i a') }}</td>
-                    <td class="px-4 py-2">
+                    <td class="px-4 py-2 text-center">{{ $item->name }}</td>
+                    <td class="px-4 py-2 text-center">{{ $item->cost }}$</td>
+                    <td class="px-4 py-2 text-center">{{ $item->supplier->name }}</td>
+                    <td class="px-4 py-2 text-center">{{ $item->created_at->format('Y-m-d h:i a') }}</td>
+                    <td class="px-4 py-2 text-center">
                         <span
                             class="px-3 py-1 text-white rounded-full {{ $item->status == '1' ? 'bg-green-500' : 'bg-red-500' }}">
                             {{ $item->status == '1' ? 'Active' : 'Inactive' }}
@@ -82,24 +82,24 @@
             @csrf
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                <input id="name" name="name" type="text" class="border border-gray-300 w-full rounded px-4 py-2"
+                <input id="name" name="name" type="text" class="w-full rounded px-4 py-2"
                     placeholder="Item name" required>
             </div>
             <div>
                 <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
                 <textarea name="description" id="description" placeholder="Description"
-                    class="border border-gray-300 w-full rounded px-4 py-2" required></textarea>
+                    class=" w-full rounded px-4 py-2" required></textarea>
             </div>
 
             <div>
                 <label for="cost" class="block text-sm font-medium text-gray-700">Cost</label>
                 <input name="cost" step="0.001" type="number" id="cost" min="0" placeholder="Cost"
-                    class="border border-gray-300 w-full rounded px-4 py-2" required>
+                    class=" w-full rounded px-4 py-2" required>
             </div>
 
             <div>
                 <label for="supplier_id" class="block text-sm font-medium text-gray-700">Supplier</label>
-                <select id="supplier_id" name="supplier_id" class="border border-gray-300 w-full rounded px-4 py-2"
+                <select id="supplier_id" name="supplier_id" class=" w-full rounded px-4 py-2"
                     required>
                     <option value="">Select Supplier</option>
                     <option value="1">Supplier 001</option>
@@ -109,7 +109,7 @@
 
             <div>
                 <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                <select id="status" name="status" class="border border-gray-300 w-full rounded px-4 py-2" required>
+                <select id="status" name="status" class="w-full rounded px-4 py-2" required>
                     <option value="1">Active</option>
                     <option value="0">Inactive</option>
                 </select>

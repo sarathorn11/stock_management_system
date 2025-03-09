@@ -44,29 +44,29 @@
 
     <div class="w-full h-auto">
         <table class="table w-full">
-            <thead>
+            <thead class="bg-[#001f3f] text-white">
                 <tr>
-                    <th class="border px-4 py-2 text-center">
+                    <th class="px-4 py-2 text-center">
                         <input type="checkbox" id="select-all" class="cursor-pointer transform scale-125">
                     </th>
-                    <th class="border px-4 py-2">ID</th>
-                    <th class="border px-4 py-2">PO Code</th>
-                    <th class="border px-4 py-2">Supplier</th>
-                    <th class="border px-4 py-2">Amount</th>
-                    <th class="border px-4 py-2 text-center">Status</th>
+                    <th class="px-4 py-2">ID</th>
+                    <th class="px-4 py-2">PO Code</th>
+                    <th class="px-4 py-2">Supplier</th>
+                    <th class="px-4 py-2">Amount</th>
+                    <th class="px-4 py-2 text-center">Status</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($purchaseOrders as $purchaseOrder)
                     <tr class="cursor-pointer hover:bg-gray-200" onclick="handleRowClick(event, '{{ route('purchase-order.show', $purchaseOrder->id) }}')">
-                        <td class="border px-4 py-2 text-center">
+                        <td class="px-4 py-2 text-center">
                             <input type="checkbox" class="select-record cursor-pointer transform scale-125" value="{{ $purchaseOrder->id }}" onclick="event.stopPropagation();">
                         </td>
-                        <td class="border px-4 py-2">{{ $purchaseOrder->id }}</td>
-                        <td class="border px-4 py-2">{{ $purchaseOrder->po_code }}</td>
-                        <td class="border px-4 py-2">{{ optional($purchaseOrder->supplier)->name }}</td>
-                        <td class="border px-4 py-2">{{ number_format($purchaseOrder->amount, 2) }}</td>
-                        <td class="border px-4 py-2 text-center">
+                        <td class="px-4 py-2">{{ $purchaseOrder->id }}</td>
+                        <td class="px-4 py-2">{{ $purchaseOrder->po_code }}</td>
+                        <td class="px-4 py-2">{{ optional($purchaseOrder->supplier)->name }}</td>
+                        <td class="px-4 py-2">{{ number_format($purchaseOrder->amount, 2) }}</td>
+                        <td class="px-4 py-2 text-center">
                             @if ($purchaseOrder->status == 0)
                                 <span class="inline-block px-3 py-1 rounded-full bg-blue-500 text-white font-semibold">Pending</span>
                             @elseif ($purchaseOrder->status == 1)

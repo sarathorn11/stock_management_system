@@ -6,7 +6,7 @@
 
     <div class="flex justify-between mb-3">
         <form action="{{ route('user.index') }}" method="GET">
-            <input type="text" name="query" class="border border-gray-300 rounded px-4 py-2 w-2/4"
+            <input type="text" name="query" class="rounded px-4 py-2 w-2/4"
                 placeholder="Search ...." value="{{ request('query') }}">
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
         </form>
@@ -35,34 +35,34 @@
     @else
     <div class="overflow-x-auto">
         <table class="w-full border rounded-lg shadow-sm text-left">
-            <thead class="bg-gray-100">
+            <thead class="bg-[#001f3f] text-white">
                 <tr>
-                    <th class="p-3"><input type="checkbox" id="checkAll" onclick="toggleAllRows(this)"></th>
-                    <th class="p-3">No.</th>
-                    <th class="p-3">Profile</th>
-                    <th class="p-3">First Name</th>
-                    <th class="p-3">Last Name</th>
-                    <th class="p-3">Nickname</th>
-                    <th class="p-3">Gender</th>
-                    <th class="p-3">Email</th>
-                    <th class="p-3">Role</th>
+                    <th class="px-4 py-2"><input type="checkbox" id="checkAll" onclick="toggleAllRows(this)"></th>
+                    <th class="px-4 py-2">No.</th>
+                    <th class="px-4 py-2">Profile</th>
+                    <th class="px-4 py-2">First Name</th>
+                    <th class="px-4 py-2">Last Name</th>
+                    <th class="px-4 py-2">Nickname</th>
+                    <th class="px-4 py-2">Gender</th>
+                    <th class="px-4 py-2">Email</th>
+                    <th class="px-4 py-2">Role</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y">
                 @foreach($users as $index => $user)
                 <tr onclick="fetchUserDetails({{ $user->id }})" data-id="{{$user->id}}" class="hover:bg-gray-50">
-                    <td class="p-3"><input onclick="event.stopPropagation()" class="rowCheckbox" value="{{$user->id}}"
+                    <td class="px-4 py-2"><input onclick="event.stopPropagation()" class="rowCheckbox" value="{{$user->id}}"
                             type="checkbox"></td>
-                    <td class="p-3">{{1 + $index}}</td>
-                    <td class="p-3"><img
+                    <td class="px-4 py-2">{{1 + $index}}</td>
+                    <td class="px-4 py-2"><img
                             src="{{$user->profile_picture ? asset('storage/avatars/'.basename($user->profile_picture)) : asset('static/assets/images/default-avatar.png')}}"
                             class="w-10 h-10 rounded-full"></td>
-                    <td class="p-3">{{$user->first_name}}</td>
-                    <td class="p-3">{{$user->last_name}}</td>
-                    <td class="p-3">{{$user->username}}</td>
-                    <td class="p-3 capitalize">{{$user->gender}}</td>
-                    <td class="p-3">{{$user->email}}</td>
-                    <td class="p-3 capitalize">{{$user->role}}</td>
+                    <td class="px-4 py-2">{{$user->first_name}}</td>
+                    <td class="px-4 py-2">{{$user->last_name}}</td>
+                    <td class="px-4 py-2">{{$user->username}}</td>
+                    <td class="px-4 py-2 capitalize">{{$user->gender}}</td>
+                    <td class="px-4 py-2">{{$user->email}}</td>
+                    <td class="px-4 py-2 capitalize">{{$user->role}}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -83,27 +83,27 @@
             <div>
                 <label for="first-name" class="block text-sm font-medium text-gray-700">First Name</label>
                 <input id="first-name" name="first_name" type="text"
-                    class="border border-gray-300 w-full rounded px-4 py-1" placeholder="First name" required>
+                    class="w-full rounded px-4 py-1" placeholder="First name" required>
             </div>
             <div>
                 <label for="last-name" class="block text-sm font-medium text-gray-700">Last Name</label>
                 <input id="last-name" name="last_name" type="text"
-                    class="border border-gray-300 w-full rounded px-4 py-1" placeholder="Last name" required>
+                    class="w-full rounded px-4 py-1" placeholder="Last name" required>
             </div>
             <div>
                 <label for="username" class="block text-sm font-medium text-gray-700">Nickname</label>
-                <input id="username" name="username" type="text" class="border border-gray-300 w-full rounded px-4 py-1"
+                <input id="username" name="username" type="text" class="w-full rounded px-4 py-1"
                     placeholder="User name" required>
             </div>
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                <input id="email" name="email" type="email" class="border border-gray-300 w-full rounded px-4 py-1"
+                <input id="email" name="email" type="email" class="w-full rounded px-4 py-1"
                     placeholder="Email" required>
             </div>
 
             <div>
                 <label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
-                <select id="gender" name="gender" class="border border-gray-300 w-full rounded px-4 py-1" required>
+                <select id="gender" name="gender" class="w-full rounded px-4 py-1" required>
                     <option value="">Select Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
@@ -111,7 +111,7 @@
             </div>
             <div>
                 <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
-                <select id="role" name="role" class="border border-gray-300 w-full rounded px-4 py-1" required>
+                <select id="role" name="role" class="w-full rounded px-4 py-1" required>
                     <option value="">Select Role</option>
                     <option value="admin">Admin</option>
                     <option value="user">User</option>

@@ -15,33 +15,33 @@
   <div id="success-message" class="bg-green-100 text-green-800 p-4 rounded mb-4">{{ session('success') }}</div>
   @endif
   <div class="w-full h-auto">
-    <table class="table-auto w-full border-collapse border border-gray-400">
-      <thead class="bg-gray-300 text-black">
+    <table class="table-auto w-full border-collapse">
+      <thead class="bg-[#001f3f] text-white">
         <tr>
-          <th class="p-4 border-b-[1px] border-gray-400">
+          <th class="px-4 py-2">
             <input type="checkbox" id="select-all" class="select-all-checkbox">
           </th>
-          <th class="p-4 border-b-[1px] border-gray-400">No.</th>
-          <th class="p-4 border-b-[1px] border-gray-400">Date Created</th>
-          <th class="p-4 border-b-[1px] border-gray-400">BO Code</th>
-          <th class="p-4 border-b-[1px] border-gray-400">Supplier</th>
-          <th class="p-4 border-b-[1px] border-gray-400">Items</th>
-          <th class="p-4 border-b-[1px] border-gray-400">Status</th>
-          <th class="p-4 border-b-[1px] border-gray-400">Actions</th>
+          <th class="px-4 py-2">No.</th>
+          <th class="px-4 py-2">Date Created</th>
+          <th class="px-4 py-2">BO Code</th>
+          <th class="px-4 py-2">Supplier</th>
+          <th class="px-4 py-2">Items</th>
+          <th class="px-4 py-2">Status</th>
+          <th class="px-4 py-2">Actions</th>
         </tr>
       </thead>
       <tbody id="backOrderResults">
         @foreach($backOrders as $index => $row)
           <tr class="bg-white hover:bg-gray-200">
-            <td class="p-2 text-center border-b-[1px] border-gray-400">
+            <td class="px-4 py-2 text-center">
               <input type="checkbox" class="backorder-checkbox" data-id="{{ $row->id }}">
             </td>
-            <td class="p-2 text-center border-b-[1px] border-gray-400">{{ $row->id }}</td>
-            <td class="p-2 text-center border-b-[1px] border-gray-400">{{ date('Y-m-d H:i', strtotime($row->created_at)) }}</td>
-            <td class="p-2 text-center border-b-[1px] border-gray-400">{{ $row->bo_code }}</td>
-            <td class="p-2 text-center border-b-[1px] border-gray-400">{{ $row->supplier }}</td>
-            <td class="p-2 text-center border-b-[1px] border-gray-400">{{ $row->items->count() }}</td>
-            <td class="p-2 text-center border-b-[1px] border-gray-400">
+            <td class="px-4 py-2 text-center">{{ $row->id }}</td>
+            <td class="px-4 py-2 text-center">{{ date('Y-m-d H:i', strtotime($row->created_at)) }}</td>
+            <td class="px-4 py-2 text-center">{{ $row->bo_code }}</td>
+            <td class="px-4 py-2 text-center">{{ $row->supplier }}</td>
+            <td class="px-4 py-2 text-center">{{ $row->items->count() }}</td>
+            <td class="px-4 py-2 text-center">
               @if($row->status == 0)
                 <span class="bg-blue-500 text-white px-4 py-1 rounded-full inline-block text-center">Pending</span>
               @elseif($row->status == 1)
@@ -52,7 +52,7 @@
                 <span class="bg-red-500 text-white px-4 py-1 rounded-full inline-block text-center">N/A</span>
               @endif
             </td>
-            <td class="border-b-[1px] border-gray-400 p-2 text-center">
+            <td class="px-4 py-2 text-center">
               <a href="{{ route('back-order.show', $row->id) }}" class="text-blue-500 mx-1">
                 <i class="fa fa-eye mr-2"></i>
               </a>
