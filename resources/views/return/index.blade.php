@@ -15,7 +15,7 @@
     </div>
   </div>
   @if(session('success'))
-  <div class="bg-green-100 text-green-800 p-2 rounded mb-4">{{ session('success') }}</div>
+  <div id="successOrFailedMessage" class="bg-green-100 text-green-800 p-2 rounded mb-4">{{ session('success') }}</div>
   @endif
   <div class="w-full h-auto">
     <table class="table-auto w-full">
@@ -27,9 +27,8 @@
           <th class="p-2">No.</th>
           <th class="p-2">Return Code</th>
           <th class="p-2">Supplier</th>
-          {{-- <th class="p-2">Stock</th> --}}
-          {{-- <th class="p-2">Amount</th> --}}
           <th class="p-2">Items</th>
+          <th class="p-2">Created Date</th>
           <th class="p-2">Actions</th>
         </tr>
       </thead>
@@ -39,13 +38,11 @@
           <td class="p-2 text-[14px] text-center">
             <input type="checkbox" class="return-checkbox w-[18px] h-[18px]" data-id="{{ $return->id }}">
           </td>
+          <td class="p-2 text-[14px] text-center">{{ $return->id }}</td>
           <td class="p-2 text-[14px] text-center">{{ $return->return_code }}</td>
-          <td class="p-2 text-[14px] text-center">{{ $return->supplier_id }}</td>
-          {{-- <td class="p-2 text-[14px] text-center">{{ $return->stock_id }}</td> --}}
-          {{-- <td class="p-2 text-[14px] text-center">{{ $return->amount }}</td> --}}
-          <td class="p-2 text-[14px] text-center">{{ $return->Items }}</td>
-          <td class="p-2 text-[14px] text-center">
-            {{-- {{ \Carbon\Carbon::parse($return->date_created)->format('Y-m-d h:i A') }}</td> --}}
+          <td class="p-2 text-[14px] text-center">{{ $return->supplier->name }}</td>
+          <td class="p-2 text-[14px] text-center">{{ count(json_decode($return->stock_ids)) }}</td>
+          <td class="p-2 text-[14px] text-center">{{ $return->created_at }}</td>
           <td class="p-2 flex items-center justify-center">
             <a href="{{ route('return.show', $return->id) }}" class="text-blue-500 text-[18px] mx-1">
               <i class="fa fa-eye mr-2"></i>
@@ -74,40 +71,44 @@
 <script>
   let selectedReturnIds = JSON.parse(localStorage.getItem('selectedReturnIds')) || [];
 
-function updateCheckboxSelections() {
-  document.querySelectorAll('.return-checkbox').forEach(checkbox => {
-    checkbox.checked = selectedReturnIds.includes(checkbox.getAttribute('data-id'));
-  });
-  document.getElementById('select-all').checked = document.querySelectorAll('.return-checkbox:checked').length ===
-    document.querySelectorAll('.return-checkbox').length;
-}
-
-document.addEventListener('DOMContentLoaded', updateCheckboxSelections);
-
-document.getElementById('select-all').addEventListener('change', function() {
-  selectedReturnIds = [];
-  document.querySelectorAll('.return-checkbox').forEach(checkbox => {
-    checkbox.checked = this.checked;
-    if (this.checked) {
-      selectedReturnIds.push(checkbox.getAttribute('data-id'));
-    }
-  });
-  localStorage.setItem('selectedReturnIds', JSON.stringify(selectedReturnIds));
-});
-
-document.addEventListener('change', function(event) {
-  if (event.target.classList.contains('return-checkbox')) {
-    const returnId = event.target.getAttribute('data-id');
-    if (event.target.checked) {
-      if (!selectedReturnIds.includes(returnId)) {
-        selectedReturnIds.push(ReturnId);
-      }
-    } else {
-      selectedReturnIds = selectedReturnIds.filter(id => id !== returnId);
-    }
-    localStorage.setItem('selectedReturnIds', JSON.stringify(selectedReturnIds));
-    updateCheckboxSelections();
+  function updateCheckboxSelections() {
+    document.querySelectorAll('.return-checkbox').forEach(checkbox => {
+      checkbox.checked = selectedReturnIds.includes(checkbox.getAttribute('data-id'));
+    });
+    document.getElementById('select-all').checked = document.querySelectorAll('.return-checkbox:checked').length ===
+      document.querySelectorAll('.return-checkbox').length;
   }
-});
+
+  document.addEventListener('DOMContentLoaded', updateCheckboxSelections);
+
+  document.getElementById('select-all').addEventListener('change', function() {
+    selectedReturnIds = [];
+    document.querySelectorAll('.return-checkbox').forEach(checkbox => {
+      checkbox.checked = this.checked;
+      if (this.checked) {
+        selectedReturnIds.push(checkbox.getAttribute('data-id'));
+      }
+    });
+    localStorage.setItem('selectedReturnIds', JSON.stringify(selectedReturnIds));
+  });
+
+  document.addEventListener('change', function(event) {
+    if (event.target.classList.contains('return-checkbox')) {
+      const returnId = event.target.getAttribute('data-id');
+      if (event.target.checked) {
+        if (!selectedReturnIds.includes(returnId)) {
+          selectedReturnIds.push(ReturnId);
+        }
+      } else {
+        selectedReturnIds = selectedReturnIds.filter(id => id !== returnId);
+      }
+      localStorage.setItem('selectedReturnIds', JSON.stringify(selectedReturnIds));
+      updateCheckboxSelections();
+    }
+  });
+  // Auto-hide success message after 2 seconds
+  setTimeout(() => {
+    document.getElementById('successOrFailedMessage')?.remove();
+  }, 2000);
 </script>
 @endsection

@@ -17,12 +17,23 @@ class ReturnList extends Model
         'amount',
         'remarks',
     ];
+
+    protected $casts = [
+        'stock_ids' => 'array', // Automatically converts JSON string to array
+    ];
+
     public function supplier()
     {
         return $this->belongsTo(Supplier::class, 'supplier_id');
     }
-    // public function stock()
-    // {
-    //     return $this->belongsTo(Stock::class, 'stock_id');
-    // }
+
+    public function stocks()
+    {
+        return Stock::whereIn('id', $this->stock_ids ?? [])->get();
+    }
+
+    public function items()
+    {
+        return Item::whereIn('id', $this->stocks()->pluck('item_id')->toArray())->get();
+    }
 }

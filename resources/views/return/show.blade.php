@@ -1,90 +1,104 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    .bg-navy {
+        background-color: #001f3f !important;
+    }
+    @media print {
+        /* Hide everything except the content inside the .print class */
+        body * {
+            visibility: hidden;
+        }
+        .print, .print * {
+            visibility: visible;
+        }
+        /* Ensure the printable content takes full width */
+        .print {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+    }
+</style>
 <div class="w-full h-full">
-  <h1 class="text-3xl font-bold text-gray-800">Return List</h1>
-  <div class="flex items-center justify-between my-4">
-    <input type="text" placeholder="Search..." class="px-3 py-2 w-[350px] rounded border-gray-300">
-    <div class="flex items-center justify-between">
-      <a
-        class="inline-block bg-green-500 text-white px-4 py-2 rounded mb-4 hover:bg-green-600">Update</a>
-      <a class="inline-block bg-gray-300 text-black px-4 py-2 rounded mb-4 hover:bg-gray-400 ml-2">
-        </i>Print
-      </a>
+    <h1 class="text-xl font-bold text-gray-800">Return List Details - {{ $return->return_code }}</h1>
+    <div class="flex items-center justify-between my-4">
+        <div></div>
+        <div class="flex items-center justify-between">
+            <button onclick="window.print()" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition duration-300">
+            <i class="fa fa-print mr-2"></i>Print
+            </button>
+        </div>
     </div>
-  </div>
-
-  <div class="w-full h-full">
-    <div class="max-w-4xl mx-auto p-4 border border-gray-300 rounded-lg">
-        <!-- P.O. Code and Supplier Section -->
-        <div class="flex justify-between mb-4">
-          <div>
-            <h2 class="text-sm font-medium text-gray-500">P.O. Code</h2>
-            <p class="text-lg font-semibold text-gray-900">PO-0002</p>
-          </div>
-          <div>
-            <h2 class="text-sm font-medium text-gray-500 text-right">Supplier</h2>
-            <p class="text-lg font-semibold text-gray-900 text-right">Supplier 102</p>
-          </div>
+    <div class="print card bg-white p-6 rounded-sm">
+        <div class="card-body" id="print_out">
+            <div class="container-fluid">
+                <div class="grid grid-flow-row gap-4 grid-cols-3">
+                  <div class="col-span-2">
+                      <label class="text-blue-500">Return Code</label>
+                      <div>{{ $return->return_code }}</div>
+                  </div>
+                  <div class="col-span-1">
+                      <label for="supplier_id" class="text-blue-500">Supplier</label>
+                      <div>{{ $return->supplier->name }}</div>
+                  </div>
+                </div>
+                <h2 class="text-blue-500 font-bold py-2 mt-1">Items</h2>
+                <table class="table-auto w-full border-collapse border border-gray-400" id="list">
+                    <colgroup>
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="30%">
+                        <col width="25%">
+                        <col width="25%">
+                    </colgroup>
+                    <thead>
+                        <tr class=" bg-gray-300">
+                            <th class="text-center py-1 px-2 border border-gray-400">Qty</th>
+                            <th class="text-center py-1 px-2 border border-gray-400">Unit</th>
+                            <th class="text-center py-1 px-2 border border-gray-400">Item</th>
+                            <th class="text-center py-1 px-2 border border-gray-400">Cost</th>
+                            <th class="text-center py-1 px-2 border border-gray-400">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php $total = 0; @endphp
+                        @foreach($stocks as $item)
+                            @php $total += $item->total; @endphp
+                            <tr>
+                                <td class="py-1 px-2 text-center border border-gray-400">{{ $item->quantity }}</td>
+                                <td class="py-1 px-2 text-center border border-gray-400">{{ $item->item->unit }}</td>
+                                <td class="py-1 px-2 border border-gray-400">
+                                    {{ $item->item->name }} <br>
+                                    {{ $item->item->description }}
+                                </td>
+                                <td class="py-1 px-2 text-right border border-gray-400">{{ number_format($item->price, 2) }}</td>
+                                <td class="py-1 px-2 text-right border border-gray-400">{{ number_format($item->total, 2) }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th class="text-right py-1 px-2 border border-gray-400" colspan="4">Total</th>
+                            <th class="text-right py-1 px-2 border border-gray-400 grand-total">{{ number_format($total, 2) }}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div class="grid grid-flow-col gap-4 grid-cols-3 mt-10">
+                    <div class="col-span-2">
+                    <label for="remarks" class="text-blue-500">Remarks</label>
+                    <p>{{ $return->remarks ?? 'N/A' }}</p>
+                    </div>
+                    @if($return->status > 0)
+                    <div class="col-span-1">
+                        <span class="text-blue-500">{{ $return->status == 2 ? 'RECEIVED' : 'PARTIALLY RECEIVED' }}</span>
+                    </div>
+                    @endif
+                </div>
+            </div>
         </div>
-      
-        <!-- Order Table -->
-        <div>
-          <h2 class="text-lg font-semibold text-gray-900 mb-2">Order</h2>
-          <table class="w-full text-left border-collapse border border-gray-300">
-            <thead>
-              <tr>
-                <th class="border border-gray-300 px-4 py-2">Qty</th>
-                <th class="border border-gray-300 px-4 py-2">Unit</th>
-                <th class="border border-gray-300 px-4 py-2">Items</th>
-                <th class="border border-gray-300 px-4 py-2">Cost</th>
-                <th class="border border-gray-300 px-4 py-2">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="border border-gray-300 px-4 py-2">300.00</td>
-                <td class="border border-gray-300 px-4 py-2">boxes</td>
-                <td class="border border-gray-300 px-4 py-2">
-                  Items 102 <br />
-                  sample only
-                </td>
-                <td class="border border-gray-300 px-4 py-2">200</td>
-                <td class="border border-gray-300 px-4 py-2">60,000</td>
-              </tr>
-              <tr>
-                <td class="border border-gray-300 px-4 py-2">200.00</td>
-                <td class="border border-gray-300 px-4 py-2">pcs</td>
-                <td class="border border-gray-300 px-4 py-2">
-                  Items 102 <br />
-                  sample only
-                </td>
-                <td class="border border-gray-300 px-4 py-2">205</td>
-                <td class="border border-gray-300 px-4 py-2">41,000</td>
-              </tr>
-              <tr>
-                <td colspan="4" class="text-right font-bold px-4 py-2 border border-gray-300">
-                  Total
-                </td>
-                <td class="border border-gray-300 px-4 py-2 font-bold">101,000</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      
-        <!-- Remarks Section -->
-        <div class="mt-4 flex justify-between">
-          <div>
-            <h2 class="text-sm font-medium text-gray-500">Remark</h2>
-            <p class="text-gray-900">BO Receive (Partial)</p>
-          </div>
-          <div>
-            <h2 class="text-sm font-medium text-blue-500 font-semibold text-right">PARTIALLY RECEIVED</h2>
-          </div>
-        </div>
-      </div>
-      
-  </div>
+    </div>
 </div>
-
 @endsection
