@@ -45,6 +45,11 @@ Route::resource('back-order', BackOrderController::class);
 
 // Return List Routes
 Route::resource('return', ReturnListController::class);
+Route::get('/returns/{id}', [ReturnListController::class, 'show'])->name('returns.show');
+Route::get('/returns/create', [ReturnListController::class, 'create'])->name('returns.create');
+Route::post('/return', [ReturnListController::class, 'store'])->name('returns.store');
+Route::get('/returns/items/{supplier_id}', [ReturnListController::class, 'getItemsBySupplier']);
+
 
 // Stock List Routes
 Route::get('/stocks/search', [StockController::class, 'search'])->name('stocks.search');

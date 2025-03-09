@@ -24,117 +24,18 @@ class ReturnListController extends Controller
             'perPageOptions' => [10, 20, 30, 50]
         ]);
     }
-    public function create()
-{
-    $stocks = Stock::all();
-
-    $suppliers = DB::table('suppliers as s')
-        ->select('s.id as supplier_id', 's.name as supplier_name')
-        ->selectRaw("JSON_ARRAYAGG(
-            JSON_OBJECT(
-                'item_id', i.id,
-                'item_name', i.name,
-                'item_cost', i.cost,
-                'stocks', IFNULL((
-                    SELECT JSON_ARRAYAGG(
-                        JSON_OBJECT('stock_id', st.id)
-                    ) FROM stocks AS st WHERE st.item_id = i.id
-                ), JSON_ARRAY())
-            )
-        ) AS items")
-        ->join('items as i', 's.id', '=', 'i.supplier_id')
-        ->groupBy('s.id', 's.name')
-        ->get();
-
-    // Decode JSON for easier handling in Blade
-    foreach ($suppliers as $sup) {
-        $sup->items = json_decode($sup->items);
-    }
-
-    return view('return.create', compact('stocks', 'suppliers'));
-}
-
-    // public function create()
-    // {
-    //     $stocks = Stock::all();
-    //     $suppliers = DB::table('suppliers as s')
-    //         ->select('s.id as supplier_id', 's.name as supplier_name')
-    //         ->selectRaw("JSON_ARRAYAGG(
-    //             JSON_OBJECT(
-    //                 'item_id', i.id,
-    //                 'item_name', i.name,
-    //                 'item_cost', i.cost,
-    //                 'stock_id', st.id  
-    //             )
-    //         ) AS items")
-    //         ->join('items as i', 's.id', '=', 'i.supplier_id')
-    //         ->leftJoin('stocks as st', 'i.id', '=', 'st.item_id')  
-    //         ->groupBy('s.id', 's.name')
-    //         ->get();
-
-    //     foreach ($suppliers as $sup) {
-    //         $sup->items = json_decode($sup->items);  // Decode the JSON string
-    //     }
-
-    //     return view('return.create', compact('stocks', 'suppliers'));
-    // }
-
-
-
-
-    
-
-    
-
-    // public function create()
-    // {
-    //     $stocks = Stock::all();   
-
-    //     $suppliers = DB::table('suppliers as s')
-    //         ->select('s.id as supplier_id', 's.name as supplier_name')
-    //         ->selectRaw("JSON_ARRAYAGG(
-    //             JSON_OBJECT(
-    //                 'item_id', i.id,
-    //                 'item_name', i.name,
-    //                 'item_cost', i.cost,
-
-    //                 'stock_price', (SELECT MAX(price) FROM stocks WHERE stocks.item_id = i.id)
-    //             )
-    //         ) AS items")
-    //         ->join('items as i', 's.id', '=', 'i.supplier_id')
-    //         ->groupBy('s.id', 's.name')
-    //         ->get();
-    //      foreach ($suppliers as $sup) {
-    //         $sup->items = json_decode($sup->items);  // Decode the JSON string
-    //     }
-
-    //     return view('return.create', compact('stocks', 'suppliers'));
-    // }
-
-    public function store(Request $request)
-    {
-        $latestReturn = ReturnList::latest()->first();
-        $nextNumber = $latestReturn ? ((int) substr($latestReturn->return_code, -3)) + 1 : 1;
-        $returnCode = 'RC-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
-
-         ReturnList::create([
-            'return_code' => $returnCode,
-            'supplier_id' => $request->supplier_id,
-            'stock_id' => $request->stock_id,
-            'amount' => $request->amount,
-            'remarks' => $request->remarks,
-        ]);
-
-        return redirect()->route('return.index')->with('success', 'Return list created successfully!');
-    }
 
     /**
      * Display the specified resource.
      */
-    public function show(ReturnList $return)
+    public function show($id)
     {
-        $return->load('item');
-        return view('return.show', compact('return')); // Ensure the view exists
+        $return = ReturnList::with('supplier')->findOrFail($id);
+
+        // Get stocks based on stock_ids
+        $stocks = Stock::whereIn('id', json_decode($return->stock_ids) ?? [])->with('item')->get();
+
+        return view('return.show', compact('return', 'stocks'));
 
     }
 
@@ -154,7 +55,6 @@ class ReturnListController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
         $validatedData = $request->validate([
             'return_code' => 'required|string|max:255',
             'supplier_id' => 'required|exists:suppliers,id',
@@ -172,7 +72,6 @@ class ReturnListController extends Controller
      */
     public function destroy(Stock $return)
     {
-        //
         $return->delete();
 
         // Redirect to the stock list with a success message
@@ -207,5 +106,88 @@ class ReturnListController extends Controller
             ->paginate(10);
             return response()->json(['returns' => $returns]);
 
+    }
+
+    public function create()
+    {
+        $suppliers = Supplier::all(); // Fetch suppliers for the dropdown
+        $items = collect(); // Default empty collection for items
+    
+        return view('return.create', compact('suppliers', 'items'));
+    }
+
+    public function store(Request $request)
+    {
+        try {
+        $request->validate([
+            'supplier_id' => 'required|exists:suppliers,id', // Ensure supplier exists
+            'remarks' => 'nullable|string', // Remarks are optional
+            'items' => 'required|array',
+            'items.*.item.id' => 'required|exists:items,id',
+            'items.*.item.cost' => 'required|numeric|min:0',
+            'items.*.quantity' => 'required|integer|min:1',
+        ]);
+
+        // Generate the next Return code
+        $lastReturn = ReturnList::orderBy('id', 'desc')->first(); // Get the last ReturnList by ID
+        if ($lastReturn) {
+            $lastCode = $lastReturn->return_code;
+            // Extract the numeric part of the PO code
+            $lastNumber = (int) substr($lastCode, 1); // Assumes format is "R-XXXXX"
+            $nextNumber = $lastNumber + 1; // Increment by 1
+
+            // Check if the nextNumber already exists in the database
+            $existingCodes = ReturnList::pluck('return_code')->toArray();
+            while (in_array('R' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT), $existingCodes)) {
+                $nextNumber++; // Increment until we find a unique code
+            }
+
+            $returnCode = 'R' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT); // Format as PO-00001, PO-00002, etc.
+        } else {
+            $returnCode = 'R00001'; // Default if no POs exist
+        }
+
+        $stockIds = []; // To store newly created stock IDs
+        $amount = 0; // To store the total amount
+
+        // 1️⃣ **Create Stocks First**
+        foreach ($request->items as $item) {
+            $total = $item['item']['cost'] * $item['quantity'];
+            $stock = Stock::create([
+                'item_id' => $item['item']['id'],
+                'quantity' => -$item['quantity'], // Reduce stock
+                'price' => $item['item']['cost'],
+                'total' => $total,
+                'type' => 2, // Return type
+            ]);
+
+            $stockIds[] = $stock->id; // Collect stock IDs
+            $amount += $total; // Add to the total amount
+        }
+
+        // 2️⃣ **Create Return List After Stocks**
+        $return = ReturnList::create([
+            'return_code' => $returnCode,
+            'supplier_id' => $request->supplier_id,
+            'stock_ids' => json_encode($stockIds), // Store as JSON array
+            'amount' => $amount,
+            'remarks' => $request->remarks,
+        ]);
+
+        session()->flash('success', 'Return created successfully!');
+        return response()->json([
+            'redirect' => route('return.index'),
+            'message' => 'Return created successfully!'
+        ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Internal Server Error', 'details' => $e->getMessage()], 500);
+        }
+    }
+    public function getItemsBySupplier(Request $request)
+    {
+        // Ensure that the supplier exists and get the related items
+        $supplier = Supplier::with('items')->findOrFail($request->supplier_id);
+
+        return response()->json($supplier);
     }
 }
