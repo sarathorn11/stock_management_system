@@ -22,30 +22,30 @@
   <div class="w-full h-full">
     <form id="receivingForm" method="POST" action="#">
       @csrf
-      <table class="table-auto w-full border-collapse border border-gray-300">
-        <thead>
+      <table class="table-auto w-full border-collapse">
+        <thead class="bg-[#001f3f] text-white">
           <tr>
-            <th class="px-4 py-4 border border-gray-300">
+            <th class="px-4 py-2">
               <input type="checkbox" id="selectAll">
             </th>
-            <th class="px-4 py-4 border border-gray-300">ID</th>
-            <th class="px-4 py-4 border border-gray-300">Date Created</th>
-            <th class="px-4 py-4 border border-gray-300">From</th>
-            <th class="px-4 py-4 border border-gray-300">Items</th>
+            <th class="px-4 py-2">ID</th>
+            <th class="px-4 py-2">Date Created</th>
+            <th class="px-4 py-2">From</th>
+            <th class="px-4 py-2">Items</th>
           </tr>
         </thead>
         <tbody>
           @foreach($receivings as $receiving)
           <tr class="bg-white hover:bg-gray-200 cursor-pointer" onclick="window.location.href='{{ route('receiving.show', $receiving->id) }}'">
-            <td class="px-4 py-2 text-center border border-gray-300">
+            <td class="px-4 py-2 text-center">
               <input type="checkbox" name="selected_ids[]" value="{{ $receiving->id }}" class="recordCheckbox" onclick="event.stopPropagation();">
             </td>
-            <td class="px-4 py-2 text-center border border-gray-300">{{ $receiving->id }}</td>
-            <td class="px-4 py-2 text-center border border-gray-300">{{ $receiving->created_at }}</td>
-            <td class="px-4 py-2 text-center border border-gray-300">
+            <td class="px-4 py-2 text-center">{{ $receiving->id }}</td>
+            <td class="px-4 py-2 text-center">{{ $receiving->created_at }}</td>
+            <td class="px-4 py-2 text-center">
               {{ $receiving->from_order == 1 ? 'PO' : 'BO' }}
             </td>
-            <td class="px-4 py-2 text-center border border-gray-300">
+            <td class="px-4 py-2 text-center">
               {{ $receiving->stock_ids }}
             </td>
           </tr>
