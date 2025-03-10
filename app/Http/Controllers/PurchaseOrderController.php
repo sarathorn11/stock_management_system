@@ -6,6 +6,7 @@ use App\Models\PurchaseOrder;
 use App\Models\Supplier;
 use App\Models\Item;
 use App\Models\PoItem;
+use App\Models\Receiving;
 use Illuminate\Http\Request;
 
 class PurchaseOrderController extends Controller
@@ -197,5 +198,68 @@ class PurchaseOrderController extends Controller
         PurchaseOrder::whereIn('id', $ids)->delete();
 
         return redirect()->route('purchase-order.index')->with('success', 'Selected purchase orders deleted successfully.');
+    }
+    public function receive($id, Request $request)
+    {
+        // Find the purchase order and eager load items with their related item details
+        $purchaseOrder = PurchaseOrder::with('items.item')->findOrFail($id);
+
+        // Handle POST request (process the receive action)
+        if ($request->isMethod('POST')) {
+            try {
+                // Check if the purchase order is already received
+                if ($purchaseOrder->status === 'received') {
+                    return redirect()->route('purchase-order.index')
+                        ->with('error', 'This purchase order has already been received.');
+                }
+
+                // Prepare data for the receiving record
+                $data = [
+                    'from_id' => $purchaseOrder->id,
+                    'from_type' => PurchaseOrder::class, // Ensure this is included
+                    'from_order' => 1, // 1 = Purchase Order
+                    'amount' => $purchaseOrder->amount,
+                    'discount_perc' => $purchaseOrder->discount_perc,
+                    'discount' => $purchaseOrder->discount_amount,
+                    'tax_perc' => $purchaseOrder->tax_perc,
+                    'tax' => $purchaseOrder->tax_amount,
+                    'stock_ids' => $purchaseOrder->items->isNotEmpty() 
+                        ? json_encode($purchaseOrder->items->mapWithKeys(function ($item) {
+                            return [
+                                $item->item_id => [
+                                    'quantity' => $item->quantity,
+                                    'unit' => $item->item->unit, // Access unit from the item relationship
+                                    'name' => $item->item->name, // Access name from the item relationship
+                                    'cost' => $item->item->cost, // Access cost from the item relationship
+                                ],
+                            ];
+                        })) 
+                        : null,
+                    'remarks' => $purchaseOrder->remarks,
+                ];
+
+                \Log::info('Creating receiving record:', $data); // Log the data
+
+                // Create a new receiving record
+                $receiving = Receiving::create($data);
+
+                // Update the purchase order status to "received"
+                $purchaseOrder->update(['status' => 'received']);
+
+                // Redirect back with a success message
+                return redirect()->route('purchase-order.index')
+                    ->with('success', 'Purchase order received successfully.');
+            } catch (\Exception $e) {
+                // Log the error for debugging
+                \Log::error('Error receiving purchase order: ' . $e->getMessage(), [
+                    'purchase_order_id' => $id,
+                    'error' => $e->getTraceAsString(),
+                ]);
+
+                // Redirect back with an error message
+                return redirect()->route('purchase-order.index')
+                    ->with('error', 'An error occurred while receiving the purchase order: ' . $e->getMessage());
+            }
+        }
     }
 }

@@ -26,6 +26,7 @@ class ReceivingSeeder extends Seeder
             Receiving::create([
                 'from_id' => rand(1, 20),
                 'from_order' => rand(1, 2),
+                'from_type' => rand(1,2),
                 'amount' => rand(100, 1000),
                 'discount_perc' => rand(0, 10),
                 'discount' => rand(0, 100),

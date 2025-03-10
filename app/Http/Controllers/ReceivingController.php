@@ -37,33 +37,35 @@ class ReceivingController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the form data
-        $validated = $request->validate([
-            'from_id' => 'required|string|max:255',
+        // Validate the request data
+        $request->validate([
             'from_order' => 'required|in:1,2',
-            'amount' => 'required|numeric|min:0',
-            'discount_perc' => 'nullable|numeric|min:0',
-            'discount' => 'nullable|numeric|min:0',
-            'tax_perc' => 'nullable|numeric|min:0',
-            'tax' => 'nullable|numeric|min:0',
-            'stock_ids' => 'required|string|max:255',
-            'remarks' => 'nullable|string|max:500',
+            'from_id' => 'required|integer',
+            'amount' => 'required|numeric',
+            'discount_perc' => 'nullable|numeric',
+            'discount' => 'nullable|numeric',
+            'tax_perc' => 'nullable|numeric',
+            'tax' => 'nullable|numeric',
+            'stock_ids' => 'nullable|json',
+            'remarks' => 'nullable|string',
         ]);
-    
-        // Store the data
-        $receiving = new Receiving();
-        $receiving->from_id = $request->from_id;
-        $receiving->from_order = $request->from_order;
-        $receiving->amount = $request->amount;
-        $receiving->discount_perc = $request->discount_perc;
-        $receiving->discount = $request->discount;
-        $receiving->tax_perc = $request->tax_perc;
-        $receiving->tax = $request->tax;
-        $receiving->stock_ids = $request->stock_ids;
-        $receiving->remarks = $request->remarks;
-        $receiving->save();
-    
-        return redirect()->route('receiving.index')->with('success', 'Receiving added successfully!');
+
+        // Create a new receiving record
+        Receiving::create([
+            'from_order' => $request->input('from_order'),
+            'from_id' => $request->input('from_id'),
+            'amount' => $request->input('amount'),
+            'discount_perc' => $request->input('discount_perc'),
+            'discount' => $request->input('discount'),
+            'tax_perc' => $request->input('tax_perc'),
+            'tax' => $request->input('tax'),
+            'stock_ids' => $request->input('stock_ids'),
+            'remarks' => $request->input('remarks'),
+        ]);
+
+        // Redirect back with a success message
+        return redirect()->route('receiving.index')
+            ->with('success', 'Receiving record created successfully.');
     }
     
 

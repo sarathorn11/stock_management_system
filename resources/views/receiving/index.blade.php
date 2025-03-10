@@ -5,10 +5,14 @@
   <h1 class="text-xl font-bold text-gray-800">Receiving List</h1>
 
   <div class="flex items-center justify-between my-4">
-    <input type="text" placeholder="Search..." class="px-3 py-2 w-[350px] rounded border-gray-300">
+    <form action="{{ route('receiving.index') }}" method="GET">
+        <input type="text" name="query" class="rounded px-4 py-2 w-2/4"
+            placeholder="Search ...." value="{{ request('query') }}">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
+    </form>
     <div class="flex items-center">
-      <a href="{{ route('receiving.create') }}"
-        class="inline-block bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600">Create</a>
+      <!-- <a href="{{ route('receiving.create') }}"
+        class="inline-block bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600">Create</a> -->
       <a class="inline-block bg-gray-300 text-black px-4 py-2 rounded mb-4 hover:bg-gray-400 ml-2">
         <i class="fa fa-cog mr-2"></i> Option
       </a>
@@ -31,7 +35,6 @@
             <th class="px-4 py-2">ID</th>
             <th class="px-4 py-2">Date Created</th>
             <th class="px-4 py-2">From</th>
-            <th class="px-4 py-2">Items</th>
           </tr>
         </thead>
         <tbody>
@@ -45,9 +48,8 @@
             <td class="px-4 py-2 text-center">
               {{ $receiving->from_order == 1 ? 'PO' : 'BO' }}
             </td>
-            <td class="px-4 py-2 text-center">
-              {{ $receiving->stock_ids }}
-            </td>
+           
+           
           </tr>
           @endforeach
         </tbody>

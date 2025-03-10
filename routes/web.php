@@ -39,6 +39,10 @@ Route::get('/get-item-details/{id}', [PurchaseOrderController::class, 'getItemDe
 
 // Receiving Routes
 Route::resource('receiving', ReceivingController::class);
+Route::match(['GET', 'POST'], '/purchase-order/{id}/receive', [PurchaseOrderController::class, 'receive'])
+    ->name('purchase-order.receive');
+Route::post('/receivings', [ReceivingController::class, 'store'])
+    ->name('receiving.store');
 
 // Back Order Routes
 Route::resource('back-order', BackOrderController::class);

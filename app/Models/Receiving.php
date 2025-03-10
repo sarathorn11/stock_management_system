@@ -15,6 +15,7 @@ class Receiving extends Model
     // The attributes that are mass assignable
     protected $fillable = [
         'from_id',
+        'from_type', // Add this
         'from_order',
         'amount',
         'discount_perc',
@@ -28,14 +29,12 @@ class Receiving extends Model
     // Polymorphic relation to 'from' (supplier, vendor, etc.)
     public function from()
     {
-        return $this->morphTo(__FUNCTION__, 'from_order', 'from_id');
+        return $this->morphTo(__FUNCTION__, 'from_type', 'from_id');
     }
 
-    // Relationship for stock items (many-to-many)
-    public function stockItems()
-    {
-        return $this->belongsToMany(StockItem::class, 'receiving_stock_item', 'receiving_id', 'stock_item_id');
-    }
-
-    // Additional methods or logic can go here
+    // public function stockItems()
+    // {
+    //     return $this->belongsToMany(StockItem::class, 'receiving_stock_item', 'receiving_id', 'stock_item_id')
+    //                 ->withPivot('quantity', 'unit', 'cost');
+    // }
 }

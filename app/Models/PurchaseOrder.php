@@ -108,4 +108,9 @@ class PurchaseOrder extends Model
     {
         $this->attributes['status'] = (int) $value;
     }
+    
+    public function receivings()
+    {
+        return $this->morphMany(Receiving::class, 'from');
+    }
 }
