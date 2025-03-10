@@ -48,6 +48,7 @@ Route::resource('return', ReturnListController::class);
 Route::get('/returns/{id}', [ReturnListController::class, 'show'])->name('returns.show');
 Route::get('/returns/create', [ReturnListController::class, 'create'])->name('returns.create');
 Route::post('/return', [ReturnListController::class, 'store'])->name('returns.store');
+Route::put('/return/{id}', [ReturnListController::class, 'update'])->name('returns.update');
 Route::get('/returns/items/{supplier_id}', [ReturnListController::class, 'getItemsBySupplier']);
 
 

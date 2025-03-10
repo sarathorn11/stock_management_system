@@ -39,33 +39,6 @@ class ReturnListController extends Controller
 
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ReturnList $returnList)
-    {
-        $stock = Stock::all();
-        $supplier = Supplier::all();
-        return view('returns.edit', compact('return', 'supplier', 'stock')); // Ensure the view exists
-
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
-    {
-        $validatedData = $request->validate([
-            'return_code' => 'required|string|max:255',
-            'supplier_id' => 'required|exists:suppliers,id',
-            'stock_id' => 'required|exists:stocks,id',
-            'amount' => 'required|numeric|min:0',
-            'remarks' => 'nullable|string',
-        ]);
-        $return = ReturnList::findOrFail($id);
-        $return->update($validatedData);
-        return redirect()->route('return.index')->with('success', 'Return list updated successfully.');
-    }
 
     /**
      * Remove the specified resource from storage.
@@ -112,7 +85,7 @@ class ReturnListController extends Controller
     {
         $suppliers = Supplier::all(); // Fetch suppliers for the dropdown
         $items = collect(); // Default empty collection for items
-    
+
         return view('return.create', compact('suppliers', 'items'));
     }
 
@@ -189,5 +162,84 @@ class ReturnListController extends Controller
         $supplier = Supplier::with('items')->findOrFail($request->supplier_id);
 
         return response()->json($supplier);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id)
+    {
+        // Retrieve the existing return record
+        $return = ReturnList::findOrFail($id);
+
+        // Retrieve the items and stock associated with the return
+        $items = Item::where('supplier_id', $return->supplier_id)->get();  // You may need to set up the correct relationship in the model
+        $stocks = Stock::whereIn('id', json_decode($return->stock_ids) ?? [])->with('item')->get();
+
+        // Return view with the existing return and items
+        return view('return.edit', compact('return', 'stocks', 'items'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, $id)
+    {
+        try {
+            // Validate the incoming request
+            $request->validate([
+                'supplier_id' => 'required|exists:suppliers,id', // Ensure supplier exists
+                'remarks' => 'nullable|string', // Remarks are optional
+                'items' => 'required|array',
+                'items.*.item.id' => 'required|exists:items,id',
+                'items.*.item.cost' => 'required|numeric|min:0',
+                'items.*.quantity' => 'required|integer|min:1',
+            ]);
+
+            // Retrieve the existing return record
+            $return = ReturnList::findOrFail($id);
+
+            // Prepare the stock IDs and total amount
+            $stockIds = [];
+            $amount = 0;
+
+            // 1️⃣ **Delete Previous Stocks if Necessary**
+            // This step ensures that the stocks from the previous return are properly handled
+            $existingStockIds = json_decode($return->stock_ids, true);
+            if (!empty($existingStockIds)) {
+                Stock::whereIn('id', $existingStockIds)->delete(); // Remove previous stocks
+            }
+
+            // 2️⃣ **Create New Stocks**
+            foreach ($request->items as $item) {
+                $total = $item['item']['cost'] * $item['quantity'];
+                $stock = Stock::create([
+                    'item_id' => $item['item']['id'],
+                    'quantity' => -$item['quantity'], // Reduce stock
+                    'price' => $item['item']['cost'],
+                    'total' => $total,
+                    'type' => 2, // Return type
+                ]);
+
+                $stockIds[] = $stock->id; // Collect stock IDs
+                $amount += $total; // Add to the total amount
+            }
+
+            // 3️⃣ **Update Return List with New Data**
+            $return->update([
+                'supplier_id' => $request->supplier_id,
+                'stock_ids' => json_encode($stockIds),
+                'amount' => $amount,
+                'remarks' => $request->remarks,
+            ]);
+
+            session()->flash('success', 'Return updated successfully!');
+            return response()->json([
+                'redirect' => route('return.index'),
+                'message' => 'Return updated successfully!'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Internal Server Error', 'details' => $e->getMessage()], 500);
+        }
     }
 }
