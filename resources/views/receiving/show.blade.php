@@ -23,8 +23,12 @@
     <!-- Content to Print -->
     <div class="print">
         <div class="mb-6">
-            <p><strong>P.O. Code:</strong> P0-0002</p>
-            <p><strong>FROM B.O CODE:</strong> B0-003</p>
+            <!-- Display P.O. Code or B.O. Code based on the source -->
+            @if ($receiving->from_order == 1)
+                <p><strong>P.O. Code:</strong> {{ $receiving->from->po_code ?? 'N/A' }}</p>
+            @elseif ($receiving->from_order == 2)
+                <p><strong>B.O. Code:</strong> {{ $receiving->from->bo_code ?? 'N/A' }}</p>
+            @endif
         </div>
 
         <h2 class="text-xl font-semibold mb-4">Order</h2>
@@ -39,35 +43,37 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td class="border border-gray-300 px-4 py-2">300.00</td>
-                    <td class="border border-gray-300 px-4 py-2">boxes</td>
-                    <td class="border border-gray-300 px-4 py-2">Items 102 sample only</td>
-                    <td class="border border-gray-300 px-4 py-2">200</td>
-                    <td class="border border-gray-300 px-4 py-2">60,000</td>
-                </tr>
-                <tr>
-                    <td class="border border-gray-300 px-4 py-2">200.00</td>
-                    <td class="border border-gray-300 px-4 py-2">pcs</td>
-                    <td class="border border-gray-300 px-4 py-2">Items 102 sample only</td>
-                    <td class="border border-gray-300 px-4 py-2">205</td>
-                    <td class="border border-gray-300 px-4 py-2">41,000</td>
-                </tr>
+
+                @php
+                    $stockIds = json_decode($receiving->stock_ids, true);
+                @endphp
+
+                @foreach ($stockIds as $itemId => $itemDetails)
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2">{{ $itemDetails['quantity'] }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ $itemDetails['unit'] }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ $itemDetails['name'] }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ number_format($itemDetails['cost'], 2) }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ number_format($itemDetails['quantity'] * $itemDetails['cost'], 2) }}</td>
+                    </tr>
+                @endforeach
+
+                <!-- Display subtotal, discount, tax, and total -->
                 <tr class="bg-gray-100">
                     <td colspan="4" class="border border-gray-300 px-4 py-2 text-right"><strong>Sub total</strong></td>
-                    <td class="border border-gray-300 px-4 py-2">101,000.00</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ number_format($receiving->amount, 2) }}</td>
                 </tr>
                 <tr class="bg-gray-100">
-                    <td colspan="4" class="border border-gray-300 px-4 py-2 text-right"><strong>Discount 5%</strong></td>
-                    <td class="border border-gray-300 px-4 py-2">5,050.00</td>
+                    <td colspan="4" class="border border-gray-300 px-4 py-2 text-right"><strong>Discount {{ $receiving->discount_perc }}%</strong></td>
+                    <td class="border border-gray-300 px-4 py-2">{{ number_format($receiving->discount, 2) }}</td>
                 </tr>
                 <tr class="bg-gray-100">
-                    <td colspan="4" class="border border-gray-300 px-4 py-2 text-right"><strong>Tax 12%</strong></td>
-                    <td class="border border-gray-300 px-4 py-2">11,514.00</td>
+                    <td colspan="4" class="border border-gray-300 px-4 py-2 text-right"><strong>Tax {{ $receiving->tax_perc }}%</strong></td>
+                    <td class="border border-gray-300 px-4 py-2">{{ number_format($receiving->tax, 2) }}</td>
                 </tr>
                 <tr class="bg-gray-200">
                     <td colspan="4" class="border border-gray-300 px-4 py-2 text-right"><strong>Total</strong></td>
-                    <td class="border border-gray-300 px-4 py-2">107,464.00</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ number_format($receiving->amount - $receiving->discount + $receiving->tax, 2) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -75,13 +81,11 @@
         <div class="mt-6">
             <div>
                 <p><strong>Remark:</strong></p>
-                <p>BO Receive (Partial)</p>
+                <p>{{ $receiving->remarks ?? 'N/A' }}</p>
             </div>
             <div>
-            <p>PARTIALLY RECEIVED</p>
+                <p><strong>Status:</strong> {{ $receiving->status }}</p>
             </div>
-            
-           
         </div>
     </div>
 </div>

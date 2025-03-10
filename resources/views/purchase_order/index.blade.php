@@ -4,7 +4,13 @@
 <div class="w-full h-full">
     <h1 class="text-2xl font-bold text-gray-800">Purchase Orders</h1>
     <div class="flex items-center justify-between my-4">
-        <input type="text" placeholder="Search..." class="px-3 py-2 w-[350px] rounded border-gray-300">
+        <form action="{{ route('purchase-order.index') }}" method="GET">
+            <input type="text" name="query" class="rounded px-4 py-2 w-2/4"
+                placeholder="Search ...." value="{{ request('query') }}">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
+        </form>
+        <!-- <input type="text" placeholder="Search..." class="px-3 py-2 w-[350px] rounded border-gray-300">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button> -->
         <div class="flex items-center justify-between">
             <a href="{{ route('purchase-order.create') }}"
                 class="inline-block bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600">Create</a>
@@ -19,6 +25,7 @@
                 <div id="option-menu" class="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10 hidden">
                     <div class="py-1">
                         <a href="#" class="text-gray-700 block px-4 py-2 text-sm">Edit</a>
+                        <a href="#" id="receive-selected" class="text-red-600 block px-4 py-2 text-sm">Receive</a>
                         <a href="#" id="delete-selected" class="text-red-600 block px-4 py-2 text-sm">Delete</a>
                     </div>
                 </div>
@@ -62,10 +69,10 @@
                         <td class="px-4 py-2 text-center">
                             <input type="checkbox" class="select-record cursor-pointer transform scale-125" value="{{ $purchaseOrder->id }}" onclick="event.stopPropagation();">
                         </td>
-                        <td class="px-4 py-2">{{ $purchaseOrder->id }}</td>
-                        <td class="px-4 py-2">{{ $purchaseOrder->po_code }}</td>
-                        <td class="px-4 py-2">{{ optional($purchaseOrder->supplier)->name }}</td>
-                        <td class="px-4 py-2">{{ number_format($purchaseOrder->amount, 2) }}</td>
+                        <td class="px-4 py-2 text-center">{{ $purchaseOrder->id }}</td>
+                        <td class="px-4 py-2 text-center">{{ $purchaseOrder->po_code }}</td>
+                        <td class="px-4 py-2 text-center">{{ optional($purchaseOrder->supplier)->name }}</td>
+                        <td class="px-4 py-2 text-center">{{ number_format($purchaseOrder->amount, 2) }}</td>
                         <td class="px-4 py-2 text-center">
                             @if ($purchaseOrder->status == 0)
                                 <span class="inline-block px-3 py-1 rounded-full bg-blue-500 text-white font-semibold">Pending</span>

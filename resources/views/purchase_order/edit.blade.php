@@ -2,31 +2,37 @@
 
 @section('content')
 <div class="w-full h-full p-8">
-    <!-- Header with Breadcrumb and Buttons -->
-    <div class="flex justify-between items-center mb-6">
-        <!-- Breadcrumb -->
-        <div class="flex items-center gap-2">
-            <a href="{{ route('purchase-order.index') }}"
-                class="text-xl font-bold text-gray-800 hover:text-blue-500 hover:underline hover:cursor-pointer">
-                Purchase Order
-            </a>
-            <h1 class="text-xl font-bold text-gray-800">/</h1>
-            <h1 class="text-xl font-bold text-gray-800 underline">Edit</h1>
-        </div>
-
-        <!-- Buttons -->
-        <div class="flex space-x-4">
-            <a href="{{ route('purchase-order.index') }}"
-                class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 transition duration-300">
-                Cancel
-            </a>
-        </div>
-    </div>
-
     <!-- Edit Form -->
     <form id="edit-form" action="{{ route('purchase-order.update', $purchaseOrder->id) }}" method="POST" class="mt-8">
         @csrf
         @method('PUT') <!-- Use PUT method for updates -->
+
+        <div class="flex justify-between items-center mb-6">
+            <!-- Breadcrumb -->
+            <div class="flex items-center gap-2">
+                <a href="{{ route('purchase-order.index') }}"
+                    class="text-xl font-bold text-gray-800 hover:text-blue-500 hover:underline hover:cursor-pointer">
+                    Purchase Order
+                </a>
+                <h1 class="text-xl font-bold text-gray-800">/</h1>
+                <h1 class="text-xl font-bold text-gray-800 underline">Edit</h1>
+            </div>
+
+            
+            <!-- Buttons -->
+            <div class="flex space-x-4">
+                <!-- Save Button -->
+                <div>
+                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700" type="submit" form="edit-form">Save</button>
+                    <a href="{{ route('purchase-order.index') }}"
+                        class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition duration-300">
+                        Cancel
+                    </a>
+                </div>
+                
+            </div>
+            
+        </div>
 
         <!-- P.O. Code and Supplier -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -167,9 +173,9 @@
         </div>
 
         <!-- Save Button -->
-        <div class="bg-gray-100 p-4 text-center">
+        <!-- <div class="bg-gray-100 p-4 text-center">
             <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700" type="submit" form="edit-form">Save</button>
-        </div>
+        </div> -->
     </form>
 </div>
 

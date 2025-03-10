@@ -16,6 +16,13 @@
 
         <!-- Buttons -->
         <div class="flex space-x-4">
+            <form action="{{ route('purchase-order.receive', $purchaseOrder->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to receive this purchase order?');">
+                @csrf
+                <button type="submit"
+                    class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition duration-300">
+                    Receive
+                </button>
+            </form>
             <a href="{{ route('purchase-order.edit', $purchaseOrder->id) }}"
             class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition duration-300">
                 Edit
