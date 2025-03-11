@@ -6,8 +6,8 @@
 
     <div class="flex justify-between mb-3">
         <form action="{{ route('items.index') }}" method="GET">
-            <input type="text" name="query" class=" rounded px-4 py-2 w-2/4"
-                placeholder="Search ...." value="{{ request('query') }}">
+            <input type="text" name="query" class=" rounded px-4 py-2 w-2/4" placeholder="Search ...."
+                value="{{ request('query') }}">
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
         </form>
         <div>
@@ -43,6 +43,7 @@
                     <th class="px-4 py-2">No.</th>
                     <th class="px-4 py-2">Name</th>
                     <th class="px-4 py-2">Cost</th>
+                    <th class="px-4 py-2">Unit</th>
                     <th class="px-4 py-2">Supplier</th>
                     <th class="px-4 py-2">Date created</th>
                     <th class="px-4 py-2">Status</th>
@@ -57,6 +58,7 @@
                     <td class="px-4 py-2 text-center">{{ $index + 1 }}</td>
                     <td class="px-4 py-2 text-center">{{ $item->name }}</td>
                     <td class="px-4 py-2 text-center">{{ $item->cost }}$</td>
+                    <td class="px-4 py-2 text-center">{{ $item->unit }}</td>
                     <td class="px-4 py-2 text-center">{{ $item->supplier->name }}</td>
                     <td class="px-4 py-2 text-center">{{ $item->created_at->format('Y-m-d h:i a') }}</td>
                     <td class="px-4 py-2 text-center">
@@ -82,8 +84,8 @@
             @csrf
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                <input id="name" name="name" type="text" class="w-full rounded px-4 py-2"
-                    placeholder="Item name" required>
+                <input id="name" name="name" type="text" class="w-full rounded px-4 py-2" placeholder="Item name"
+                    required>
             </div>
             <div>
                 <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
@@ -96,11 +98,15 @@
                 <input name="cost" step="0.001" type="number" id="cost" min="0" placeholder="Cost"
                     class=" w-full rounded px-4 py-2" required>
             </div>
+            <div>
+                <label for="unit" class="block text-sm font-medium text-gray-700">Unit</label>
+                <input name="unit" step="0.001" type="text" id="unit" min="0" placeholder="Unit"
+                    class=" w-full rounded px-4 py-2" required>
+            </div>
 
             <div>
                 <label for="supplier_id" class="block text-sm font-medium text-gray-700">Supplier</label>
-                <select id="supplier_id" name="supplier_id" class=" w-full rounded px-4 py-2"
-                    required>
+                <select id="supplier_id" name="supplier_id" class=" w-full rounded px-4 py-2" required>
                     <option value="">Select Supplier</option>
                     <option value="1">Supplier 001</option>
                     <option value="2">Supplier 002</option>
@@ -210,7 +216,6 @@
     }
 
     function fetchItemDetails(id = null) {
-        console.log('Fetching item details:', id);
         toggleModal(true);
         if (id) {
             // Update action
@@ -221,6 +226,7 @@
                     document.getElementById('name').value = data.name;
                     document.getElementById('description').value = data.description;
                     document.getElementById('cost').value = data.cost;
+                    document.getElementById('unit').value = data.unit;
                     document.getElementById('supplier_id').value = data.supplier_id;
                     document.getElementById('status').value = data.status;
 
@@ -301,8 +307,8 @@
     function validateForm() {
         const form = document.getElementById('itemForm');
         const saveButton = document.getElementById('saveItemForm');
-
         if (form.checkValidity()) {
+
             saveButton.disabled = false;
             saveButton.classList.remove("opacity-50", "cursor-not-allowed");
         } else {
@@ -313,16 +319,18 @@
 
     // Attach event listeners to input fields to trigger validation
     document.addEventListener("DOMContentLoaded", function() {
-        console.log("DOMContentLoaded");
+        document.addEventListener("input", function(event) {
+            if (event.target.closest("#itemForm input, #itemForm textarea, #itemForm select")) {
+                validateForm();
+            }
+        });
 
-        const itemForm = document.getElementById("itemForm");
+        document.addEventListener("change", function(event) {
+            if (event.target.closest("#itemForm input, #itemForm textarea, #itemForm select")) {
+                validateForm();
+            }
+        });
 
-        if (itemForm) {
-            itemForm.addEventListener("input", validateForm);
-            itemForm.addEventListener("change", validateForm);
-        }
-
-        // Run validation on page load (in case of pre-filled data)
         validateForm();
     });
 </script>

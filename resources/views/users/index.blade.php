@@ -6,8 +6,8 @@
 
     <div class="flex justify-between mb-3">
         <form action="{{ route('user.index') }}" method="GET">
-            <input type="text" name="query" class="rounded px-4 py-2 w-2/4"
-                placeholder="Search ...." value="{{ request('query') }}">
+            <input type="text" name="query" class="rounded px-4 py-2 w-2/4" placeholder="Search ...."
+                value="{{ request('query') }}">
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
         </form>
         <div>
@@ -51,8 +51,8 @@
             <tbody class="bg-white divide-y">
                 @foreach($users as $index => $user)
                 <tr onclick="fetchUserDetails({{ $user->id }})" data-id="{{$user->id}}" class="hover:bg-gray-50">
-                    <td class="px-4 py-2"><input onclick="event.stopPropagation()" class="rowCheckbox" value="{{$user->id}}"
-                            type="checkbox"></td>
+                    <td class="px-4 py-2"><input onclick="event.stopPropagation()" class="rowCheckbox"
+                            value="{{$user->id}}" type="checkbox"></td>
                     <td class="px-4 py-2">{{1 + $index}}</td>
                     <td class="px-4 py-2"><img
                             src="{{$user->profile_picture ? asset('storage/avatars/'.basename($user->profile_picture)) : asset('static/assets/images/default-avatar.png')}}"
@@ -82,13 +82,13 @@
             <!-- Left Column -->
             <div>
                 <label for="first-name" class="block text-sm font-medium text-gray-700">First Name</label>
-                <input id="first-name" name="first_name" type="text"
-                    class="w-full rounded px-4 py-1" placeholder="First name" required>
+                <input id="first-name" name="first_name" type="text" class="w-full rounded px-4 py-1"
+                    placeholder="First name" required>
             </div>
             <div>
                 <label for="last-name" class="block text-sm font-medium text-gray-700">Last Name</label>
-                <input id="last-name" name="last_name" type="text"
-                    class="w-full rounded px-4 py-1" placeholder="Last name" required>
+                <input id="last-name" name="last_name" type="text" class="w-full rounded px-4 py-1"
+                    placeholder="Last name" required>
             </div>
             <div>
                 <label for="username" class="block text-sm font-medium text-gray-700">Nickname</label>
@@ -97,8 +97,8 @@
             </div>
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                <input id="email" name="email" type="email" class="w-full rounded px-4 py-1"
-                    placeholder="Email" required>
+                <input id="email" name="email" type="email" class="w-full rounded px-4 py-1" placeholder="Email"
+                    required>
             </div>
 
             <div>
@@ -173,226 +173,231 @@
 <style>
 </style>
 <script>
-function previewImage(input) {
-    const preview = document.getElementById("avatar-preview");
+    function previewImage(input) {
+        const preview = document.getElementById("avatar-preview");
 
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.src = e.target.result;
-        };
-        reader.readAsDataURL(input.files[0]);
-    } else {
-        preview.src = "default-avatar.png"; // Fallback to default avatar
-    }
-}
-
-function togglePassword(fieldId, iconId) {
-    const passwordInput = document.getElementById(fieldId);
-    const eyeIcon = document.getElementById(iconId);
-
-    if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        eyeIcon.classList.remove('fa-eye-slash');
-        eyeIcon.classList.add('fa-eye');
-    } else {
-        passwordInput.type = 'password';
-        eyeIcon.classList.remove('fa-eye');
-        eyeIcon.classList.add('fa-eye-slash');
-    }
-}
-
-
-function toggleAllRows(source) {
-    const checkboxes = document.querySelectorAll('.rowCheckbox');
-    checkboxes.forEach(checkbox => {
-        checkbox.checked = source.checked;
-    });
-}
-
-function deleteSelectedRows() {
-    clickAction()
-    const checkboxes = document.querySelectorAll('.rowCheckbox:checked');
-    if (checkboxes.length === 0) {
-        alert('Please select at least one item to delete.');
-        return;
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.src = "default-avatar.png"; // Fallback to default avatar
+        }
     }
 
-    // Get selected item IDs
-    const selectedIds = Array.from(checkboxes).map(checkbox => checkbox.value);
-    // Send DELETE request to Laravel backend
-    fetch('/user/delete', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                ids: selectedIds
+    function togglePassword(fieldId, iconId) {
+        const passwordInput = document.getElementById(fieldId);
+        const eyeIcon = document.getElementById(iconId);
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        }
+    }
+
+
+    function toggleAllRows(source) {
+        const checkboxes = document.querySelectorAll('.rowCheckbox');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = source.checked;
+        });
+    }
+
+    function deleteSelectedRows() {
+        clickAction()
+        const checkboxes = document.querySelectorAll('.rowCheckbox:checked');
+        if (checkboxes.length === 0) {
+            alert('Please select at least one item to delete.');
+            return;
+        }
+
+        // Get selected item IDs
+        const selectedIds = Array.from(checkboxes).map(checkbox => checkbox.value);
+        // Send DELETE request to Laravel backend
+        fetch('/user/delete', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ids: selectedIds
+                })
             })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Remove deleted rows from the table
-                selectedIds.forEach(id => {
-                    const row = document.querySelector(`tr[data-id="${id}"]`);
-                    if (row) row.remove();
-                });
-
-                // Uncheck the "Check All" checkbox if all items are removed
-                document.getElementById('checkAll').checked = false;
-                window.location.assign('/user');
-            } else {
-                alert('Failed to delete items.');
-            }
-        })
-        .catch(error => console.error('Error deleting items:', error));
-}
-
-function clickAction() {
-    const btnAction = document.getElementById('action');
-    btnAction.classList.toggle('hidden');
-}
-
-function toggleModal(show) {
-    const modal = document.getElementById('modal');
-    const form = document.getElementById('userForm');
-
-    // Remove the _method input if it's present (for create action)
-    const methodField = form.querySelector('input[name="_method"]');
-    if (methodField) {
-        methodField.remove();
-    }
-
-    // Reset form values when closing the modal
-    if (!show) {
-        form.reset();
-    }
-
-    modal.classList.toggle('hidden', !show);
-}
-
-function fetchUserDetails(id = null) {
-    toggleModal(true);
-    if (id) {
-        // Update action
-        fetch(`/user/${id}`)
             .then(response => response.json())
             .then(data => {
-                console.log(data);
-                // Populate modal fields with data
-                document.getElementById('username').value = data.username;
-                document.getElementById('user-id').value = id;
-                document.getElementById('email').value = data.email;
-                document.getElementById('first-name').value = data.first_name;
-                document.getElementById('last-name').value = data.last_name;
-                document.getElementById('gender').value = data.gender;
-                document.getElementById('role').value = data.role;
-                document.getElementById('password').value = '';
-                document.getElementById('password_confirmation').value = '';
-                const preview = document.getElementById("avatar-preview");
-                // Define the base URL for assets from Laravel
-                const storageBaseUrl = "{{ asset('storage/avatars/') }}";
-                const defaultAvatar = "{{ asset('static/assets/images/default-avatar.png') }}";
-                // Set the image source dynamically
-                preview.src = data.profile_picture ? `${storageBaseUrl}/${data.profile_picture.split('/').pop()}` :
-                    defaultAvatar;
-                // Set form action to the update route
-                document.getElementById('userForm').action = `/user/${id}`;
-                // Add a hidden input for the PUT method
-                const methodField = document.createElement('input');
-                methodField.type = 'hidden';
-                methodField.name = '_method';
-                methodField.value = 'PUT';
-                document.getElementById('userForm').appendChild(methodField);
+                if (data.success) {
+                    // Remove deleted rows from the table
+                    selectedIds.forEach(id => {
+                        const row = document.querySelector(`tr[data-id="${id}"]`);
+                        if (row) row.remove();
+                    });
 
-            })
-            .catch(error => console.error('Error fetching item details:', error));
-    } else {
-        // Clear modal fields
-        document.getElementById('first-name').value = '';
-        document.getElementById('last-name').value = '';
-        document.getElementById('username').value = '';
-        document.getElementById('email').value = '';
-        document.getElementById('gender').value = '';
-        document.getElementById('role').value = '';
-        document.getElementById('profile-picture').value = '';
-        // Create action
-        document.getElementById('userForm').action = '/user';
-        document.getElementById('userForm').method = 'POST';
-    }
-}
-
-function fetchSuppliers(id = null) {
-    const supplierSelect = document.getElementById('supplier_id');
-
-    // Clear existing options
-    supplierSelect.innerHTML = '';
-
-    // Fetch suppliers from the server
-    fetch('/supplier', {
-            headers: {
-                "X-Requested-With": "XMLHttpRequest"
-            }
-        })
-        .then(response => response.json())
-        .then(suppliers => {
-            // Add a default option
-            const defaultOption = document.createElement('option');
-            defaultOption.value = '';
-            defaultOption.text = 'Select Supplier';
-            supplierSelect.appendChild(defaultOption);
-
-            // Add supplier options to the dropdown
-            suppliers.forEach(supplier => {
-                const option = document.createElement('option');
-                option.value = supplier.id;
-                option.text = supplier.name;
-                // Preselect the supplier if id matches
-                if (id !== null && supplier.id == id) {
-                    option.selected = true;
+                    // Uncheck the "Check All" checkbox if all items are removed
+                    document.getElementById('checkAll').checked = false;
+                    window.location.assign('/user');
+                } else {
+                    alert('Failed to delete items.');
                 }
-                supplierSelect.appendChild(option);
-            });
-        })
-        .catch(error => console.error('Error fetching suppliers:', error));
-}
-
-document.addEventListener('click', (event) => {
-    const action = document.getElementById('action');
-    const actionButton = document.querySelector('.flex.items-center.px-4.py-2');
-
-    if (action && !action.classList.contains('hidden') && !action.contains(event.target) && !actionButton
-        .contains(event.target)) {
-        action.classList.add('hidden');
+            })
+            .catch(error => console.error('Error deleting items:', error));
     }
-});
 
-function validateForm() {
-    const form = document.getElementById('userForm');
-    const saveButton = document.getElementById('saveButton');
-
-    if (form.checkValidity()) {
-        saveButton.disabled = false;
-        saveButton.classList.remove("opacity-50", "cursor-not-allowed");
-    } else {
-        saveButton.disabled = true;
-        saveButton.classList.add("opacity-50", "cursor-not-allowed");
+    function clickAction() {
+        const btnAction = document.getElementById('action');
+        btnAction.classList.toggle('hidden');
     }
-}
 
-// Attach event listeners to input fields to trigger validation
-document.addEventListener("DOMContentLoaded", function() {
-    const formElements = document.querySelectorAll("#userForm input, #userForm textarea, #userForm select");
+    function toggleModal(show) {
+        const modal = document.getElementById('modal');
+        const form = document.getElementById('userForm');
 
-    formElements.forEach(element => {
-        element.addEventListener("input", validateForm);
-        element.addEventListener("change", validateForm);
+        // Remove the _method input if it's present (for create action)
+        const methodField = form.querySelector('input[name="_method"]');
+        if (methodField) {
+            methodField.remove();
+        }
+
+        // Reset form values when closing the modal
+        if (!show) {
+            form.reset();
+        }
+
+        modal.classList.toggle('hidden', !show);
+    }
+
+    function fetchUserDetails(id = null) {
+        toggleModal(true);
+        if (id) {
+            // Update action
+            fetch(`/user/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    // Populate modal fields with data
+                    document.getElementById('username').value = data.username;
+                    document.getElementById('user-id').value = id;
+                    document.getElementById('email').value = data.email;
+                    document.getElementById('first-name').value = data.first_name;
+                    document.getElementById('last-name').value = data.last_name;
+                    document.getElementById('gender').value = data.gender;
+                    document.getElementById('role').value = data.role;
+                    document.getElementById('password').value = '';
+                    document.getElementById('password_confirmation').value = '';
+                    const preview = document.getElementById("avatar-preview");
+                    // Define the base URL for assets from Laravel
+                    const storageBaseUrl = "{{ asset('storage/avatars/') }}";
+                    const defaultAvatar = "{{ asset('static/assets/images/default-avatar.png') }}";
+                    // Set the image source dynamically
+                    preview.src = data.profile_picture ? `${storageBaseUrl}/${data.profile_picture.split('/').pop()}` :
+                        defaultAvatar;
+                    // Set form action to the update route
+                    document.getElementById('userForm').action = `/user/${id}`;
+                    // Add a hidden input for the PUT method
+                    const methodField = document.createElement('input');
+                    methodField.type = 'hidden';
+                    methodField.name = '_method';
+                    methodField.value = 'PUT';
+                    document.getElementById('userForm').appendChild(methodField);
+
+                })
+                .catch(error => console.error('Error fetching item details:', error));
+        } else {
+            // Clear modal fields
+            document.getElementById('first-name').value = '';
+            document.getElementById('last-name').value = '';
+            document.getElementById('username').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('gender').value = '';
+            document.getElementById('role').value = '';
+            document.getElementById('profile-picture').value = '';
+            // Create action
+            document.getElementById('userForm').action = '/user';
+            document.getElementById('userForm').method = 'POST';
+        }
+    }
+
+    function fetchSuppliers(id = null) {
+        const supplierSelect = document.getElementById('supplier_id');
+
+        // Clear existing options
+        supplierSelect.innerHTML = '';
+
+        // Fetch suppliers from the server
+        fetch('/supplier', {
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(response => response.json())
+            .then(suppliers => {
+                // Add a default option
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.text = 'Select Supplier';
+                supplierSelect.appendChild(defaultOption);
+
+                // Add supplier options to the dropdown
+                suppliers.forEach(supplier => {
+                    const option = document.createElement('option');
+                    option.value = supplier.id;
+                    option.text = supplier.name;
+                    // Preselect the supplier if id matches
+                    if (id !== null && supplier.id == id) {
+                        option.selected = true;
+                    }
+                    supplierSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching suppliers:', error));
+    }
+
+    document.addEventListener('click', (event) => {
+        const action = document.getElementById('action');
+        const actionButton = document.querySelector('.flex.items-center.px-4.py-2');
+
+        if (action && !action.classList.contains('hidden') && !action.contains(event.target) && !actionButton
+            .contains(event.target)) {
+            action.classList.add('hidden');
+        }
     });
 
-    // Run validation on page load (in case of pre-filled data)
-    validateForm();
-});
+    function validateForm() {
+        const form = document.getElementById('userForm');
+        const saveButton = document.getElementById('saveButton');
+
+        if (form.checkValidity()) {
+            saveButton.disabled = false;
+            saveButton.classList.remove("opacity-50", "cursor-not-allowed");
+        } else {
+            saveButton.disabled = true;
+            saveButton.classList.add("opacity-50", "cursor-not-allowed");
+        }
+    }
+
+    // Attach event listeners to input fields to trigger validation
+    document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("input", function(event) {
+            if (event.target.closest("#userForm input, #userForm textarea, #userForm select")) {
+                validateForm();
+            }
+        });
+
+        document.addEventListener("change", function(event) {
+            if (event.target.closest("#userForm input, #userForm textarea, #userForm select")) {
+                validateForm();
+            }
+        });
+
+        // Run validation on page load (for pre-filled data)
+        validateForm();
+    });
 </script>
 @endsection

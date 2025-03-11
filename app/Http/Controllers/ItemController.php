@@ -50,6 +50,7 @@ class ItemController extends Controller
             'description' => 'nullable|string',
             'supplier_id' => 'required|exists:suppliers,id',
             'cost' => 'required|numeric|min:0',
+            'unit' => 'string|max:255',
             'status' => 'required|in:1,0',
         ]);
 
@@ -59,13 +60,14 @@ class ItemController extends Controller
             'description' => $request->description,
             'supplier_id' => $request->supplier_id,
             'cost' => $request->cost,
+            'unit' => $request->unit,
             'status' => $request->status,
         ]);
 
         // Redirect back with success message
         return redirect()->route('items.index')->with('success', 'Item created successfully.');
     }
-    
+
     /**
      * Display the specified resource.
      */
@@ -91,6 +93,7 @@ class ItemController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'cost' => 'required|numeric|min:0',
+            'unit' => 'string|max:255',
             'supplier_id' => 'required|exists:suppliers,id',
             'status' => 'required|in:1,0',
         ]);
