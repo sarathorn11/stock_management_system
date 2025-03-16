@@ -41,14 +41,14 @@
 
       <tbody id="returnResults">
   @foreach($suppliers as $index => $supplier)
-  <tr class="bg-white hover:bg-gray-200 cursor-pointer" onclick="openModal('view', {{ json_encode($supplier) }})">
+  <tr class="bg-white hover:bg-gray-200 cursor-pointer">
     <td class="p-2 text-[14px] text-center">
       <input type="checkbox" class="return-checkbox w-[18px] h-[18px]" data-id="{{ $supplier->id }}">
     </td>
-    <td class="p-2 text-[14px] text-center">{{ $supplier->id }}</td>
-    <td class="p-2 text-[14px] text-center">{{ $supplier->name }}</td>
-    <td class="p-2 text-[14px] text-center">{{ $supplier->cperson }}</td>
-    <td class="p-2 text-[14px] text-center">
+    <td class="p-2 text-[14px] text-center" onclick="openModal('view', {{ json_encode($supplier) }})">{{ $supplier->id }}</td>
+    <td class="p-2 text-[14px] text-center" onclick="openModal('view', {{ json_encode($supplier) }})">{{ $supplier->name }}</td>
+    <td class="p-2 text-[14px] text-center" onclick="openModal('view', {{ json_encode($supplier) }})">{{ $supplier->cperson }}</td>
+    <td class="p-2 text-[14px] text-center" onclick="openModal('view', {{ json_encode($supplier) }})">
       <span class="text-white px-4 py-1 rounded-full inline-block text-center {{ $supplier->status ? 'bg-green-500' : 'bg-red-500' }}">
         {{ $supplier->status ? 'Active' : 'Inactive' }}
       </span>
