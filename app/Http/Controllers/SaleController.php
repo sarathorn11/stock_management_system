@@ -70,31 +70,59 @@ class SaleController extends Controller
 
     public function update(Request $request, Sale $sale)
     {
-        $validated = $request->validate([
+        // Validate the request
+        $request->validate([
             'sales_code' => 'required|string|max:255',
             'client' => 'required|string|max:255',
-            'amount' => 'required|numeric|min:0',
-            'stock_ids' => 'required|array', // Ensure it's an array of stock IDs
-            'stock_ids.*' => 'exists:stocks,id', // Validate each stock_id in the array
-            'remarks' => 'nullable|string|max:500',
+            'amount' => 'required|numeric',
+            'stock_id' => 'required|exists:stocks,id',
+            'remarks' => 'nullable|string',
         ]);
-
+    
         // Update the sale
-        $sale->update($validated);
-
-        // Sync the stocks for the sale (this will replace the previous stocks)
-        $sale->stocks()->sync($validated['stock_ids']);
-
-        return redirect()->route('sales.index')->with('success', 'Sale updated successfully.');
+        $sale->update([
+            'sales_code' => $request->sales_code,
+            'client' => $request->client,
+            'amount' => $request->amount,
+            'remarks' => $request->remarks,
+        ]);
+    
+        // Sync the selected stock
+        $sale->stocks()->sync([$request->stock_id]);
+    
+        // Redirect with success message
+        return redirect()->route('sales.show', $sale->id)->with('success', 'Sale updated successfully.');
     }
 
 
-    public function destroy(Sale $sale)
-    {
-        $sale->delete();
+    public function destroy(Request $request, $id = null)
+{
+    // Check if bulk deletion is requested
+    if ($request->has('ids')) {
+        $ids = $request->input('ids');
 
+        // Validate the IDs
+        if (empty($ids)) {
+            return redirect()->route('sales.index')->with('error', 'No sales selected for deletion.');
+        }
+
+        // Delete the selected sales
+        Sale::whereIn('id', $ids)->delete();
+
+        return redirect()->route('sales.index')->with('success', 'Selected sales deleted successfully.');
+    }
+
+    // Handle single deletion
+    if ($id) {
+        $sale = Sale::findOrFail($id);
+        $sale->delete();
         return redirect()->route('sales.index')->with('success', 'Sale deleted successfully.');
     }
+
+    // If no sale or IDs are provided, return an error
+    return redirect()->route('sales.index')->with('error', 'No sales selected for deletion.');
+}
+    
 
     public function search(Request $request)
     {
