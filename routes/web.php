@@ -69,10 +69,10 @@ Route::get('sales/search', [SaleController::class, 'search'])->name('sales.searc
 
 // Supplier List Routes
 Route::resource('supplier', SupplierController::class);
+// Route::delete('/supplier/{id}', [SupplierController::class, 'destroy'])->name('supplier.destroy');
 Route::get('/supplier/{id}', [SupplierController::class, 'show'])->name('supplier.show');
 Route::post('/supplier', [SupplierController::class, 'store'])->name('supplier.store');
 Route::put('/supplier/{id}', [SupplierController::class, 'update'])->name('supplier.update');
-Route::delete('/supplier/{id}', [SupplierController::class, 'destroy'])->name('supplier.destroy');
 Route::get('/suppliers', [SupplierController::class, 'getAllSuppliers'])->name('suppliers.getAll');
 
 // Item List Routes

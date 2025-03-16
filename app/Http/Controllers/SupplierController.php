@@ -100,14 +100,21 @@ class SupplierController extends Controller
      */
     public function destroy($id)
     {
-        // Find the supplier by ID
-        $supplier = Supplier::findOrFail($id);
+        try {
+            // Find the supplier by ID
+            $supplier = Supplier::findOrFail($id);
 
-        // Delete the supplier
-        $supplier->delete();
+            // Soft delete the supplier
+            $supplier->delete();
 
-        // Redirect back with a success message
-        return redirect()->route('supplier.index')->with('success', 'Supplier deleted successfully.');
+            // Redirect back with a success message
+            return redirect()->route('supplier.index')->with('success', 'Supplier deleted successfully.');
+        } catch (\Exception $e) {
+            \Log::error('Error deleting supplier:', ['error' => $e->getMessage()]);
+
+            // Return a JSON response with the error message
+            return response()->json(['message' => 'Failed to delete the supplier.'], 500);
+        }
     }
 
     public function getAllSuppliers()
