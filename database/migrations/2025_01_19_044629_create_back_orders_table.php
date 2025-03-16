@@ -15,13 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('receiving_id')->constrained()->onDelete('cascade');
             $table->foreignId('po_id')->constrained('purchase_orders')->onDelete('cascade');
-<<<<<<< HEAD
-            $table->foreignId('supplier_id')->constrained()->onDelete('cascade');;
-            $table->string('bo_code');
-=======
-            $table->foreignId('supplier_id')->constrained();
+            $table->foreignId('supplier_id')->constrained()->onDelete('cascade');
             $table->string('bo_code')->unique();
->>>>>>> eb1a6c4f51046ab8957493d5937c204a984ae8e9
             $table->decimal('amount', 15, 2);
             $table->decimal('discount_perc', 5, 2);
             $table->decimal('discount', 15, 2);
