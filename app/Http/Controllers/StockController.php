@@ -12,32 +12,43 @@ class StockController extends Controller
      * Display a listing of the stocks.
      */
 
-    public function index(Request $request)
-    {
-        $query = $request->input('query');
-        $perPage = $request->input('perPage', 10);
-    
-        $stocks = Stock::with('item')
-            ->when($query, function ($queryBuilder) use ($query) {
-                return $queryBuilder->where(function ($q) use ($query) {
-                    $q->whereHas('item', function ($subQuery) use ($query) {
-                        $subQuery->where('name', 'LIKE', "%{$query}%");
-                    })->orWhere('unit', 'LIKE', "%{$query}%")
-                    ->orWhere('price', 'LIKE', "%{$query}%")
-                    ->orWhere('total', 'LIKE', "%{$query}%")
-                    ->orWhere('type', 'LIKE', "%{$query}%");
-                });
-            })
-            ->orderBy('id', 'desc')
-            ->paginate($perPage);
-    
-        return view('stocks.index', [
-            'stocks' => $stocks,
-            'query' => $query,
-            'perPage' => $perPage,
-            'perPageOptions' => [10, 20, 30, 50]
-        ],  compact('stocks'));
+     public function index(Request $request)
+{
+    $query = $request->input('query');
+    $perPage = $request->input('perPage', 10);
+
+    // Validate perPage input
+    $perPageOptions = [10, 20, 30, 50];
+    if (!in_array($perPage, $perPageOptions)) {
+        $perPage = 10;
     }
+
+    // Build the query
+    $stocks = Stock::with('item')
+        ->when($query, function ($queryBuilder) use ($query) {
+            return $queryBuilder->where(function ($q) use ($query) {
+                $q->whereHas('item', function ($subQuery) use ($query) {
+                    $subQuery->where('name', 'LIKE', "%{$query}%")
+                             ->orWhere('unit', 'LIKE', "%{$query}%"); // Search for unit in the item table
+                })->orWhere('price', 'LIKE', "%{$query}%")
+                  ->orWhere('total', 'LIKE', "%{$query}%")
+                  ->orWhere('type', 'LIKE', "%{$query}%");
+            });
+        })
+        ->selectRaw('item_id, 
+                     SUM(CASE WHEN type = 1 THEN quantity ELSE 0 END) - 
+                     SUM(CASE WHEN type = 2 THEN quantity ELSE 0 END) as total_quantity')
+        ->groupBy('item_id')
+        ->orderBy('item_id', 'desc')
+        ->paginate($perPage);
+
+    return view('stocks.index', [
+        'stocks' => $stocks,
+        'query' => $query,
+        'perPage' => $perPage,
+        'perPageOptions' => $perPageOptions
+    ]);
+}
 
     /**
      * Show the form for creating a new stock record.

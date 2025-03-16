@@ -37,12 +37,8 @@
           <th class="p-2"><input type="checkbox" id="select-all" class="w-[18px] h-[18px]"></th>
           <th class="p-2">No.</th>
           <th class="p-2">Item</th>
-          <th class="p-2">Quantity</th>
+          <th class="p-2">Total Quantity</th>
           <th class="p-2">Unit</th>
-          <th class="p-2">Price</th>
-          <th class="p-2">Total</th>
-          <th class="p-2">Type</th>
-          <th class="p-2">Date Created</th>
           <th class="p-2">Actions</th>
         </tr>
       </thead>
@@ -50,26 +46,20 @@
         @foreach($stocks as $index => $stock)
         <tr class="bg-white hover:bg-gray-200">
           <td class="p-2 text-center">
-            <input type="checkbox" class="stock-checkbox w-[18px] h-[18px]" data-id="{{ $stock->id }}">
+            <input type="checkbox" class="stock-checkbox w-[18px] h-[18px]" data-id="{{ $stock->item_id }}">
           </td>
           <td class="p-2 text-center">{{ $index + 1 }}</td>
           <td class="p-2 text-center">{{ optional($stock->item)->name ?? 'N/A' }}</td>
-          <td class="p-2 text-center">{{ number_format($stock->quantity) }}</td>
-          <td class="p-2 text-center">{{ $stock->unit }}</td>
-          <td class="p-2 text-center">${{ number_format($stock->price, 2) }}</td>
-          <td class="p-2 text-center">${{ number_format($stock->total, 2) }}</td>
-          <td class="p-2 text-center">{{ $stock->type == 1 ? 'IN' : 'OUT' }}</td>
-          <td class="p-2 text-center">
-            {{ \Carbon\Carbon::parse($stock->date_created)->format('Y-m-d h:i A') }}
-          </td>
+          <td class="p-2 text-center">{{ number_format($stock->total_quantity) }}</td>
+          <td class="p-2 text-center">{{ optional($stock->item)->unit ?? 'N/A' }}</td>
           <td class="p-2 flex items-center justify-center">
-            <a href="{{ route('stocks.show', $stock->id) }}" class="text-blue-500 text-[18px] mx-1">
+            <a href="{{ route('stocks.show', $stock->item_id) }}" class="text-blue-500 text-[18px] mx-1">
               <i class="fa fa-eye"></i>
             </a>
-            <a href="{{ route('stocks.edit', $stock->id) }}" class="text-yellow-500 text-[18px] mx-1">
+            <a href="{{ route('stocks.edit', $stock->item_id) }}" class="text-yellow-500 text-[18px] mx-1">
               <i class="fa fa-pencil"></i>
             </a>
-            <form action="{{ route('stocks.destroy', $stock->id) }}" method="POST"
+            <form action="{{ route('stocks.destroy', $stock->item_id) }}" method="POST"
               onsubmit="return confirm('Are you sure you want to delete this stock?')" class="inline">
               @csrf
               @method('DELETE')
