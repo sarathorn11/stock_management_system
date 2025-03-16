@@ -11,8 +11,6 @@
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
     </form>
     <div class="flex items-center">
-      <!-- <a href="{{ route('receiving.create') }}"
-        class="inline-block bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600">Create</a> -->
       <a class="inline-block bg-gray-300 text-black px-4 py-2 rounded mb-4 hover:bg-gray-400 ml-2">
         <i class="fa fa-cog mr-2"></i> Option
       </a>

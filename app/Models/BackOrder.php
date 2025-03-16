@@ -25,6 +25,22 @@ class BackOrder extends Model
         'status',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            // Get the latest record
+            $latest = static::latest('id')->first();
+
+            // Extract number and increment
+            $number = $latest ? ((int) substr($latest->bo_code, 3)) + 1 : 1;
+
+            // Format as BO-00001
+            $model->bo_code = 'BO-' . str_pad($number, 5, '0', STR_PAD_LEFT);
+        });
+    }
+
     // Define relationships
     public function receiving()
     {

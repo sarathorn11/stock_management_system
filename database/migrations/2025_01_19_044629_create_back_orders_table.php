@@ -16,14 +16,14 @@ return new class extends Migration
             $table->foreignId('receiving_id')->constrained();
             $table->foreignId('po_id')->constrained('purchase_orders')->onDelete('cascade');
             $table->foreignId('supplier_id')->constrained();
-            $table->string('bo_code');
+            $table->string('bo_code')->unique();
             $table->decimal('amount', 15, 2);
             $table->decimal('discount_perc', 5, 2);
             $table->decimal('discount', 15, 2);
             $table->decimal('tax_perc', 5, 2);
             $table->decimal('tax', 15, 2);
             $table->text('remarks')->nullable();
-            $table->tinyInteger('status');
+            $table->tinyInteger('status')->default(0)->comment('0 = Pending, 1 = Partial, 2 = Completed');
             $table->timestamps();
         });
     }
