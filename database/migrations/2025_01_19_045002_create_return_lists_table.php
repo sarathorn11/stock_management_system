@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('return_lists', function (Blueprint $table) {
             $table->id();
             $table->string('return_code', 50);
-            $table->foreignId('supplier_id')->constrained();
+            $table->foreignId('supplier_id')->constrained()->onDelete('cascade');
             $table->text('stock_ids')->nullable();
             $table->float('amount');
             $table->text('remarks')->nullable();
