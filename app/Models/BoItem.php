@@ -16,7 +16,7 @@ class BoItem extends Model
         'item_id',
         'quantity',
         'price',
-        'unit',
+        // 'unit',
         'total',
     ];
 

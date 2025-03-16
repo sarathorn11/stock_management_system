@@ -73,7 +73,7 @@
                             @php $total += $item->total; @endphp
                             <tr>
                                 <td class="py-1 px-2 text-center border border-gray-400">{{ number_format($item->quantity, 2) }}</td>
-                                <td class="py-1 px-2 text-center border border-gray-400">{{ $item->unit }}</td>
+                                <td class="py-1 px-2 text-center border border-gray-400">{{ $item->item->unit }}</td>
                                 <td class="py-1 px-2 border border-gray-400">
                                     {{ $item->item->name }} <br>
                                     {{ $item->item->description }}

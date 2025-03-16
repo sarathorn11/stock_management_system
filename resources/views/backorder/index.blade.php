@@ -57,7 +57,7 @@
                 <i class="fa fa-eye mr-2"></i>
               </a>
               @if($row->status == 0)
-                <a href="{{ route('back-order.edit', $row->id) }}" class="text-yellow-500 mx-1">
+                <a href="{{ route('receiving.create', ['bo', $row->id]) }}" class="text-yellow-500 mx-1">
                   <i class="fas fa-boxes mr-2"></i>
                 </a>
               @endif
