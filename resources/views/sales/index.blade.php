@@ -16,12 +16,18 @@
 
     <!-- Action Buttons -->
     <div class="flex items-center">
-      <a href="{{ route('sales.create') }}" class="bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600">
+      <a href="{{ route('sales.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
         Create
       </a>
-      <a class="bg-gray-300 text-black px-4 py-[6px] rounded hover:bg-gray-400 ml-2">
-        <i class="fa fa-cog mr-2"></i> Option
-      </a>
+      <div class="inline-block bg-gray-300 text-black px-4 py-2 ml-2 relative" id="option-button">
+        <i class="fa fa-cog mr-2"></i>Option
+        <!-- Dropdown menu -->
+        <div id="option-menu" class="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10 hidden">
+          <div class="py-1">
+            <a href="#" id="delete-selected" class="text-red-600 block px-4 py-2 text-sm hover:bg-gray-100">Delete</a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -46,12 +52,11 @@
           <th class="p-2">Amount</th>
           <th class="p-2">Stock</th>
           <th class="p-2">Remarks</th>
-          <th class="p-2">Actions</th>
         </tr>
       </thead>
       <tbody id="salesResults">
         @forelse($sales as $index => $sale)
-        <tr class="bg-white hover:bg-gray-200">
+        <tr class="bg-white hover:bg-gray-200 cursor-pointer" data-id="{{ $sale->id }}">
           <td class="p-2 text-center">
             <input type="checkbox" class="sale-checkbox w-[18px] h-[18px]" data-id="{{ $sale->id }}">
           </td>
@@ -66,22 +71,6 @@
           </td>
           <td class="p-2 text-center max-w-[200px]">
             {{ \Illuminate\Support\Str::limit($sale->remarks, 20, '...') }}
-          </td>
-          <td class="p-2 flex items-center justify-center space-x-2">
-            <a href="{{ route('sales.show', $sale->id) }}" class="text-blue-500 text-[18px]">
-              <i class="fa fa-eye"></i>
-            </a>
-            <a href="{{ route('sales.edit', $sale->id) }}" class="text-yellow-500 text-[18px]">
-              <i class="fa fa-pencil"></i>
-            </a>
-            <form action="{{ route('sales.destroy', $sale->id) }}" method="POST" class="inline"
-              onsubmit="return confirm('Are you sure you want to delete this sale?')">
-              @csrf
-              @method('DELETE')
-              <button type="submit" class="text-red-500 text-[18px]">
-                <i class="fa fa-trash"></i>
-              </button>
-            </form>
           </td>
         </tr>
         @empty
@@ -101,49 +90,79 @@
 
 <!-- JavaScript -->
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  let selectedSaleIds = JSON.parse(localStorage.getItem('selectedSaleIds')) || [];
-  const checkboxes = document.querySelectorAll('.sale-checkbox');
-  const selectAllCheckbox = document.getElementById('select-all');
+  document.addEventListener('DOMContentLoaded', () => {
+    const optionButton = document.getElementById('option-button');
+    const optionMenu = document.getElementById('option-menu');
 
-  // Function to update the selection state
-  function updateCheckboxSelections() {
-    checkboxes.forEach(checkbox => {
-      checkbox.checked = selectedSaleIds.includes(checkbox.getAttribute('data-id'));
+    // Toggle dropdown menu visibility
+    optionButton.addEventListener('click', (event) => {
+      event.stopPropagation(); // Prevent the click from bubbling up
+      optionMenu.classList.toggle('hidden');
     });
 
-    selectAllCheckbox.checked = checkboxes.length > 0 &&
-      document.querySelectorAll('.sale-checkbox:checked').length === checkboxes.length;
+    // Close the dropdown when clicking outside
+    document.addEventListener('click', (event) => {
+      if (!optionButton.contains(event.target) && !optionMenu.contains(event.target)) {
+        optionMenu.classList.add('hidden');
+      }
+    });
 
-    selectAllCheckbox.disabled = checkboxes.length === 0; // Disable if no sales exist
+    // Add click event listeners to table rows
+    const rows = document.querySelectorAll('tbody tr[data-id]');
+    rows.forEach(row => {
+      row.addEventListener('click', (event) => {
+        // Prevent redirection if the user clicks on a checkbox or action button
+        if (event.target.tagName === 'INPUT' || event.target.closest('a') || event.target.closest('button')) {
+          return;
+        }
+
+        // Get the sale ID from the row's data-id attribute
+        const saleId = row.getAttribute('data-id');
+
+        // Redirect to the detail page
+        window.location.href = `/sales/${saleId}`;
+      });
+    });
+  });
+
+  // Handle Bulk Delete action
+  const deleteSelected = document.getElementById('delete-selected');
+  if (deleteSelected) {
+    deleteSelected.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      // Get all selected sale IDs
+      const selectedSaleIds = Array.from(document.querySelectorAll('.sale-checkbox:checked'))
+        .map((checkbox) => checkbox.getAttribute('data-id'));
+
+      if (selectedSaleIds.length > 0) {
+        if (confirm('Are you sure you want to delete the selected sales?')) {
+          // Send a DELETE request to the server
+          fetch(`/sales/bulk-delete`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify({ ids: selectedSaleIds }),
+          })
+            .then((response) => {
+              if (response.ok) {
+                window.location.reload();
+              } else {
+                alert('Failed to delete the selected sales.');
+              }
+            })
+            .catch((error) => {
+              console.error('Error:', error);
+              alert('An error occurred while deleting the sales.');
+            });
+        }
+      } else {
+        alert('Please select at least one sale to delete.');
+      }
+    });
   }
-
-  // Initialize checkbox state
-  updateCheckboxSelections();
-
-  // Select all toggle
-  selectAllCheckbox.addEventListener('change', function() {
-    selectedSaleIds = this.checked ? [...checkboxes].map(cb => cb.getAttribute('data-id')) : [];
-    checkboxes.forEach(cb => cb.checked = this.checked);
-    localStorage.setItem('selectedSaleIds', JSON.stringify(selectedSaleIds));
-  });
-
-  // Individual checkbox selection
-  document.addEventListener('change', event => {
-    if (event.target.classList.contains('sale-checkbox')) {
-      const saleId = event.target.getAttribute('data-id');
-      event.target.checked ? selectedSaleIds.push(saleId) : selectedSaleIds = selectedSaleIds.filter(id =>
-        id !== saleId);
-      localStorage.setItem('selectedSaleIds', JSON.stringify(selectedSaleIds));
-      updateCheckboxSelections();
-    }
-  });
-
-  // Auto-hide success message after 2 seconds
-  setTimeout(() => {
-    document.getElementById('successOrFailedMessage')?.remove();
-  }, 2000);
-});
 </script>
 
 @endsection

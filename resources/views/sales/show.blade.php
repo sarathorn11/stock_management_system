@@ -11,7 +11,7 @@
     </div>
     <div class="flex items-center justify-end ">
       <a href="{{ route('sales.create') }}"
-        class="inline-block bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600 m-0">Create</a>
+        class="inline-block bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600 m-0">Edit</a>
       <a class="inline-block bg-gray-300 text-black px-4 py-[6px] rounded hover:bg-gray-400 ml-2">
         Print
       </a>

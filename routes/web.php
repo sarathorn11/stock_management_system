@@ -66,6 +66,7 @@ Route::resource('stocks', StockController::class);
 // Sale List Routes
 Route::resource('sales', SaleController::class);
 Route::get('sales/search', [SaleController::class, 'search'])->name('sales.search');
+Route::delete('sales/bulk-delete', [SaleController::class, 'destroy'])->name('sales.bulkDelete');
 
 // Supplier List Routes
 Route::resource('supplier', SupplierController::class);
