@@ -3,7 +3,8 @@
 @section('content')
 <div>
     <h1 class="text-xl font-bold text-gray-800">Receive Order from PO-...</h1>
-    <form id="receive-form" action="" class="mt-8">
+    <form id="receive-form" action="{{ route('receiving.createReciving', [$type, $order->id]) }}" method="POST" class="mt-8">
+      @csrf
       <input type="hidden" name="id" value="">
       <input type="hidden" name="from_order" value="">
       <input type="hidden" name="form_id" value="">
@@ -12,16 +13,22 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label class="text-blue-500 font-medium">P.O. Code</label>
-          <input type="text" class="w-full border rounded-md p-2" value="PO-002" readonly>
+          <input type="text" class="w-full border rounded-md p-2" value="{{$order->po_code ?? $order->purchaseOrder->po_code }}" disabled>
         </div>
 
         <div>
           <label for="supplier_id" class="text-blue-500 font-medium">Supplier</label>
-          <select id="supplier_id" name="supplier_id" class="w-full border rounded-md p-2">
+          <select id="supplier_id" name="supplier_id" class="w-full border rounded-md p-2" disabled>
             <option disabled></option>
-            <option selected value="">Supplier 01</option>
+            <option selected value="{{$order->supplier_id}}">{{$order->supplier->name}}</option>
           </select>
         </div>
+        @if($type == 'bo')
+        <div>
+          <label class="text-blue-500 font-medium">B.O. Code</label>
+          <input type="text" class="w-full border rounded-md p-2" value="{{$order->bo_code }}" disabled>
+        </div>
+        @endif
       </div>
 
       <hr class="my-4">
@@ -46,6 +53,7 @@
           </tr>
         </thead>
         <tbody>
+        @foreach ($order->items as $item)
           <tr>
             <td class="py-2 px-3 text-center border border-gray-400">
               <button class="border border-red-500 text-red-500 px-2 py-1 rounded hover:bg-red-500 hover:text-white" type="button">
@@ -53,18 +61,19 @@
               </button>
             </td>
             <td class="py-2 px-3 text-center border border-gray-400">
-              <input type="number" name="qty[]" class="w-12 border rounded-md p-1 text-center" value="10" max="10" min="0">
-              <input type="hidden" name="item_id[]" value="">
+              <input type="number" name="qty[]" class="w-12 border rounded-md p-1 text-center" value="{{$item->quantity}}" max="{{$item->quantity}}" min="0">
+              <input type="hidden" name="item_id[]" value="{{$item->item_id}}">
               <input type="hidden" name="unit[]" value="">
-              <input type="hidden" name="oqty[]" value="">
-              <input type="hidden" name="price[]" value="">
-              <input type="hidden" name="total[]" value="">
+              <input type="hidden" name="oqty[]" value="{{$item->quantity}}">
+              <input type="hidden" name="price[]" value="{{$item->price}}">
+              <input type="hidden" name="total[]" value="{{$item->total}}">
             </td>
-            <td class="py-2 px-3 text-center border border-gray-400">pcs</td>
-            <td class="py-2 px-3 border border-gray-400">name <br> description</td>
-            <td class="py-2 px-3 text-right border border-gray-400">100</td>
-            <td class="py-2 px-3 text-right border border-gray-400">1000</td>
+            <td class="py-2 px-3 text-center border border-gray-400">{{$item->unit}}</td>
+            <td class="py-2 px-3 border border-gray-400">{{$item->name}} <br> {{$item->decription}}</td>
+            <td class="py-2 px-3 text-right border border-gray-400">{{$item->price}}</td>
+            <td class="py-2 px-3 text-right border border-gray-400">{{$item->total}}</td>
           </tr>
+          @endforeach
         </tbody>
         <tfoot>
           <tr>
