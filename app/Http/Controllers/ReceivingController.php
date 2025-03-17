@@ -78,8 +78,11 @@ class ReceivingController extends Controller
         // Find the receiving by its ID
         $receiving = Receiving::findOrFail($id);
 
+        // Get stocks based on stock_ids
+        $stocks = Stock::whereIn('id', json_decode($receiving->stock_ids) ?? [])->with('item')->get();
+
         // Pass the receiving record to the view
-        return view('receiving.show', compact('receiving'));
+        return view('receiving.show', compact('receiving', 'stocks'));
     }
     /**
      * Show the form for editing the specified resource.
@@ -109,9 +112,9 @@ class ReceivingController extends Controller
     public function create($type, $orderId)
     {
         if ($type === 'po') {
-            $order = PurchaseOrder::with(['supplier','items'])->findOrFail($orderId);
+            $order = PurchaseOrder::with(['supplier', 'items'])->findOrFail($orderId);
         } elseif ($type === 'bo') {
-            $order = BackOrder::with(['supplier','items', 'purchaseOrder'])->findOrFail($orderId);
+            $order = BackOrder::with(['supplier', 'items', 'purchaseOrder'])->findOrFail($orderId);
         } else {
             abort(404, "Invalid order type.");
         }
@@ -222,7 +225,7 @@ class ReceivingController extends Controller
 
             $order->status = 1;
             $order->save();
-        }else {
+        } else {
             $order->status = 2;
             $order->save();
             if ($type === 'bo') {

@@ -13,19 +13,101 @@ class ItemSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create 10 items using the ItemFactory
-        // Item::factory()->count(10)->create();
-
-        // Create 20 items manually
-        for ($i = 1; $i <= 20; $i++) {
-            Item::create([
-                'name' => 'Item ' . $i,
-                'description' => 'Description for item ' . $i,
-                'supplier_id' => rand(1, 5),
-                'cost' => rand(10, 100),
-                'unit' => ['kg', 'g', 'lb', 'pcs'][array_rand(['kg', 'g', 'lb', 'pcs'])],
+        $items = [
+            [
+                'id' => 1,
+                'name' => 'Book',
+                'description' => 'Description for item 1',
+                'supplier_id' => 1,
+                'cost' => 50,
+                'unit' => 'pcs',
                 'status' => 1
-            ]);
+            ],
+            [
+                'id' => 2,
+                'name' => 'Pen',
+                'description' => 'Description for item 2',
+                'supplier_id' => 2,
+                'cost' => 10,
+                'unit' => 'pcs',
+                'status' => 1
+            ],
+            [
+                'id' => 3,
+                'name' => 'Pencil',
+                'description' => 'Description for item 3',
+                'supplier_id' => 3,
+                'cost' => 5,
+                'unit' => 'pcs',
+                'status' => 1
+            ],
+            [
+                'id' => 4,
+                'name' => 'Eraser',
+                'description' => 'Description for item 4',
+                'supplier_id' => 4,
+                'cost' => 2,
+                'unit' => 'pcs',
+                'status' => 1
+            ],
+            [
+                'id' => 5,
+                'name' => 'Ruler',
+                'description' => 'Description for item 5',
+                'supplier_id' => 5,
+                'cost' => 3,
+                'unit' => 'pcs',
+                'status' => 1
+            ],
+            [
+                'id' => 6,
+                'name' => 'Notebook',
+                'description' => 'Description for item 6',
+                'supplier_id' => 1,
+                'cost' => 20,
+                'unit' => 'pcs',
+                'status' => 1
+            ],
+            [
+                'id' => 7,
+                'name' => 'Stapler',
+                'description' => 'Description for item 7',
+                'supplier_id' => 2,
+                'cost' => 30,
+                'unit' => 'pcs',
+                'status' => 1
+            ],
+            [
+                'id' => 8,
+                'name' => 'Staple Wire',
+                'description' => 'Description for item 8',
+                'supplier_id' => 3,
+                'cost' => 5,
+                'unit' => 'pcs',
+                'status' => 1
+            ],
+            [
+                'id' => 9,
+                'name' => 'Scissors',
+                'description' => 'Description for item 9',
+                'supplier_id' => 4,
+                'cost' => 15,
+                'unit' => 'pcs',
+                'status' => 1
+            ],
+            [
+                'id' => 10,
+                'name' => 'Glue',
+                'description' => 'Description for item 10',
+                'supplier_id' => 5,
+                'cost' => 10,
+                'unit' => 'pcs',
+                'status' => 1
+            ]
+        ];
+
+        foreach ($items as $item) {
+            Item::create($item);
         }
     }
 }

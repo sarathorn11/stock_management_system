@@ -16,11 +16,12 @@
                 <select id="supplier_id" name="supplier_id" class="w-full border rounded-md p-2">
                     <option disabled selected>Select Supplier</option>
                     @foreach($suppliers as $supplier)
-                        <option value="{{ $supplier->id }}" {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>
-                            {{ $supplier->name }}
-                        </option>
+                    <option value="{{ $supplier->id }}" {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>
+                        {{ $supplier->name }}
+                    </option>
                     @endforeach
                 </select>
+                <input type="hidden" id="hidden_supplier_id" name="supplier_id" value="{{ old('supplier_id') }}">
             </div>
         </div>
 
@@ -33,9 +34,9 @@
                     <select id="item_id" class="w-full border rounded-md p-2">
                         <option disabled selected>Select Item</option>
                         @foreach($items as $item)
-                            <option value="{{ $item->id }}" data-unit="{{ $item->unit }}" data-price="{{ $item->cost }}">
-                                {{ $item->name }}
-                            </option>
+                        <option value="{{ $item->id }}" data-unit="{{ $item->unit }}" data-price="{{ $item->cost }}">
+                            {{ $item->name }}
+                        </option>
                         @endforeach
                     </select>
                 </div>
@@ -122,21 +123,63 @@
             <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700" type="submit" form="receive-form">Save</button>
             <a href="{{ route('purchase-order.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700">Cancel</a>
         </div>
-       
+
     </form>
-   
-   
+
+
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const addToListButton = document.getElementById('add_to_list');
         const itemTableBody = document.getElementById('item-list');
         const itemSelect = document.getElementById('item_id');
         const unitInput = document.getElementById('unit');
         const qtyInput = document.getElementById('qty');
+        const supplierSelect = document.getElementById('supplier_id');
+        const hiddenSupplierInput = document.getElementById('hidden_supplier_id');
 
-        addToListButton.addEventListener('click', function () {
+
+        // Fetch items when the supplier is selected
+        supplierSelect.addEventListener('change', function() {
+            const supplierId = supplierSelect.value;
+            hiddenSupplierInput.value = supplierId;
+
+            // Check if a valid supplier is selected
+            if (supplierId) {
+                fetchItemsBySupplier(supplierId);
+            } else {
+                itemSelect.innerHTML = '<option disabled selected>Select Item</option>';
+            }
+        });
+
+        // Function to fetch items based on selected supplier
+        function fetchItemsBySupplier(supplierId) {
+            fetch(`/returns/items/${supplierId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Clear current items
+                    itemSelect.innerHTML = '<option disabled selected>Select Item</option>';
+
+                    // Append new items to the dropdown
+                    data.items.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.id;
+                        option.textContent = item.name;
+                        option.setAttribute('data-unit', item.unit);
+                        option.setAttribute('data-price', item.cost);
+                        itemSelect.appendChild(option);
+                    });
+
+                    // Re-attach the event listener after the options are added
+                    itemSelect.addEventListener('change', function() {
+                        const selectedItem = itemSelect.options[itemSelect.selectedIndex];
+                        unitInput.value = selectedItem.getAttribute('data-unit');
+                    });
+                });
+        }
+
+        addToListButton.addEventListener('click', function() {
             const selectedItem = itemSelect.options[itemSelect.selectedIndex];
             const itemId = selectedItem.value;
             const itemName = selectedItem.text;
@@ -151,34 +194,74 @@
             }
 
             const total = price * qty;
+            // Check if the item already exists in the list
+            let itemExists = false;
+            document.querySelectorAll('#item-list tr').forEach(row => {
+                const existingItemId = row.querySelector('input[name="item_id[]"]').value;
+                if (existingItemId === itemId) {
+                    const existingQtyInput = row.querySelector('input[name="qty[]"]');
+                    const existingTotalInput = row.querySelector('input[name="total[]"]');
+                    const newQty = parseFloat(existingQtyInput.value) + qty;
+                    const newTotal = price * newQty;
 
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td class="py-2 px-3 text-center border border-gray-400">
-                    <button class="border border-red-500 text-red-500 px-2 py-1 rounded hover:bg-red-500 hover:text-white" type="button" onclick="deleteRow(this)">
-                        <i class="fa fa-times"></i>
-                    </button>
-                </td>
-                <td class="py-2 px-3 text-center border border-gray-400">
-                    <input type="number" name="qty[]" class="w-12 border rounded-md p-1 text-center" value="${qty}" min="0">
-                    <input type="hidden" name="item_id[]" value="${itemId}">
-                    <input type="hidden" name="unit[]" value="${unit}">
-                    <input type="hidden" name="price[]" value="${price}">
-                    <input type="hidden" name="total[]" value="${total}">
-                </td>
-                <td class="py-2 px-3 text-center border border-gray-400">${unit}</td>
-                <td class="py-2 px-3 border border-gray-400">${itemName}</td>
-                <td class="py-2 px-3 text-right border border-gray-400">${price.toFixed(2)}</td>
-                <td class="py-2 px-3 text-right border border-gray-400">${total.toFixed(2)}</td>
-            `;
-            itemTableBody.appendChild(newRow);
+                    existingQtyInput.value = newQty;
+                    existingTotalInput.value = newTotal.toFixed(2);
+                    row.querySelector('.total-cell').textContent = newTotal.toFixed(2);
+
+                    itemExists = true;
+                }
+            });
+
+            if (!itemExists) {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td class="py-2 px-3 text-center border border-gray-400">
+                        <button class="border border-red-500 text-red-500 px-2 py-1 rounded hover:bg-red-500 hover:text-white" type="button" onclick="deleteRow(this)">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </td>
+                    <td class="py-2 px-3 text-center border border-gray-400">
+                        <input type="number" name="qty[]" class="w-12 border rounded-md p-1 text-center" value="${qty}" min="0" onchange="updateRowTotal(this)">
+                        <input type="hidden" name="item_id[]" value="${itemId}">
+                        <input type="hidden" name="unit[]" value="${unit}">
+                        <input type="hidden" name="price[]" value="${price}">
+                        <input type="hidden" name="total[]" value="${total}">
+                    </td>
+                    <td class="py-2 px-3 text-center border border-gray-400">${unit}</td>
+                    <td class="py-2 px-3 border border-gray-400">${itemName}</td>
+                    <td class="py-2 px-3 text-right border border-gray-400">${price.toFixed(2)}</td>
+                    <td class="py-2 px-3 text-right border border-gray-400 total-cell">${total.toFixed(2)}</td>
+                `;
+                itemTableBody.appendChild(newRow);
+            }
 
             updateTotals();
+            // Disable supplier select if there are items in the list
+            if (itemTableBody.children.length > 0) {
+                supplierSelect.disabled = true;
+            }
         });
 
         function deleteRow(button) {
             const row = button.closest('tr');
             row.remove();
+            updateTotals();
+            // Enable supplier select if there are no items in the list
+            if (itemTableBody.children.length === 0) {
+                supplierSelect.disabled = false;
+            }
+        }
+
+        window.updateRowTotal = function(input) {
+            console.log("updateRowTotal");
+            const row = input.closest('tr');
+            const qty = parseFloat(input.value);
+            const price = parseFloat(row.querySelector('input[name="price[]"]').value);
+            const total = qty * price;
+
+            row.querySelector('input[name="total[]"]').value = total.toFixed(2);
+            row.querySelector('.total-cell').textContent = total.toFixed(2);
+
             updateTotals();
         }
 
@@ -210,7 +293,7 @@
         document.querySelector('input[name="tax_perc"]').addEventListener('input', updateTotals);
 
         // Update unit when item is selected
-        itemSelect.addEventListener('change', function () {
+        itemSelect.addEventListener('change', function() {
             const selectedItem = itemSelect.options[itemSelect.selectedIndex];
             unitInput.value = selectedItem.getAttribute('data-unit');
         });

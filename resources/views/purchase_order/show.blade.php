@@ -24,13 +24,13 @@
                 </button>
             </form> -->
             @if ($purchaseOrder->status == 0)
-                <a href="{{ route('receiving.create', ['po', $purchaseOrder->id]) }}"
-                    class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition duration-300">
-                    Receive
-                </a>
+            <a href="{{ route('receiving.create', ['po', $purchaseOrder->id]) }}"
+                class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition duration-300">
+                Receive
+            </a>
             @endif
             <a href="{{ route('purchase-order.edit', $purchaseOrder->id) }}"
-            class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition duration-300">
+                class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition duration-300">
                 Edit
             </a>
             <button onclick="window.print()"
@@ -60,21 +60,23 @@
                 </tr>
             </thead>
             <tbody>
+                @php $total = 0; @endphp
                 <!-- Loop through items -->
                 @foreach ($purchaseOrder->items as $item)
-                    <tr>
-                        <td class="border border-gray-300 px-4 py-2">{{ number_format($item->quantity, 2) }}</td>
-                        <td class="border border-gray-300 px-4 py-2">{{ $item->unit }}</td>
-                        <td class="border border-gray-300 px-4 py-2">{{ $item->item->name }}</td>
-                        <td class="border border-gray-300 px-4 py-2">{{ number_format($item->price, 2) }}</td>
-                        <td class="border border-gray-300 px-4 py-2">{{ number_format($item->total, 2) }}</td>
-                    </tr>
+                @php $total += $item->total; @endphp
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2">{{ number_format($item->quantity, 2) }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ $item->item->unit }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ $item->item->name }} <br> {{$item->item->description}}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ number_format($item->price, 2) }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ number_format($item->total, 2) }}</td>
+                </tr>
                 @endforeach
 
                 <!-- Subtotal -->
                 <tr class="bg-gray-100">
                     <td colspan="4" class="border border-gray-300 px-4 py-2 text-right"><strong>Sub total</strong></td>
-                    <td class="border border-gray-300 px-4 py-2">{{ number_format($purchaseOrder->subtotal, 2) }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ number_format($total, 2) }}</td>
                 </tr>
 
                 <!-- Discount -->
@@ -82,7 +84,7 @@
                     <td colspan="4" class="border border-gray-300 px-4 py-2 text-right">
                         <strong>Discount {{ $purchaseOrder->discount_perc }}%</strong>
                     </td>
-                    <td class="border border-gray-300 px-4 py-2">{{ number_format($purchaseOrder->discount, 2) }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ number_format(($total * $purchaseOrder->discount_perc) / 100, 2) }}</td>
                 </tr>
 
                 <!-- Tax -->
@@ -90,7 +92,7 @@
                     <td colspan="4" class="border border-gray-300 px-4 py-2 text-right">
                         <strong>Tax {{ $purchaseOrder->tax_perc }}%</strong>
                     </td>
-                    <td class="border border-gray-300 px-4 py-2">{{ number_format($purchaseOrder->tax, 2) }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ number_format(($total * $purchaseOrder->tax_perc) / 100, 2) }}</td>
                 </tr>
 
                 <!-- Total -->
@@ -113,13 +115,17 @@
 
 <style>
     @media print {
+
         /* Hide everything except the content inside the .print class */
         body * {
             visibility: hidden;
         }
-        .print, .print * {
+
+        .print,
+        .print * {
             visibility: visible;
         }
+
         /* Ensure the printable content takes full width */
         .print {
             position: absolute;

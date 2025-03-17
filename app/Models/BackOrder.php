@@ -61,4 +61,10 @@ class BackOrder extends Model
     {
         return $this->hasMany(BoItem::class, 'bo_id');
     }
+
+    // Define the inverse of the polymorphic relation
+    public function receivings()
+    {
+        return $this->morphMany(Receiving::class, 'from');
+    }
 }

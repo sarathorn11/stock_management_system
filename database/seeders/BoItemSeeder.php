@@ -13,21 +13,19 @@ class BoItemSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create 10 back order items using the BoItemFactory
-        // BoItem::factory()->count(10)->create();
+        $boItems = [
+            [
+                'id' => 1,
+                'bo_id' => 1,
+                'item_id' => 3,
+                'quantity' => 5,
+                'price' => 5.00,
+                'total' => 25.00
+            ]
+        ];
 
-        // Create 20 bo items manually
-        for ($i = 1; $i <= 20; $i++) {
-            $quantity = rand(1, 100);
-            $price = rand(10, 1000);
-            BoItem::create([
-                'bo_id' => rand(1, 10),
-                'item_id' => rand(1, 20),
-                'quantity' => $quantity,
-                'price' => $price,
-                // 'unit' => ['kg', 'g', 'lb', 'pcs'][array_rand(['kg', 'g', 'lb', 'pcs'])],
-                'total' => $quantity * $price
-            ]);
+        foreach ($boItems as $item) {
+            BoItem::create($item);
         }
     }
 }
