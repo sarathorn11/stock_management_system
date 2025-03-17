@@ -15,9 +15,15 @@
     <div class="flex">
       <a href="{{ route('stocks.create') }}"
         class="bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600">Create</a>
-      <a class="bg-gray-300 text-black px-4 py-[6px] rounded hover:bg-gray-400 ml-2">
+      <div class="inline-block bg-gray-300 text-black px-4 py-2 ml-2 relative" id="option-button">
         <i class="fa fa-cog mr-2"></i>Option
-      </a>
+        <!-- Dropdown menu -->
+        <div id="option-menu" class="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10 hidden">
+          <div class="py-1">
+            <a href="#" id="delete-selected" class="text-red-600 block px-4 py-2 text-sm hover:bg-gray-100">Delete</a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -39,12 +45,11 @@
           <th class="p-2">Item</th>
           <th class="p-2">Total Quantity</th>
           <th class="p-2">Unit</th>
-          <th class="p-2">Actions</th>
         </tr>
       </thead>
       <tbody id="stockResults">
         @foreach($stocks as $index => $stock)
-        <tr class="bg-white hover:bg-gray-200">
+        <tr class="bg-white hover:bg-gray-200 cursor-pointer" data-href="{{ route('stocks.show', $stock->item_id) }}">
           <td class="p-2 text-center">
             <input type="checkbox" class="stock-checkbox w-[18px] h-[18px]" data-id="{{ $stock->item_id }}">
           </td>
@@ -52,22 +57,6 @@
           <td class="p-2 text-center">{{ optional($stock->item)->name ?? 'N/A' }}</td>
           <td class="p-2 text-center">{{ number_format($stock->total_quantity) }}</td>
           <td class="p-2 text-center">{{ optional($stock->item)->unit ?? 'N/A' }}</td>
-          <td class="p-2 flex items-center justify-center">
-            <a href="{{ route('stocks.show', $stock->item_id) }}" class="text-blue-500 text-[18px] mx-1">
-              <i class="fa fa-eye"></i>
-            </a>
-            <a href="{{ route('stocks.edit', $stock->item_id) }}" class="text-yellow-500 text-[18px] mx-1">
-              <i class="fa fa-pencil"></i>
-            </a>
-            <form action="{{ route('stocks.destroy', $stock->item_id) }}" method="POST"
-              onsubmit="return confirm('Are you sure you want to delete this stock?')" class="inline">
-              @csrf
-              @method('DELETE')
-              <button type="submit" class="text-red-500 text-[18px] mx-1">
-                <i class="fa fa-trash"></i>
-              </button>
-            </form>
-          </td>
         </tr>
         @endforeach
       </tbody>
@@ -83,28 +72,37 @@
   @endif
 </div>
 
-<!-- JavaScript for Checkbox Selection -->
+<!-- JavaScript for Checkbox Selection, Delete Action, and Row Click -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  let selectedStockIds = JSON.parse(localStorage.getItem('selectedStockIds')) || [];
+  const optionButton = document.getElementById('option-button');
+  const optionMenu = document.getElementById('option-menu');
   const selectAllCheckbox = document.getElementById('select-all');
   const stockCheckboxes = document.querySelectorAll('.stock-checkbox');
+  const deleteSelectedButton = document.getElementById('delete-selected');
+  let selectedStockIds = JSON.parse(localStorage.getItem('selectedStockIds')) || [];
 
-  function updateCheckboxSelections() {
-    stockCheckboxes.forEach(checkbox => {
-      checkbox.checked = selectedStockIds.includes(checkbox.dataset.id);
-    });
+  // Toggle dropdown menu visibility
+  optionButton.addEventListener('click', (event) => {
+    event.stopPropagation(); // Prevent the click from bubbling up
+    optionMenu.classList.toggle('hidden');
+  });
 
-    selectAllCheckbox.checked = stockCheckboxes.length > 0 &&
-      document.querySelectorAll('.stock-checkbox:checked').length === stockCheckboxes.length;
-  }
+  // Close the dropdown when clicking outside
+  document.addEventListener('click', (event) => {
+    if (!optionButton.contains(event.target) && !optionMenu.contains(event.target)) {
+      optionMenu.classList.add('hidden');
+    }
+  });
 
+  // Handle "Select All" checkbox
   selectAllCheckbox.addEventListener('change', function() {
     selectedStockIds = this.checked ? Array.from(stockCheckboxes).map(cb => cb.dataset.id) : [];
     stockCheckboxes.forEach(cb => cb.checked = this.checked);
     localStorage.setItem('selectedStockIds', JSON.stringify(selectedStockIds));
   });
 
+  // Handle individual checkbox changes
   document.addEventListener('change', function(event) {
     if (event.target.classList.contains('stock-checkbox')) {
       const stockId = event.target.dataset.id;
@@ -120,11 +118,75 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Handle "Delete Selected" button click
+  deleteSelectedButton.addEventListener('click', async (event) => {
+    event.preventDefault();
+
+    if (selectedStockIds.length === 0) {
+      alert('Please select at least one stock to delete.');
+      return;
+    }
+
+    if (confirm('Are you sure you want to delete the selected stocks?')) {
+      try {
+        // Disable the delete button to prevent multiple clicks
+        deleteSelectedButton.disabled = true;
+        deleteSelectedButton.textContent = 'Deleting...';
+
+        const response = await fetch('{{ route("stocks.delete-multiple") }}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+          },
+          body: JSON.stringify({ ids: selectedStockIds })
+        });
+
+        if (response.ok) {
+          // Clear selected stock IDs after successful deletion
+          localStorage.removeItem('selectedStockIds');
+          window.location.reload(); // Reload the page after successful deletion
+        } else {
+          const errorData = await response.json();
+          alert(errorData.error || 'Failed to delete selected stocks.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while deleting the stocks.');
+      } finally {
+        // Re-enable the delete button
+        deleteSelectedButton.disabled = false;
+        deleteSelectedButton.textContent = 'Delete';
+      }
+    }
+  });
+
+  // Handle row click to show details
+  document.querySelectorAll('tbody tr[data-href]').forEach(row => {
+    row.addEventListener('click', (event) => {
+      // Ignore clicks on checkboxes
+      if (event.target.tagName === 'INPUT' && event.target.classList.contains('stock-checkbox')) {
+        return;
+      }
+      window.location.href = row.getAttribute('data-href');
+    });
+  });
+
+  // Update checkbox selections based on localStorage
+  function updateCheckboxSelections() {
+    stockCheckboxes.forEach(cb => {
+      cb.checked = selectedStockIds.includes(cb.dataset.id);
+    });
+    selectAllCheckbox.checked = selectedStockIds.length === stockCheckboxes.length;
+  }
+
+  // Hide success message after 2 seconds
   setTimeout(() => {
     const successMessage = document.getElementById('successOrFailedMessage');
     if (successMessage) successMessage.style.display = 'none';
   }, 2000);
 
+  // Initialize checkbox selections
   updateCheckboxSelections();
 });
 </script>

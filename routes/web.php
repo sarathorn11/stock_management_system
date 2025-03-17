@@ -62,6 +62,7 @@ Route::get('/returns/items/{supplier_id}', [ReturnListController::class, 'getIte
 // Stock List Routes
 Route::get('/stocks/search', [StockController::class, 'search'])->name('stocks.search');
 Route::resource('stocks', StockController::class);
+Route::post('/stocks/delete-multiple', [StockController::class, 'deleteMultiple'])->name('stocks.delete-multiple');
 
 // Sale List Routes
 Route::resource('sales', SaleController::class);
