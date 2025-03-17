@@ -13,17 +13,41 @@ class SupplierSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create 10 suppliers using the SupplierFactory
-        // Supplier::factory()->count(10)->create();
+        $suppliers = [
+            [
+                'name' => 'Supplier 1',
+                'address' => 'Address Supplier 1',
+                'cperson' => 'Jonh Smit',
+                'contact' => '0978767677'
+            ],
+            [
+                'name' => 'Supplier 2',
+                'address' => 'Address Supplier 2',
+                'cperson' => 'Jonh Doe',
+                'contact' => '0978767678'
+            ],
+            [
+                'name' => 'Supplier 3',
+                'address' => 'Address Supplier 3',
+                'cperson' => 'Jonh Wick',
+                'contact' => '0978767679'
+            ],
+            [
+                'name' => 'Supplier 4',
+                'address' => 'Address Supplier 4',
+                'cperson' => 'Jonh Cena',
+                'contact' => '0978767676'
+            ],
+            [
+                'name' => 'Supplier 5',
+                'address' => 'Address Supplier 5',
+                'cperson' => 'Jonh Snow',
+                'contact' => '0978767675'
+            ]
+        ];
 
-        // Create 5 suppliers manually
-        for ($i = 1; $i <= 5; $i++) {
-            Supplier::create([
-                'name' => 'Supplier ' . $i,
-                'address' => 'Address ' . $i,
-                'cperson' => 'Contact Person ' . $i,
-                'contact' => '097876767 ' . $i
-            ]);
+        foreach ($suppliers as $supplier) {
+            Supplier::create($supplier);
         }
     }
 }

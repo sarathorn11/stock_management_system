@@ -19,15 +19,15 @@
             </button>
         </div>
     </div>
-    
+
     <!-- Content to Print -->
     <div class="print">
         <div class="mb-6">
             <!-- Display P.O. Code or B.O. Code based on the source -->
             @if ($receiving->from_order == 1)
-                <p><strong>P.O. Code:</strong> {{ $receiving->from->po_code ?? 'N/A' }}</p>
+            <p><strong>P.O. Code:</strong> {{ $receiving->from->po_code ?? 'N/A' }}</p>
             @elseif ($receiving->from_order == 2)
-                <p><strong>B.O. Code:</strong> {{ $receiving->from->bo_code ?? 'N/A' }}</p>
+            <p><strong>B.O. Code:</strong> {{ $receiving->from->bo_code ?? 'N/A' }}</p>
             @endif
         </div>
 
@@ -44,18 +44,14 @@
             </thead>
             <tbody>
 
-                @php
-                    $stockIds = json_decode($receiving->stock_ids, true);
-                @endphp
-
-                @foreach ($stockIds as $itemId => $itemDetails)
-                    <tr>
-                        <td class="border border-gray-300 px-4 py-2">{{ $itemDetails['quantity'] }}</td>
-                        <td class="border border-gray-300 px-4 py-2">{{ $itemDetails['unit'] }}</td>
-                        <td class="border border-gray-300 px-4 py-2">{{ $itemDetails['name'] }}</td>
-                        <td class="border border-gray-300 px-4 py-2">{{ number_format($itemDetails['cost'], 2) }}</td>
-                        <td class="border border-gray-300 px-4 py-2">{{ number_format($itemDetails['quantity'] * $itemDetails['cost'], 2) }}</td>
-                    </tr>
+                @foreach ($stocks as $item)
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2">{{ $item->quantity }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ $item->item->unit }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ $item->item->name }} <br> {{ $item->item->description }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ number_format($item->item->cost, 2) }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ number_format($item->quantity * $item->item->cost, 2) }}</td>
+                </tr>
                 @endforeach
 
                 <!-- Display subtotal, discount, tax, and total -->
@@ -92,13 +88,17 @@
 
 <style>
     @media print {
+
         /* Hide everything except the content inside the .print class */
         body * {
             visibility: hidden;
         }
-        .print, .print * {
+
+        .print,
+        .print * {
             visibility: visible;
         }
+
         /* Ensure the printable content takes full width */
         .print {
             position: absolute;

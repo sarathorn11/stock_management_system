@@ -14,7 +14,7 @@
         <div class="flex items-center justify-between">
             <a href="{{ route('purchase-order.create') }}"
                 class="inline-block bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600">Create</a>
-            
+
             <!-- Dropdown for Options -->
             <div class="relative inline-block text-left">
                 <button type="button" id="option-button" class="inline-block bg-gray-300 text-black px-4 py-2 rounded mb-4 hover:bg-gray-400 ml-2">
@@ -34,12 +34,12 @@
     </div>
 
     @if(session('success'))
-        <div class="bg-green-500 text-white p-2 rounded my-4 flex justify-between items-center">
-            <span>{{ session('success') }}</span>
-            <button class="text-white ml-2" onclick="this.parentElement.style.display='none';">
-                <i class="fa fa-times"></i>
-            </button>
-        </div>
+    <div class="bg-green-500 text-white p-2 rounded my-4 flex justify-between items-center">
+        <span>{{ session('success') }}</span>
+        <button class="text-white ml-2" onclick="this.parentElement.style.display='none';">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
     @endif
 
     <!-- Delete Form -->
@@ -59,37 +59,39 @@
                     <th class="px-4 py-2">ID</th>
                     <th class="px-4 py-2">PO Code</th>
                     <th class="px-4 py-2">Supplier</th>
+                    <th class="px-4 py-2">Items</th>
                     <th class="px-4 py-2">Amount</th>
                     <th class="px-4 py-2 text-center">Status</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($purchaseOrders as $purchaseOrder)
-                    <tr class="cursor-pointer hover:bg-gray-200" onclick="handleRowClick(event, '{{ route('purchase-order.show', $purchaseOrder->id) }}')">
-                        <td class="px-4 py-2 text-center">
-                            <input type="checkbox" class="select-record cursor-pointer transform scale-125" value="{{ $purchaseOrder->id }}" onclick="event.stopPropagation();">
-                        </td>
-                        <td class="px-4 py-2 text-center">{{ $purchaseOrder->id }}</td>
-                        <td class="px-4 py-2 text-center">{{ $purchaseOrder->po_code }}</td>
-                        <td class="px-4 py-2 text-center">{{ optional($purchaseOrder->supplier)->name }}</td>
-                        <td class="px-4 py-2 text-center">{{ number_format($purchaseOrder->amount, 2) }}</td>
-                        <td class="px-4 py-2 text-center">
-                            @if ($purchaseOrder->status == 0)
-                                <span class="inline-block px-3 py-1 rounded-full bg-blue-500 text-white font-semibold">Pending</span>
-                            @elseif ($purchaseOrder->status == 1)
-                                <span class="inline-block px-3 py-1 rounded-full bg-orange-500 text-white font-semibold">Partially Received</span>
-                            @else
-                                <span class="inline-block px-3 py-1 rounded-full bg-green-500 text-white font-semibold">Received</span>
-                            @endif
-                        </td>
-                    </tr>
+                <tr class="cursor-pointer hover:bg-gray-200" onclick="handleRowClick(event, '{{ route('purchase-order.show', $purchaseOrder->id) }}')">
+                    <td class="px-4 py-2 text-center">
+                        <input type="checkbox" class="select-record cursor-pointer transform scale-125" value="{{ $purchaseOrder->id }}" onclick="event.stopPropagation();">
+                    </td>
+                    <td class="px-4 py-2 text-center">{{ $purchaseOrder->id }}</td>
+                    <td class="px-4 py-2 text-center">{{ $purchaseOrder->po_code }}</td>
+                    <td class="px-4 py-2 text-center">{{ optional($purchaseOrder->supplier)->name }}</td>
+                    <td class="px-4 py-2 text-center">{{ count($purchaseOrder->items) }}</td>
+                    <td class="px-4 py-2 text-center">{{ number_format($purchaseOrder->amount, 2) }}</td>
+                    <td class="px-4 py-2 text-center">
+                        @if ($purchaseOrder->status == 0)
+                        <span class="inline-block px-3 py-1 rounded-full bg-blue-500 text-white font-semibold">Pending</span>
+                        @elseif ($purchaseOrder->status == 1)
+                        <span class="inline-block px-3 py-1 rounded-full bg-orange-500 text-white font-semibold">Partially Received</span>
+                        @else
+                        <span class="inline-block px-3 py-1 rounded-full bg-green-500 text-white font-semibold">Received</span>
+                        @endif
+                    </td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
 
     @if($purchaseOrders->count() > 0)
-        <x-pagination :pagination="$purchaseOrders" :per-page="$perPage" :per-page-options="[10, 20, 30, 50]" />
+    <x-pagination :pagination="$purchaseOrders" :per-page="$perPage" :per-page-options="[10, 20, 30, 50]" />
     @endif
 </div>
 

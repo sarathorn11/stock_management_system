@@ -13,21 +13,35 @@ class PoItemSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create 10 purchase order items using the PoItemFactory
-        // PoItem::factory()->count(10)->create();
+        $poItems = [
+            [
+                'po_id' => 1,
+                'item_id' => 1,
+                'quantity' => 10,
+                'price' => 50.00,
+                // 'unit' => 'kg',
+                'total' => 500.00
+            ],
+            [
+                'po_id' => 2,
+                'item_id' => 2,
+                'quantity' => 20,
+                'price' => 10.00,
+                // 'unit' => 'g',
+                'total' => 200.00
+            ],
+            [
+                'po_id' => 3,
+                'item_id' => 3,
+                'quantity' => 15,
+                'price' => 5.00,
+                // 'unit' => 'lb',
+                'total' => 75.00
+            ]
+        ];
 
-        // Create 20 po items manually
-        for ($i = 1; $i <= 20; $i++) {
-            $quantity = rand(1, 100);
-            $price = rand(10, 1000);
-            PoItem::create([
-                'po_id' => rand(1, 10),
-                'item_id' => rand(1, 20),
-                'quantity' => $quantity,
-                'price' => $price,
-                'unit' => ['kg', 'g', 'lb', 'pcs'][array_rand(['kg', 'g', 'lb', 'pcs'])],
-                'total' => $quantity * $price
-            ]);
+        foreach ($poItems as $item) {
+            PoItem::create($item);
         }
     }
 }

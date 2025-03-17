@@ -19,7 +19,7 @@ class CreatePoItemsTable extends Migration
             $table->foreignId('item_id')->constrained('items')->onDelete('cascade'); // Foreign key for item
             $table->integer('quantity'); // Quantity of items
             $table->float('price', 8, 2)->default(0); // Price per item
-            $table->string('unit', 50); // Unit of measurement
+            // $table->string('unit', 50); // Unit of measurement
             $table->float('total', 8, 2)->default(0); // Total price (quantity * price)
             $table->timestamps(); // Created and updated timestamps
         });

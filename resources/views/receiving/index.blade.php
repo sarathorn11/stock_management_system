@@ -6,9 +6,9 @@
 
   <div class="flex items-center justify-between my-4">
     <form action="{{ route('receiving.index') }}" method="GET">
-        <input type="text" name="query" class="rounded px-4 py-2 w-2/4"
-            placeholder="Search ...." value="{{ request('query') }}">
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
+      <input type="text" name="query" class="rounded px-4 py-2 w-2/4"
+        placeholder="Search ...." value="{{ request('query') }}">
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
     </form>
     <div class="flex items-center">
       <a class="inline-block bg-gray-300 text-black px-4 py-2 rounded mb-4 hover:bg-gray-400 ml-2">
@@ -31,8 +31,9 @@
               <input type="checkbox" id="selectAll">
             </th>
             <th class="px-4 py-2">ID</th>
-            <th class="px-4 py-2">Date Created</th>
             <th class="px-4 py-2">From</th>
+            <th class="px-4 py-2">Items</th>
+            <th class="px-4 py-2">Date Created</th>
           </tr>
         </thead>
         <tbody>
@@ -42,12 +43,13 @@
               <input type="checkbox" name="selected_ids[]" value="{{ $receiving->id }}" class="recordCheckbox" onclick="event.stopPropagation();">
             </td>
             <td class="px-4 py-2 text-center">{{ $receiving->id }}</td>
-            <td class="px-4 py-2 text-center">{{ $receiving->created_at }}</td>
             <td class="px-4 py-2 text-center">
-              {{ $receiving->from_order == 1 ? 'PO' : 'BO' }}
+              {{ $receiving->from_order == 1 ? $receiving->from->po_code : $receiving->from->bo_code }}
             </td>
-           
-           
+            <td class="px-4 py-2 text-center">
+              {{ count($receiving->from->items) }}
+            </td>
+            <td class="px-4 py-2 text-center">{{ $receiving->created_at }}</td>
           </tr>
           @endforeach
         </tbody>
@@ -55,14 +57,14 @@
 
       <!-- Custom Pagination Component for Purchase Orders -->
       @if($receivings->count() > 0)
-          <x-pagination :pagination="$receivings" :per-page="$perPage" :per-page-options="[10, 20, 30, 50]" />
+      <x-pagination :pagination="$receivings" :per-page="$perPage" :per-page-options="[10, 20, 30, 50]" />
       @endif
     </form>
   </div>
 </div>
 
 <script>
-  document.getElementById('selectAll').addEventListener('change', function () {
+  document.getElementById('selectAll').addEventListener('change', function() {
     let checkboxes = document.querySelectorAll('.recordCheckbox');
     checkboxes.forEach(checkbox => {
       checkbox.checked = this.checked;

@@ -13,29 +13,37 @@ class ReceivingSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create 10 receivings using the ReceivingFactory
-        // Receiving::factory()->count(10)->create();
+        $receivings = [
+            [
+                'id' => 1,
+                'from_id' => 1,
+                'from_type' => 'App\Models\PurchaseOrder',
+                'from_order' => 1,
+                'amount' => 500.00,
+                'discount_perc' => 0.00,
+                'discount' => 0.00,
+                'tax_perc' => 0.00,
+                'tax' => 0.00,
+                'remarks' => 'Remarks for receiving 1',
+                'stock_ids' => json_encode([1])
+            ],
+            [
+                'id' => 2,
+                'from_id' => 3,
+                'from_type' => 'App\Models\PurchaseOrder',
+                'from_order' => 1,
+                'amount' => 0.00,
+                'discount_perc' => 0.00,
+                'discount' => 0.00,
+                'tax_perc' => 0.00,
+                'tax' => 0.00,
+                'remarks' => 'Remarks for receiving 2',
+                'stock_ids' => json_encode([2])
+            ]
+        ];
 
-        $stockIds = [
-            [5, 3], [4, 9], [4, 7], [8, 2], [6, 1],
-            [3, 5], [7, 4], [2, 8], [1, 6], [9, 4]
-        ]; // Predefined array of stock_ids
-
-        // Create 10 receivings manually
-        for ($i = 1; $i <= 10; $i++) {
-            Receiving::create([
-                'from_id' => rand(1, 20),
-                'from_order' => rand(1, 2),
-                'from_type' => rand(1,2),
-                'amount' => rand(100, 1000),
-                'discount_perc' => rand(0, 10),
-                'discount' => rand(0, 100),
-                'tax_perc' => rand(0, 10),
-                'tax' => rand(0, 100),
-                'remarks' => 'Remarks for receiving ' . $i,
-                'stock_ids' => json_encode($stockIds[$i - 1]) // Store multiple stock_ids as JSON
-            ]);
+        foreach ($receivings as $receiving) {
+            Receiving::create($receiving);
         }
     }
 }
-

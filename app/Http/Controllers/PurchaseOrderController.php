@@ -20,7 +20,9 @@ class PurchaseOrderController extends Controller
         $perPage = $request->get('per_page', 10); // Default to 10 if not provided
 
         // Paginate the PurchaseOrder model
-        $purchaseOrders = PurchaseOrder::with('supplier')->paginate($perPage);
+        $purchaseOrders = PurchaseOrder::with('supplier')
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
 
         // Pass the paginated result to the view
         return view('purchase_order.index', compact('purchaseOrders', 'perPage'));
@@ -32,7 +34,7 @@ class PurchaseOrderController extends Controller
     public function create()
     {
         $suppliers = Supplier::all(); // Fetch suppliers for the dropdown
-        $items = Item::all(); // Fetch items for the dropdown
+        $items = collect(); // Default empty collection for items
         return view('purchase_order.create', compact('items', 'suppliers'));
     }
 
@@ -53,7 +55,7 @@ class PurchaseOrderController extends Controller
             'price' => 'required|array', // Ensure prices are provided
             'total' => 'required|array', // Ensure totals are provided
         ]);
-    
+
         // Generate the next PO code
         $lastPO = PurchaseOrder::orderBy('id', 'desc')->first(); // Get the last PO by ID
         if ($lastPO) {
@@ -72,7 +74,7 @@ class PurchaseOrderController extends Controller
         } else {
             $poCode = 'PO-00001'; // Default if no POs exist
         }
-    
+
         // Calculate subtotal, discount, tax, and grand total
         $subtotal = array_sum($request->input('total'));
         $discountPerc = $request->input('discount_perc', 0);
@@ -80,7 +82,7 @@ class PurchaseOrderController extends Controller
         $discount = ($subtotal * $discountPerc) / 100;
         $tax = ($subtotal * $taxPerc) / 100;
         $grandTotal = $subtotal - $discount + $tax;
-    
+
         // Create the purchase order
         $purchaseOrder = PurchaseOrder::create([
             'po_code' => $poCode, // Use the generated PO code
@@ -94,14 +96,14 @@ class PurchaseOrderController extends Controller
             // 'grand_total' => $grandTotal,
             'amount' => $grandTotal,
         ]);
-    
+
         // Attach items to the purchase order using the PoItem model
         foreach ($request->input('item_id') as $index => $itemId) {
             $quantity = $request->input('qty')[$index];
             $price = $request->input('price')[$index];
             $unit = $request->input('unit')[$index];
             $total = $request->input('total')[$index];
-    
+
             PoItem::create([
                 'po_id' => $purchaseOrder->id, // Link to the created purchase order
                 'item_id' => $itemId, // Item ID
@@ -111,7 +113,7 @@ class PurchaseOrderController extends Controller
                 'total' => $total, // Total cost (quantity * price)
             ]);
         }
-    
+
         return redirect()->route('purchase-order.index')->with('success', 'Purchase Order created successfully!');
     }
     /**
@@ -119,7 +121,7 @@ class PurchaseOrderController extends Controller
      */
     public function show($id)
     {
-        $purchaseOrder = PurchaseOrder::with(['supplier','items'])->findOrFail($id);
+        $purchaseOrder = PurchaseOrder::with(['supplier', 'items'])->findOrFail($id);
         return view('purchase_order.show', compact('purchaseOrder'));
     }
 
@@ -152,13 +154,13 @@ class PurchaseOrderController extends Controller
             'discount_perc' => 'nullable|numeric|min:0|max:100', // Discount percentage (0-100)
             'tax_perc' => 'nullable|numeric|min:0|max:100', // Tax percentage (0-100)
         ]);
-    
+
         // Calculate subtotal, discount, tax, and grand total
         $subtotal = array_sum($request->input('total'));
         $discount = ($subtotal * $request->input('discount_perc', 0)) / 100;
         $tax = ($subtotal * $request->input('tax_perc', 0)) / 100;
         $grandTotal = $subtotal - $discount + $tax;
-    
+
         // Update the purchase order
         $purchaseOrder->update([
             'po_code' => $request->input('po_code'),
@@ -169,10 +171,10 @@ class PurchaseOrderController extends Controller
             'tax' => $tax,
             'grand_total' => $grandTotal,
         ]);
-    
+
         // Delete existing items for the purchase order
         $purchaseOrder->items()->delete();
-    
+
         // Add new items for the purchase order
         foreach ($request->input('item_id') as $index => $itemId) {
             $purchaseOrder->items()->create([
@@ -183,7 +185,7 @@ class PurchaseOrderController extends Controller
                 'total' => $request->input('total')[$index],
             ]);
         }
-    
+
         return redirect()->route('purchase-order.index')->with('success', 'Purchase Order updated successfully!');
     }
 
@@ -223,7 +225,7 @@ class PurchaseOrderController extends Controller
                     'discount' => $purchaseOrder->discount_amount,
                     'tax_perc' => $purchaseOrder->tax_perc,
                     'tax' => $purchaseOrder->tax_amount,
-                    'stock_ids' => $purchaseOrder->items->isNotEmpty() 
+                    'stock_ids' => $purchaseOrder->items->isNotEmpty()
                         ? json_encode($purchaseOrder->items->mapWithKeys(function ($item) {
                             return [
                                 $item->item_id => [
@@ -233,7 +235,7 @@ class PurchaseOrderController extends Controller
                                     'cost' => $item->item->cost, // Access cost from the item relationship
                                 ],
                             ];
-                        })) 
+                        }))
                         : null,
                     'remarks' => $purchaseOrder->remarks,
                 ];

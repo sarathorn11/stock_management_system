@@ -13,22 +13,47 @@ class PurchaseOrderSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create 10 purchase orders using the PurchaseOrderFactory
-        // PurchaseOrder::factory()->count(10)->create();
+        $purchaseOrders = [
+            [
+                'id' => 1,
+                'supplier_id' => 1,
+                'po_code' => 'PO0001',
+                'amount' => 500.00,
+                'discount_perc' => 0.00,
+                'discount' => 0.00,
+                'tax_perc' => 0.00,
+                'tax' => 0.00,
+                'remarks' => 'Remarks for purchase order 1',
+                'status' => 2
+            ],
+            [
+                'id' => 2,
+                'supplier_id' => 2,
+                'po_code' => 'PO0002',
+                'amount' => 200.00,
+                'discount_perc' => 0.00,
+                'discount' => 0.00,
+                'tax_perc' => 0.00,
+                'tax' => 0.00,
+                'remarks' => 'Remarks for purchase order 2',
+                'status' => 0
+            ],
+            [
+                'id' => 3,
+                'supplier_id' => 3,
+                'po_code' => 'PO0003',
+                'amount' => 75.00,
+                'discount_perc' => 0.00,
+                'discount' => 0.00,
+                'tax_perc' => 0.00,
+                'tax' => 0.00,
+                'remarks' => 'Remarks for purchase order 3',
+                'status' => 1
+            ]
+        ];
 
-        // Create 10 purchase orders manually
-        for ($i = 1; $i <= 10; $i++) {
-            PurchaseOrder::create([
-                'supplier_id' => rand(1, 5),
-                'po_code' => 'PO' . str_pad($i, 4, '0', STR_PAD_LEFT),
-                'amount' => rand(100, 1000),
-                'discount_perc' => rand(0, 10),
-                'discount' => rand(0, 100),
-                'tax_perc' => rand(0, 10),
-                'tax' => rand(0, 100),
-                'remarks' => 'Remarks for purchase order ' . $i,
-                'status' => rand(0, 2)
-            ]);
+        foreach ($purchaseOrders as $order) {
+            PurchaseOrder::create($order);
         }
     }
 }
