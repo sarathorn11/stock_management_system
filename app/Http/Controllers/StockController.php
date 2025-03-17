@@ -159,4 +159,18 @@ class StockController extends Controller
 
         return response()->json(['stocks' => $stocks]);
     }
+    public function deleteMultiple(Request $request)
+    {
+        $ids = $request->input('ids');
+
+        // Validate input
+        if (empty($ids)) {
+            return response()->json(['error' => 'No stocks selected.'], 400);
+        }
+
+        // Delete the selected stocks
+        Stock::whereIn('item_id', $ids)->delete();
+
+        return response()->json(['success' => 'Selected stocks deleted successfully.']);
+    }
 }
