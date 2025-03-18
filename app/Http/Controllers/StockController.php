@@ -31,6 +31,7 @@ class StockController extends Controller
                     $subQuery->where('name', 'LIKE', "%{$query}%")
                              ->orWhere('unit', 'LIKE', "%{$query}%"); // Search for unit in the item table
                 })->orWhere('price', 'LIKE', "%{$query}%")
+                  ->orWhere('quantity', 'LIKE', "%{$query}%")
                   ->orWhere('total', 'LIKE', "%{$query}%")
                   ->orWhere('type', 'LIKE', "%{$query}%");
             });

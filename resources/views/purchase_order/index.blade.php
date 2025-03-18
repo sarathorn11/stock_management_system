@@ -4,13 +4,13 @@
 <div class="w-full h-full">
     <h1 class="text-2xl font-bold text-gray-800">Purchase Orders</h1>
     <div class="flex items-center justify-between my-4">
-        <form action="{{ route('purchase-order.index') }}" method="GET">
-            <input type="text" name="query" class="rounded px-4 py-2 w-2/4"
-                placeholder="Search ...." value="{{ request('query') }}">
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
-        </form>
-        <!-- <input type="text" placeholder="Search..." class="px-3 py-2 w-[350px] rounded border-gray-300">
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button> -->
+        <form action="{{ route('purchase-order.index') }}" method="GET" class="flex items-center">
+            <input type="text" name="query" class="px-3 py-[5px] w-[350px] rounded border" placeholder="Po code, Amount, Supplier ...."
+              value="{{ request('query') }}">
+            <button type="submit" class="ml-2 bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600">
+              Search
+            </button>
+          </form>
         <div class="flex items-center justify-between">
             <a href="{{ route('purchase-order.create') }}"
                 class="inline-block bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600">Create</a>

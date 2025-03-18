@@ -3,9 +3,13 @@
 @section('content')
 <div id="content" class="w-full h-full">
   <h1 class="text-xl font-bold text-gray-800">List of Back Orders</h1>
-  <div class="flex items-center justify-between my-4">
-    <input id="searching" type="text" placeholder="Search by BO Code..." class="px-3 py-2 w-[350px] rounded border" value="{{ request('query') }}">
-  </div>
+    <form  method="GET" class="flex items-center my-4">
+      <input type="text" name="query" class="px-3 py-[5px] w-[350px] rounded border" placeholder="BO code ,Name , Supplier  ...."
+        value="{{ request('query') }}">
+      <button type="submit" class="ml-2 bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600">
+        Search
+      </button>
+    </form> 
   @if(session('success'))
   <div id="success-message" class="bg-green-100 text-green-800 p-4 rounded mb-4">{{ session('success') }}</div>
   @endif

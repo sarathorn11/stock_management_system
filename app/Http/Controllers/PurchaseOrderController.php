@@ -15,18 +15,40 @@ class PurchaseOrderController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
-        // Set the number of records per page (you can adjust the value or make it dynamic)
-        $perPage = $request->get('per_page', 10); // Default to 10 if not provided
+{
+    $perPage = $request->get('per_page', 10); // Get per page input
+    $query = $request->get('query'); // Get search input
 
-        // Paginate the PurchaseOrder model
-        $purchaseOrders = PurchaseOrder::with('supplier')
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
+     $purchaseOrders = PurchaseOrder::with('supplier')
+        ->when($query, function ($q) use ($query) {
+             $q->where('po_code', 'LIKE', "%$query%")
+              ->orWhere('amount', 'LIKE', "%{$query}%")
+               ->orWhereHas('supplier', function ($supplierQuery) use ($query) {
+                  $supplierQuery->where('name', 'LIKE', "%{$query}%"); // Replace 'name' with the actual field you want to search in the supplier table
+              });
+        })
+        ->orderBy('id', 'desc')
+        ->paginate($perPage); // Apply pagination
 
-        // Pass the paginated result to the view
-        return view('purchase_order.index', compact('purchaseOrders', 'perPage'));
-    }
+    return view('purchase_order.index', compact('purchaseOrders', 'perPage'));
+}
+
+    // public function index(Request $request)
+    // {
+    //     $perPage = $request->get('per_page', 10); 
+    //     $query = $request->get('query');  
+    
+    //     $purchaseOrders = PurchaseOrder::with('supplier')
+    //         ->when($query, function ($q) use ($query) {
+    //             $q->where('po_code', 'LIKE', "%$query%")   
+    //               ->orWhere('amount', 'LIKE', "%{$query}%");
+    //         })
+    //         ->orderBy('id', 'desc')
+    //         ->paginate($perPage);
+    
+    //     return view('purchase_order.index', compact('purchaseOrders', 'perPage'));
+    // }    
+	
 
     /**
      * Show the form for creating a new resource.

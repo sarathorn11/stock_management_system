@@ -7,7 +7,7 @@
   <div class="flex items-center justify-between my-4">
     <!-- Search Form -->
     <form action="{{ route('sales.index') }}" method="GET" class="flex items-center">
-      <input type="text" name="query" class="px-3 py-[5px] w-[350px] rounded border" placeholder="Search ...."
+      <input type="text" name="query" class="px-3 py-[5px] w-[350px] rounded border" placeholder=" Sales code, Amount, Client ...."
         value="{{ request('query') }}">
       <button type="submit" class="ml-2 bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600">
         Search

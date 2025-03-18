@@ -15,15 +15,45 @@ class ReturnListController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
-        $perPage = $request->input('perPage', 10);
-        $return = ReturnList::with('supplier')->paginate($perPage);
-        return view('return.index', [
-            'returns' => $return,
-            'perPage' => $perPage,
-            'perPageOptions' => [10, 20, 30, 50]
-        ]);
-    }
+{
+    $query = $request->input('query'); // Get search input
+    $perPage = $request->input('perPage', 10); // Default per page
+
+    // Query returns with search filter
+    $returns = ReturnList::with('supplier') // Eager load the supplier relationship
+        ->when($query, function ($queryBuilder) use ($query) {
+            return $queryBuilder->where(function ($q) use ($query) {
+                // Search within the ReturnList fields
+                $q->where('return_code', 'LIKE', "%{$query}%")
+                  ->orWhere('stock_ids', 'LIKE', "%{$query}%")
+                  ->orWhere('amount', 'LIKE', "%{$query}%")
+                  ->orWhere('remarks', 'LIKE', "%{$query}%")
+                   ->orWhereHas('supplier', function ($supplierQuery) use ($query) {
+                      $supplierQuery->where('name', 'LIKE', "%{$query}%"); // Change 'name' to the actual field you want to search by
+                  });
+            });
+        })
+        ->orderBy('id', 'desc')
+        ->paginate($perPage);
+
+    return view('return.index', [
+        'returns' => $returns,
+        'query' => $query,
+        'perPage' => $perPage,
+        'perPageOptions' => [10, 20, 30, 50]
+    ]);
+}
+
+    // public function index(Request $request)
+    // {
+    //     $perPage = $request->input('perPage', 10);
+    //     $return = ReturnList::with('supplier')->paginate($perPage);
+    //     return view('return.index', [
+    //         'returns' => $return,
+    //         'perPage' => $perPage,
+    //         'perPageOptions' => [10, 20, 30, 50]
+    //     ]);
+    // }
 
     /**
      * Display the specified resource.

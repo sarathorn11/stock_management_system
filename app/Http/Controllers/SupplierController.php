@@ -11,16 +11,28 @@ class SupplierController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
-        // return $request;
-        $perPage = $request->input('perPage', 10);
-        $suppliers = supplier::paginate($perPage);
-        return view('supplier.index', [
-            'suppliers' => $suppliers,
-            'perPage' => $perPage,
-            'perPageOptions' => [10, 20, 30, 50]
-        ], compact('suppliers'));
-    }
+{
+    $query = $request->input('query');
+    $perPage = $request->input('perPage', 10);
+
+    $suppliers = Supplier::when($query, function ($queryBuilder) use ($query) {
+            return $queryBuilder->where(function ($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%")
+                  ->orWhere('address', 'LIKE', "%{$query}%")
+                  ->orWhere('cperson', 'LIKE', "%{$query}%")
+                  ->orWhere('contact', 'LIKE', "%{$query}%");
+            });
+        })
+        ->orderBy('id', 'desc')
+        ->paginate($perPage);
+
+    return view('supplier.index', [
+        'suppliers' => $suppliers,
+        'query' => $query,
+        'perPage' => $perPage,
+        'perPageOptions' => [10, 20, 30, 50]
+    ]);
+}
 
     public function getSuppliers()
     {

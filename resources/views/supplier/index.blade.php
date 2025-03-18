@@ -5,7 +5,14 @@
 <div id="content" class="w-full h-full">
   <h1 class="text-xl font-bold text-gray-800">Supplier List</h1>
   <div class="flex items-center justify-between my-4">
-    <input id="search" type="text" placeholder="Search by Item ID..." class="px-3 py-[5px] w-[350px] rounded border">
+    <form method="GET" class="flex items-center">
+      <input type="text" name="query" class="px-3 py-[5px] w-[350px] rounded border" placeholder="Suppler ,Contact Person ...."
+          value="{{ request('query') }}">
+      <button type="submit" class="ml-2 bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600">
+          Search
+      </button>
+  </form>
+  
     <div class="flex items-center justify-between">
       <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onclick="openModal('create')">
         Create
