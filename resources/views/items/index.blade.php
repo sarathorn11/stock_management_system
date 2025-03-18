@@ -35,7 +35,7 @@
     @else
     <div class="overflow-x-auto">
         <table class="w-full  rounded-lg">
-            <thead class="bg-[#001f3f] text-white">
+            <thead class="bg-[#3c8dbc] text-white">
                 <tr>
                     <th class="px-4 py-2">
                         <input type="checkbox" id="checkAll" onclick="toggleAllRows(this)">
@@ -51,7 +51,7 @@
             </thead>
             <tbody>
                 @foreach($items as $index => $item)
-                <tr data-id="{{$item->id}}" class="hover:bg-gray-300 cursor-pointer text-center"
+                <tr data-id="{{$item->id}}" class="hover:bg-gray-300 cursor-pointer text-center border-b"
                     onclick="fetchItemDetails({{ $item->id }})">
                     <td onclick="event.stopPropagation()" class="px-4 py-2 text-center"><input class="rowCheckbox"
                             value="{{$item->id}}" type="checkbox"></td>

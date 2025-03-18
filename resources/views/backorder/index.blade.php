@@ -16,7 +16,7 @@
   @endif
   <div class="w-full h-auto">
     <table class="table-auto w-full border-collapse">
-      <thead class="bg-[#001f3f] text-white">
+      <thead class="bg-[#3c8dbc] text-white">
         <tr>
           <th class="px-4 py-2">
             <input type="checkbox" id="select-all" class="select-all-checkbox">
@@ -32,7 +32,7 @@
       </thead>
       <tbody id="backOrderResults">
         @foreach($backOrders as $index => $row)
-          <tr class="bg-white hover:bg-gray-200">
+          <tr class="bg-white hover:bg-gray-200 border-b">
             <td class="px-4 py-2 text-center">
               <input type="checkbox" class="backorder-checkbox" data-id="{{ $row->id }}">
             </td>

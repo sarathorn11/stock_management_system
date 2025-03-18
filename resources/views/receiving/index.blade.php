@@ -25,7 +25,7 @@
     <form id="receivingForm" method="POST" action="#">
       @csrf
       <table class="table-auto w-full border-collapse">
-        <thead class="bg-[#001f3f] text-white">
+        <thead class="bg-[#3c8dbc] text-white">
           <tr>
             <th class="px-4 py-2">
               <input type="checkbox" id="selectAll">
@@ -38,7 +38,7 @@
         </thead>
         <tbody>
           @foreach($receivings as $receiving)
-          <tr class="bg-white hover:bg-gray-200 cursor-pointer" onclick="window.location.href='{{ route('receiving.show', $receiving->id) }}'">
+          <tr class="bg-white hover:bg-gray-200 cursor-pointer border-b" onclick="window.location.href='{{ route('receiving.show', $receiving->id) }}'">
             <td class="px-4 py-2 text-center">
               <input type="checkbox" name="selected_ids[]" value="{{ $receiving->id }}" class="recordCheckbox" onclick="event.stopPropagation();">
             </td>

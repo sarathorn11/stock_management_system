@@ -19,7 +19,7 @@
   @endif
   <div class="w-full h-auto">
     <table class="table-auto w-full">
-      <thead class="bg-[#001f3f] text-white">
+      <thead class="bg-[#3c8dbc] text-white">
         <tr>
           <th class="p-2">
             <input type="checkbox" id="select-all" class="select-all-checkbox w-[18px] h-[18px]">
@@ -34,7 +34,7 @@
       </thead>
       <tbody id="returnResults">
         @foreach($returns as $index => $return)
-        <tr class="bg-white hover:bg-gray-200">
+        <tr class="bg-white hover:bg-gray-200 border-b">
           <td class="p-2 text-[14px] text-center">
             <input type="checkbox" class="return-checkbox w-[18px] h-[18px]" data-id="{{ $return->id }}">
           </td>

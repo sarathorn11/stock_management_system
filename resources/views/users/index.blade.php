@@ -35,7 +35,7 @@
     @else
     <div class="overflow-x-auto">
         <table class="w-full border rounded-lg shadow-sm text-left">
-            <thead class="bg-[#001f3f] text-white">
+            <thead class="bg-[#3c8dbc] text-white">
                 <tr>
                     <th class="px-4 py-2"><input type="checkbox" id="checkAll" onclick="toggleAllRows(this)"></th>
                     <th class="px-4 py-2">No.</th>
@@ -50,7 +50,7 @@
             </thead>
             <tbody class="bg-white divide-y">
                 @foreach($users as $index => $user)
-                <tr onclick="fetchUserDetails({{ $user->id }})" data-id="{{$user->id}}" class="hover:bg-gray-50">
+                <tr onclick="fetchUserDetails({{ $user->id }})" data-id="{{$user->id}}" class="hover:bg-gray-50 border-b">
                     <td class="px-4 py-2"><input onclick="event.stopPropagation()" class="rowCheckbox"
                             value="{{$user->id}}" type="checkbox"></td>
                     <td class="px-4 py-2">{{1 + $index}}</td>

@@ -38,7 +38,7 @@
   <div class="w-full h-auto">
     @if($stocks->count() > 0)
     <table class="table-auto w-full">
-      <thead class="bg-[#001f3f] text-white">
+      <thead class="bg-[#3c8dbc] text-white">
         <tr>
           <th class="p-2"><input type="checkbox" id="select-all" class="w-[18px] h-[18px]"></th>
           <th class="p-2">No.</th>
@@ -49,7 +49,7 @@
       </thead>
       <tbody id="stockResults">
         @foreach($stocks as $index => $stock)
-        <tr class="bg-white hover:bg-gray-200 cursor-pointer" data-href="{{ route('stocks.show', $stock->item_id) }}">
+        <tr class="bg-white hover:bg-gray-200 cursor-pointer border-b" data-href="{{ route('stocks.show', $stock->item_id) }}">
           <td class="p-2 text-center">
             <input type="checkbox" class="stock-checkbox w-[18px] h-[18px]" data-id="{{ $stock->item_id }}">
           </td>
