@@ -1,113 +1,103 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="w-full h-full p-8">
-    <!-- Header with Breadcrumb and Buttons -->
-    <div class="flex justify-between items-center mb-6">
-        <!-- Breadcrumb -->
-        <div class="flex items-center gap-2">
-            <a href="{{ route('purchase-order.index') }}"
-                class="text-xl font-bold text-gray-800 hover:text-blue-500 hover:underline hover:cursor-pointer">
-                Purchase Order
-            </a>
-            <h1 class="text-xl font-bold text-gray-800">/</h1>
-            <h1 class="text-xl font-bold text-gray-800 underline">Detail</h1>
-        </div>
-
-        <!-- Buttons -->
-        <div class="flex space-x-4">
-            <!-- <form action="{{ route('purchase-order.receive', $purchaseOrder->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to receive this purchase order?');">
-                @csrf
-                <button type="submit"
-                    class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition duration-300">
-                    Receive
-                </button>
-            </form> -->
+<div class="w-full h-full">
+    <h1 class="text-xl font-bold text-gray-800">Purchase Order Details - {{ $purchaseOrder->po_code }}</h1>
+    <div class="flex items-center justify-between my-4">
+        <div></div>
+        <div class="flex items-center justify-between">
             @if ($purchaseOrder->status == 0)
             <a href="{{ route('receiving.create', ['po', $purchaseOrder->id]) }}"
-                class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition duration-300">
+                class="bg-blue-500 text-white mr-3 px-6 py-2 rounded hover:bg-blue-600 transition duration-300">
                 Receive
             </a>
-            @endif
             <a href="{{ route('purchase-order.edit', $purchaseOrder->id) }}"
-                class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition duration-300">
+                class="bg-blue-500 text-white mr-3 px-6 py-2 rounded hover:bg-blue-600 transition duration-300">
                 Edit
             </a>
-            <button onclick="window.print()"
-                class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition duration-300">
-                Print
+            @endif
+            <button onclick="window.print()" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition duration-300">
+                <i class="fa fa-print mr-2"></i>Print
             </button>
         </div>
     </div>
-
-    <!-- Content to Print -->
-    <div class="print">
-        <!-- Purchase Order Details -->
-        <div class="mb-6">
-            <p><strong>P.O. Code:</strong> {{ $purchaseOrder->po_code }}</p>
-            <p><strong>Supplier:</strong> {{ $purchaseOrder->supplier->name }}</p>
-        </div>
-
-        <h2 class="text-xl font-semibold mb-4">Order</h2>
-        <table class="w-full border-collapse border border-gray-300 mb-6">
-            <thead>
-                <tr class="bg-gray-200">
-                    <th class="border border-gray-300 px-4 py-2">Qty</th>
-                    <th class="border border-gray-300 px-4 py-2">Unit</th>
-                    <th class="border border-gray-300 px-4 py-2">Items</th>
-                    <th class="border border-gray-300 px-4 py-2">Cost</th>
-                    <th class="border border-gray-300 px-4 py-2">Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php $total = 0; @endphp
-                <!-- Loop through items -->
-                @foreach ($purchaseOrder->items as $item)
-                @php $total += $item->total; @endphp
-                <tr>
-                    <td class="border border-gray-300 px-4 py-2">{{ number_format($item->quantity, 2) }}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{ $item->item->unit }}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{ $item->item->name }} <br> {{$item->item->description}}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{ number_format($item->price, 2) }}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{ number_format($item->total, 2) }}</td>
-                </tr>
-                @endforeach
-
-                <!-- Subtotal -->
-                <tr class="bg-gray-100">
-                    <td colspan="4" class="border border-gray-300 px-4 py-2 text-right"><strong>Sub total</strong></td>
-                    <td class="border border-gray-300 px-4 py-2">{{ number_format($total, 2) }}</td>
-                </tr>
-
-                <!-- Discount -->
-                <tr class="bg-gray-100">
-                    <td colspan="4" class="border border-gray-300 px-4 py-2 text-right">
-                        <strong>Discount {{ $purchaseOrder->discount_perc }}%</strong>
-                    </td>
-                    <td class="border border-gray-300 px-4 py-2">{{ number_format(($total * $purchaseOrder->discount_perc) / 100, 2) }}</td>
-                </tr>
-
-                <!-- Tax -->
-                <tr class="bg-gray-100">
-                    <td colspan="4" class="border border-gray-300 px-4 py-2 text-right">
-                        <strong>Tax {{ $purchaseOrder->tax_perc }}%</strong>
-                    </td>
-                    <td class="border border-gray-300 px-4 py-2">{{ number_format(($total * $purchaseOrder->tax_perc) / 100, 2) }}</td>
-                </tr>
-
-                <!-- Total -->
-                <tr class="bg-gray-200">
-                    <td colspan="4" class="border border-gray-300 px-4 py-2 text-right"><strong>Total</strong></td>
-                    <td class="border border-gray-300 px-4 py-2">{{ number_format($purchaseOrder->amount, 2) }}</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- Remark Section -->
-        <div class="mt-6">
-            <div>
-                <p><strong>Remark:</strong></p>
-                <p>{{ $purchaseOrder->remarks ?? 'No remarks' }}</p>
+    <div class="print card bg-white p-6 rounded-sm">
+        <div class="card-body" id="print_out">
+            <div class="container-fluid">
+                <div class="grid grid-flow-row gap-4 grid-cols-3">
+                    <div class="col-span-2">
+                        <label class="text-blue-500">P.O. Code</label>
+                        <div>{{ $purchaseOrder->po_code }}</div>
+                    </div>
+                    <div class="col-span-1">
+                        <label for="supplier_id" class="text-blue-500">Supplier</label>
+                        <div>{{ $purchaseOrder->supplier->name }}</div>
+                    </div>
+                </div>
+                <h2 class="text-blue-500 font-bold py-2 mt-1">Orders</h2>
+                <table class="table-auto w-full border-collapse border border-gray-400" id="list">
+                    <colgroup>
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="30%">
+                        <col width="25%">
+                        <col width="25%">
+                    </colgroup>
+                    <thead>
+                        <tr class=" bg-gray-300">
+                            <th class="text-center py-1 px-2 border border-gray-400">Qty</th>
+                            <th class="text-center py-1 px-2 border border-gray-400">Unit</th>
+                            <th class="text-center py-1 px-2 border border-gray-400">Item</th>
+                            <th class="text-center py-1 px-2 border border-gray-400">Cost</th>
+                            <th class="text-center py-1 px-2 border border-gray-400">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php $total = 0; @endphp
+                        @foreach($purchaseOrder->items as $item)
+                        @php $total += $item->total; @endphp
+                        <tr>
+                            <td class="py-1 px-2 text-center border border-gray-400">{{ number_format($item->quantity, 2) }}</td>
+                            <td class="py-1 px-2 text-center border border-gray-400">{{ $item->item->unit }}</td>
+                            <td class="py-1 px-2 border border-gray-400">
+                                {{ $item->item->name }} <br>
+                                {{ $item->item->description }}
+                            </td>
+                            <td class="py-1 px-2 text-right border border-gray-400">{{ number_format($item->price, 2) }}</td>
+                            <td class="py-1 px-2 text-right border border-gray-400">{{ number_format($item->total, 2) }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th class="text-right py-1 px-2 border border-gray-400" colspan="4">Sub Total</th>
+                            <th class="text-right py-1 px-2 border border-gray-400 sub-total">{{ number_format($total, 2) }}</th>
+                        </tr>
+                        <tr>
+                            <th class="text-right py-1 px-2 border border-gray-400" colspan="4">Discount {{ $purchaseOrder->discount_perc ?? 0 }}%</th>
+                            <th class="text-right py-1 px-2 border border-gray-400 discount">{{ number_format($purchaseOrder->discount ?? 0, 2) }}</th>
+                        </tr>
+                        <tr>
+                            <th class="text-right py-1 px-2 border border-gray-400" colspan="4">Tax {{ $purchaseOrder->tax_perc ?? 0 }}%</th>
+                            <th class="text-right py-1 px-2 border border-gray-400 tax">{{ number_format($purchaseOrder->tax ?? 0, 2) }}</th>
+                        </tr>
+                        <tr>
+                            <th class="text-right py-1 px-2 border border-gray-400" colspan="4">Total</th>
+                            <th class="text-right py-1 px-2 border border-gray-400 grand-total">{{ number_format($purchaseOrder->amount ?? 0, 2) }}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div class="grid grid-flow-col gap-4 grid-cols-3 mt-10">
+                    <div class="col-span-2">
+                        <label for="remarks" class="text-blue-500">Remarks</label>
+                        <p>{{ $purchaseOrder->remarks ?? 'N/A' }}</p>
+                    </div>
+                    @if($purchaseOrder->status > 0)
+                    <div class="col-span-1">
+                        <span class="text-blue-500">{{ $purchaseOrder->status == 2 ? 'RECEIVED' : 'PARTIALLY RECEIVED' }}</span>
+                    </div>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
