@@ -51,7 +51,7 @@
             </thead>
             <tbody>
                 @foreach($items as $index => $item)
-                <tr data-id="{{$item->id}}" class="hover:bg-gray-300 cursor-pointer text-center border-b"
+                <tr data-id="{{$item->id}}" class="bg-white hover:bg-gray-300 cursor-pointer text-center border-b"
                     onclick="fetchItemDetails({{ $item->id }})">
                     <td onclick="event.stopPropagation()" class="px-4 py-2 text-center"><input class="rowCheckbox"
                             value="{{$item->id}}" type="checkbox"></td>

@@ -15,15 +15,6 @@
     <div class="flex">
       <a href="{{ route('stocks.create') }}"
         class="bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600">Create</a>
-      <div class="inline-block bg-gray-300 text-black px-4 py-2 ml-2 relative" id="option-button">
-        <i class="fa fa-cog mr-2"></i>Option
-        <!-- Dropdown menu -->
-        <div id="option-menu" class="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10 hidden">
-          <div class="py-1">
-            <a href="#" id="delete-selected" class="text-red-600 block px-4 py-2 text-sm hover:bg-gray-100">Delete</a>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -40,7 +31,6 @@
     <table class="table-auto w-full">
       <thead class="bg-[#3c8dbc] text-white">
         <tr>
-          <th class="p-2"><input type="checkbox" id="select-all" class="w-[18px] h-[18px]"></th>
           <th class="p-2">No.</th>
           <th class="p-2">Item</th>
           <th class="p-2">Total Quantity</th>
@@ -49,10 +39,7 @@
       </thead>
       <tbody id="stockResults">
         @foreach($stocks as $index => $stock)
-        <tr class="bg-white hover:bg-gray-200 cursor-pointer border-b" data-href="{{ route('stocks.show', $stock->item_id) }}">
-          <td class="p-2 text-center">
-            <input type="checkbox" class="stock-checkbox w-[18px] h-[18px]" data-id="{{ $stock->item_id }}">
-          </td>
+        <tr class="bg-white hover:bg-gray-200 border-b">
           <td class="p-2 text-center">{{ $index + 1 }}</td>
           <td class="p-2 text-center">{{ optional($stock->item)->name ?? 'N/A' }}</td>
           <td class="p-2 text-center">{{ number_format($stock->total_quantity) }}</td>

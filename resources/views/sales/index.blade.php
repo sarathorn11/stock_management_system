@@ -19,15 +19,6 @@
       <a href="{{ route('sales.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
         Create
       </a>
-      <div class="inline-block bg-gray-300 text-black px-4 py-2 ml-2 relative" id="option-button">
-        <i class="fa fa-cog mr-2"></i>Option
-        <!-- Dropdown menu -->
-        <div id="option-menu" class="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10 hidden">
-          <div class="py-1">
-            <a href="#" id="delete-selected" class="text-red-600 block px-4 py-2 text-sm hover:bg-gray-100">Delete</a>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -43,23 +34,18 @@
     <table class="table-auto w-full border">
       <thead class="bg-[#3c8dbc] text-white">
         <tr>
-          <th class="p-2">
-            <input type="checkbox" id="select-all" class="w-[18px] h-[18px]" aria-label="Select all sales">
-          </th>
           <th class="p-2">No.</th>
           <th class="p-2">Sales Code</th>
           <th class="p-2">Client</th>
           <th class="p-2">Amount</th>
           <th class="p-2">Stock</th>
           <th class="p-2">Remarks</th>
+          <th class="p-2">Actions</th>
         </tr>
       </thead>
       <tbody id="salesResults">
         @forelse($sales as $index => $sale)
-        <tr class="bg-white hover:bg-gray-200 cursor-pointer border-b" data-id="{{ $sale->id }}">
-          <td class="p-2 text-center">
-            <input type="checkbox" class="sale-checkbox w-[18px] h-[18px]" data-id="{{ $sale->id }}">
-          </td>
+        <tr class="bg-white hover:bg-gray-200 border-b">
           <td class="p-2 text-center">{{ $index + 1 }}</td>
           <td class="p-2 text-center">{{ $sale->sales_code }}</td>
           <td class="p-2 text-center">{{ $sale->client }}</td>
@@ -71,6 +57,23 @@
           </td>
           <td class="p-2 text-center max-w-[200px]">
             {{ \Illuminate\Support\Str::limit($sale->remarks, 20, '...') }}
+          </td>
+          <td class="px-4 py-2 text-center">
+            <div class="flex items-center justify-center">
+              <a href="{{ route('sales.show', $sale->id) }}" class="text-blue-500 mx-1">
+                <i class="fa fa-eye mr-2"></i>
+              </a>
+              <a href="{{ route('sales.edit', $sale->id) }}" class="text-yellow-500 mx-1">
+                <i class="fa fa-pencil mr-2"></i>
+              </a>
+              <form action="{{ route('sales.destroy', $sale->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this back order?')" class="m-0">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="text-red-500 text-[24px] mx-1">
+                  <i class="fa fa-trash mr-2"></i>
+                </button>
+              </form>
+            </div>
           </td>
         </tr>
         @empty
@@ -128,7 +131,7 @@
   // Handle Bulk Delete action
   const deleteSelected = document.getElementById('delete-selected');
   if (deleteSelected) {
-    deleteSelected.addEventListener('click', function (e) {
+    deleteSelected.addEventListener('click', function(e) {
       e.preventDefault();
 
       // Get all selected sale IDs
@@ -139,13 +142,15 @@
         if (confirm('Are you sure you want to delete the selected sales?')) {
           // Send a DELETE request to the server
           fetch(`/sales/bulk-delete`, {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            },
-            body: JSON.stringify({ ids: selectedSaleIds }),
-          })
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+              },
+              body: JSON.stringify({
+                ids: selectedSaleIds
+              }),
+            })
             .then((response) => {
               if (response.ok) {
                 window.location.reload();

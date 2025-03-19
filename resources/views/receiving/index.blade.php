@@ -10,11 +10,6 @@
         placeholder="Search ...." value="{{ request('query') }}">
       <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
     </form>
-    <div class="flex items-center">
-      <a class="inline-block bg-gray-300 text-black px-4 py-2 rounded mb-4 hover:bg-gray-400 ml-2">
-        <i class="fa fa-cog mr-2"></i> Option
-      </a>
-    </div>
   </div>
 
   @if(session('success'))
@@ -27,21 +22,16 @@
       <table class="table-auto w-full border-collapse">
         <thead class="bg-[#3c8dbc] text-white">
           <tr>
-            <th class="px-4 py-2">
-              <input type="checkbox" id="selectAll">
-            </th>
             <th class="px-4 py-2">ID</th>
             <th class="px-4 py-2">From</th>
             <th class="px-4 py-2">Items</th>
             <th class="px-4 py-2">Date Created</th>
+            <th class="px-4 py-2">Actions</th>
           </tr>
         </thead>
         <tbody>
           @foreach($receivings as $receiving)
-          <tr class="bg-white hover:bg-gray-200 cursor-pointer border-b" onclick="window.location.href='{{ route('receiving.show', $receiving->id) }}'">
-            <td class="px-4 py-2 text-center">
-              <input type="checkbox" name="selected_ids[]" value="{{ $receiving->id }}" class="recordCheckbox" onclick="event.stopPropagation();">
-            </td>
+          <tr class="bg-white hover:bg-gray-200 border-b">
             <td class="px-4 py-2 text-center">{{ $receiving->id }}</td>
             <td class="px-4 py-2 text-center">
               {{ $receiving->from_order == 1 ? $receiving->from->po_code : $receiving->from->bo_code }}
@@ -50,6 +40,23 @@
               {{ count($receiving->from->items) }}
             </td>
             <td class="px-4 py-2 text-center">{{ $receiving->created_at }}</td>
+            <td class="px-4 py-2 text-center">
+              <div class="flex items-center justify-center">
+                <a href="{{ route('receiving.show', $receiving->id) }}" class="text-blue-500 mx-1">
+                  <i class="fa fa-eye mr-2"></i>
+                </a>
+                <a href="{{ route('receiving.edit', $receiving->id) }}" class="text-yellow-500 mx-1">
+                  <i class="fa fa-pencil mr-2"></i>
+                </a>
+                <form action="{{ route('receiving.destroy', $receiving->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this back order?')" class="m-0">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="text-red-500 text-[24px] mx-1">
+                    <i class="fa fa-trash mr-2"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
           </tr>
           @endforeach
         </tbody>
@@ -64,11 +71,5 @@
 </div>
 
 <script>
-  document.getElementById('selectAll').addEventListener('change', function() {
-    let checkboxes = document.querySelectorAll('.recordCheckbox');
-    checkboxes.forEach(checkbox => {
-      checkbox.checked = this.checked;
-    });
-  });
 </script>
 @endsection
