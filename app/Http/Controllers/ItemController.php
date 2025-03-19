@@ -13,22 +13,25 @@ class ItemController extends Controller
     public function index(Request $request)
     {
         $query = $request->input('query'); // Get search input
-        $perPage = $request->input('perPage', 10); // Get perPage input, default is 10
+        $perPage = $request->input('perPage', 10); // Default to 10 per page
 
         // Query items with search filter
         $items = Item::with('supplier')
             ->when($query, function ($queryBuilder) use ($query) {
-                return $queryBuilder->where('name', 'LIKE', "%{$query}%")
-                    ->orWhere('description', 'LIKE', "%{$query}%");
+                return $queryBuilder->where(function ($q) use ($query) {
+                     $q->where('name', 'LIKE', "%{$query}%")
+                    ->orWhere('description', 'LIKE', "%{$query}%")
+                    ->orWhere('cost', 'LIKE', "%{$query}%")
+                     ->orWhereHas('supplier', function ($supplierQuery) use ($query) {
+                        $supplierQuery->where('name', 'LIKE', "%{$query}%"); // Replace 'name' with the appropriate field in supplier table
+                    });
+                });
             })
-            ->paginate($perPage); // Apply pagination
+            ->orderBy('id', 'desc')
+            ->paginate($perPage);
 
-        return view('items.index', [
-            'items' => $items,
-            'query' => $query,
-            'perPage' => $perPage,
-            'perPageOptions' => [10, 20, 30, 50]
-        ]);
+        return view('items.index', compact('items', 'query', 'perPage'))
+            ->with('perPageOptions', [10, 20, 30, 50]);
     }
 
     /**

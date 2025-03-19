@@ -16,6 +16,7 @@ class SaleController extends Controller
             ->when($query, function ($queryBuilder) use ($query) {
                 return $queryBuilder->where(function ($q) use ($query) {
                     $q->where('sales_code', 'LIKE', "%{$query}%")
+                    ->orWhere('amount', 'LIKE', "%{$query}%")
                     ->orWhere('client', 'LIKE', "%{$query}%");
                 });
             })

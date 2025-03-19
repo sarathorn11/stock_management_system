@@ -5,11 +5,13 @@
     <h2 class="text-2xl font-semibold mb-4">List User</h2>
 
     <div class="flex justify-between mb-3">
-        <form action="{{ route('user.index') }}" method="GET">
-            <input type="text" name="query" class="rounded px-4 py-2 w-2/4" placeholder="Search ...."
-                value="{{ request('query') }}">
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
-        </form>
+        <form action="{{ route('user.index') }}" method="GET" class="flex items-center my-4">
+            <input type="text" name="query" class="px-3 py-[5px] w-[350px] rounded border" placeholder="Name, Gender,Email ...."
+              value="{{ request('query') }}">
+            <button type="submit" class="ml-2 bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600">
+              Search
+            </button>
+          </form> 
         <div>
             <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                 onclick="fetchUserDetails()">Create</button>

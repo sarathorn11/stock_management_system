@@ -7,8 +7,8 @@
   <!-- Search & Actions -->
   <div class="flex items-center justify-between my-4">
     <form action="{{ route('stocks.index') }}" method="GET" class="flex">
-      <input type="text" name="query" class="px-3 py-[5px] w-[350px] rounded border" placeholder="Search ...."
-        value="{{ request('query') }}">
+      <input type="text" name="query" class="px-3 py-[5px] w-[350px] rounded border" placeholder="Item , Unit  ...."
+      value="{{ request('query') }}">
       <button type="submit" class="bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600 ml-2">Search</button>
     </form>
 

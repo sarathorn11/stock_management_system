@@ -18,8 +18,12 @@ class UserController extends Controller
         $perPage = $request->input('perPage', 10);
 
         $users = User::orderBy('id', 'desc')->when($query, function ($queryBuilder) use ($query) {
-            return $queryBuilder->where('username', 'LIKE', "%{$query}%")->orWhere('email', 'LIKE', "%{$query}%")
-                ->orWhere('first_name', 'LIKE', "%{$query}%")->orWhere('last_name', 'LIKE', "%{$query}%");
+            return $queryBuilder->where('username', 'LIKE', "%{$query}%")
+                ->orWhere('email', 'LIKE', "%{$query}%")
+                ->orWhere('first_name', 'LIKE', "%{$query}%")
+                ->orWhere('username', 'LIKE', "%{$query}%")
+                ->orWhere('gender', 'LIKE', "%{$query}%")
+                ->orWhere('last_name', 'LIKE', "%{$query}%");
         })
             ->paginate($perPage); // Apply pagination
 
