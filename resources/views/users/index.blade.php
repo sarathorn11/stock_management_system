@@ -35,9 +35,8 @@
     @else
     <div class="overflow-x-auto">
         <table class="w-full border rounded-lg shadow-sm text-left">
-            <thead class="bg-[#001f3f] text-white">
+            <thead class="bg-[#3c8dbc] text-white">
                 <tr>
-                    <th class="px-4 py-2"><input type="checkbox" id="checkAll" onclick="toggleAllRows(this)"></th>
                     <th class="px-4 py-2">No.</th>
                     <th class="px-4 py-2">Profile</th>
                     <th class="px-4 py-2">First Name</th>
@@ -46,13 +45,12 @@
                     <th class="px-4 py-2">Gender</th>
                     <th class="px-4 py-2">Email</th>
                     <th class="px-4 py-2">Role</th>
+                    <th class="px-4 py-2">Actions</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y">
                 @foreach($users as $index => $user)
-                <tr onclick="fetchUserDetails({{ $user->id }})" data-id="{{$user->id}}" class="hover:bg-gray-50">
-                    <td class="px-4 py-2"><input onclick="event.stopPropagation()" class="rowCheckbox"
-                            value="{{$user->id}}" type="checkbox"></td>
+                <tr class="hover:bg-gray-50 border-b">
                     <td class="px-4 py-2">{{1 + $index}}</td>
                     <td class="px-4 py-2"><img
                             src="{{$user->profile_picture ? asset('storage/avatars/'.basename($user->profile_picture)) : asset('static/assets/images/default-avatar.png')}}"
@@ -63,6 +61,22 @@
                     <td class="px-4 py-2 capitalize">{{$user->gender}}</td>
                     <td class="px-4 py-2">{{$user->email}}</td>
                     <td class="px-4 py-2 capitalize">{{$user->role}}</td>
+                    <td class="p-2 flex items-center justify-center">
+                        <button class="text-blue-500 text-[18px] mx-1" onclick="fetchUserDetails({{ $user->id }})">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                        <button class="text-yellow-500 text-[18px] mx-1" onclick="fetchUserDetails({{ $user->id }})">
+                            <i class="fa fa-pencil"></i>
+                        </button>
+                        <form action="{{ route('user.destroy', $user->id) }}" method="POST"
+                            onsubmit="return confirm('Are you sure you want to delete this return list?')" class="m-0">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-500 text-[18px] mx-1">
+                                <i class="fa fa-trash mr-2"></i>
+                            </button>
+                        </form>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>

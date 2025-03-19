@@ -13,18 +13,6 @@
         <div>
             <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                 onclick="fetchItemDetails(null)">Create</button>
-            <div class="relative inline-block">
-                <button onclick="clickAction()" class="flex items-center px-4 py-2 bg-gray-500 text-white rounded">
-                    <i class="fas fa-cog"></i>
-                    Action
-                </button>
-                <div id="action" onclick.outside="clickAction()"
-                    class="absolute hidden mt-2 w-25 bg-white border rounded-lg shadow-md">
-                    <button @click="" class="block w-full px-4 py-2 text-left hover:bg-gray-100">Print</button>
-                    <button onclick="deleteSelectedRows()"
-                        class="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100">Delete</button>
-                </div>
-            </div>
         </div>
     </div>
     @if ($items->isEmpty())
@@ -35,11 +23,8 @@
     @else
     <div class="overflow-x-auto">
         <table class="w-full  rounded-lg">
-            <thead class="bg-[#001f3f] text-white">
+            <thead class="bg-[#3c8dbc] text-white">
                 <tr>
-                    <th class="px-4 py-2">
-                        <input type="checkbox" id="checkAll" onclick="toggleAllRows(this)">
-                    </th>
                     <th class="px-4 py-2">No.</th>
                     <th class="px-4 py-2">Name</th>
                     <th class="px-4 py-2">Cost</th>
@@ -47,14 +32,12 @@
                     <th class="px-4 py-2">Supplier</th>
                     <th class="px-4 py-2">Date created</th>
                     <th class="px-4 py-2">Status</th>
+                    <th class="px-4 py-2">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($items as $index => $item)
-                <tr data-id="{{$item->id}}" class="hover:bg-gray-300 cursor-pointer text-center"
-                    onclick="fetchItemDetails({{ $item->id }})">
-                    <td onclick="event.stopPropagation()" class="px-4 py-2 text-center"><input class="rowCheckbox"
-                            value="{{$item->id}}" type="checkbox"></td>
+                <tr class="bg-white hover:bg-gray-300 text-center border-b">
                     <td class="px-4 py-2 text-center">{{ $index + 1 }}</td>
                     <td class="px-4 py-2 text-center">{{ $item->name }}</td>
                     <td class="px-4 py-2 text-center">{{ $item->cost }}$</td>
@@ -66,6 +49,22 @@
                             class="px-3 py-1 text-white rounded-full {{ $item->status == '1' ? 'bg-green-500' : 'bg-red-500' }}">
                             {{ $item->status == '1' ? 'Active' : 'Inactive' }}
                         </span>
+                    </td>
+                    <td class="p-2 flex items-center justify-center">
+                        <button class="text-blue-500 text-[18px] mx-1" onclick="fetchItemDetails({{ $item->id }})">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                        <button class="text-yellow-500 text-[18px] mx-1" onclick="fetchItemDetails({{ $item->id }})">
+                            <i class="fa fa-pencil"></i>
+                        </button>
+                        <form action="{{ route('items.destroy', $item->id) }}" method="POST"
+                            onsubmit="return confirm('Are you sure you want to delete this return list?')" class="m-0">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-500 text-[18px] mx-1">
+                                <i class="fa fa-trash mr-2"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 @endforeach

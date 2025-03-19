@@ -9,9 +9,6 @@
     <div class="flex items-center justify-between">
       <a href="{{ route('return.create') }}"
         class="inline-block bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600">Create</a>
-      <a class="inline-block bg-gray-300 text-black px-4 py-[6px] rounded hover:bg-gray-400 ml-2">
-        <i class="fa fa-cog mr-2"></i>Option
-      </a>
     </div>
   </div>
   @if(session('success'))
@@ -19,11 +16,8 @@
   @endif
   <div class="w-full h-auto">
     <table class="table-auto w-full">
-      <thead class="bg-[#001f3f] text-white">
+      <thead class="bg-[#3c8dbc] text-white">
         <tr>
-          <th class="p-2">
-            <input type="checkbox" id="select-all" class="select-all-checkbox w-[18px] h-[18px]">
-          </th>
           <th class="p-2">No.</th>
           <th class="p-2">Return Code</th>
           <th class="p-2">Supplier</th>
@@ -34,10 +28,7 @@
       </thead>
       <tbody id="returnResults">
         @foreach($returns as $index => $return)
-        <tr class="bg-white hover:bg-gray-200">
-          <td class="p-2 text-[14px] text-center">
-            <input type="checkbox" class="return-checkbox w-[18px] h-[18px]" data-id="{{ $return->id }}">
-          </td>
+        <tr class="bg-white hover:bg-gray-200 border-b">
           <td class="p-2 text-[14px] text-center">{{ $return->id }}</td>
           <td class="p-2 text-[14px] text-center">{{ $return->return_code }}</td>
           <td class="p-2 text-[14px] text-center">{{ $return->supplier->name }}</td>
@@ -69,43 +60,6 @@
   @endif
 </div>
 <script>
-  let selectedReturnIds = JSON.parse(localStorage.getItem('selectedReturnIds')) || [];
-
-  function updateCheckboxSelections() {
-    document.querySelectorAll('.return-checkbox').forEach(checkbox => {
-      checkbox.checked = selectedReturnIds.includes(checkbox.getAttribute('data-id'));
-    });
-    document.getElementById('select-all').checked = document.querySelectorAll('.return-checkbox:checked').length ===
-      document.querySelectorAll('.return-checkbox').length;
-  }
-
-  document.addEventListener('DOMContentLoaded', updateCheckboxSelections);
-
-  document.getElementById('select-all').addEventListener('change', function() {
-    selectedReturnIds = [];
-    document.querySelectorAll('.return-checkbox').forEach(checkbox => {
-      checkbox.checked = this.checked;
-      if (this.checked) {
-        selectedReturnIds.push(checkbox.getAttribute('data-id'));
-      }
-    });
-    localStorage.setItem('selectedReturnIds', JSON.stringify(selectedReturnIds));
-  });
-
-  document.addEventListener('change', function(event) {
-    if (event.target.classList.contains('return-checkbox')) {
-      const returnId = event.target.getAttribute('data-id');
-      if (event.target.checked) {
-        if (!selectedReturnIds.includes(returnId)) {
-          selectedReturnIds.push(ReturnId);
-        }
-      } else {
-        selectedReturnIds = selectedReturnIds.filter(id => id !== returnId);
-      }
-      localStorage.setItem('selectedReturnIds', JSON.stringify(selectedReturnIds));
-      updateCheckboxSelections();
-    }
-  });
   // Auto-hide success message after 2 seconds
   setTimeout(() => {
     document.getElementById('successOrFailedMessage')?.remove();
