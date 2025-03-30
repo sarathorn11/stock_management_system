@@ -49,7 +49,7 @@
             <a href="{{ route('return.edit', $return->id) }}" class="text-yellow-500 text-[18px] mx-1">
               <i class="fa fa-pencil mr-2"></i>
             </a>
-            <form action=" " method="POST"
+            <form action="{{ route('return.destroy', $return->id) }}" method="POST"
               onsubmit="return confirm('Are you sure you want to delete this return list?')" class="m-0">
               @csrf
               @method('DELETE')
@@ -60,6 +60,11 @@
           </td>
         </tr>
         @endforeach
+        @if($returns->count() == 0)
+        <tr class="bg-white hover:bg-gray-200 border-b">
+          <td colspan="6" class="text-center p-4">No results found.</td>
+        </tr>
+        @endif
       </tbody>
     </table>
   </div>

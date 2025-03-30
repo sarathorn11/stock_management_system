@@ -26,11 +26,11 @@
             <div class="container-fluid">
                 <div class="grid grid-flow-row gap-4 grid-cols-3">
                     <div class="col-span-2">
-                        <label class="text-blue-500">P.O. Code</label>
+                        <label class="text-blue-500 font-bold">P.O. Code</label>
                         <div>{{ $purchaseOrder->po_code }}</div>
                     </div>
                     <div class="col-span-1">
-                        <label for="supplier_id" class="text-blue-500">Supplier</label>
+                        <label for="supplier_id" class="text-blue-500 font-bold">Supplier</label>
                         <div>{{ $purchaseOrder->supplier->name }}</div>
                     </div>
                 </div>

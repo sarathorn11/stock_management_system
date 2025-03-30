@@ -16,9 +16,9 @@ class SaleSeeder extends Seeder
         $sales = [
             [
                 'id' => 1,
-                'sales_code' => 'SALE0001',
+                // 'sales_code' => 'SALE0001',
                 'client' => 'Client 1',
-                'amount' => 500.00,
+                'amount' => 100.00,
                 'remarks' => 'Remarks for sale 1',
             ]
         ];

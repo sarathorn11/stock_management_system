@@ -15,7 +15,7 @@
         <div>
             <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                 onclick="fetchUserDetails()">Create</button>
-            <div class="relative inline-block">
+            <!-- <div class="relative inline-block">
                 <button onclick="clickAction()" class="flex items-center px-4 py-2 bg-gray-500 text-white rounded">
                     <i class="fas fa-cog"></i>
                     Action
@@ -26,15 +26,9 @@
                     <button onclick="deleteSelectedRows()"
                         class="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100">Delete</button>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
-    @if ($users->isEmpty())
-    <div class="text-center">
-        <p class="mt-4 text-gray-600">No results found (404)</p>
-        <a href="{{ route('user.index') }}" class="text-blue-500 hover:underline">Refresh</a>
-    </div>
-    @else
     <div class="overflow-x-auto">
         <table class="w-full border rounded-lg shadow-sm text-left">
             <thead class="bg-[#3c8dbc] text-white">
@@ -81,11 +75,15 @@
                     </td>
                 </tr>
                 @endforeach
+                @if($users->count() == 0)
+                <tr class="bg-white hover:bg-gray-200 border-b">
+                    <td colspan="9" class="text-center p-4">No results found.</td>
+                </tr>
+                @endif
             </tbody>
         </table>
     </div>
     <x-pagination :pagination="$users" :per-page="$perPage" :per-page-options="[$perPage, 10, 20, 30, 50]" />
-    @endif
 </div>
 
 <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">

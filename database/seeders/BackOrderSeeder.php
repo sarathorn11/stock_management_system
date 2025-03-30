@@ -19,7 +19,7 @@ class BackOrderSeeder extends Seeder
                 'receiving_id' => 2,
                 'po_id' => 3,
                 'supplier_id' => 3,
-                'bo_code' => 'BO0001',
+                // 'bo_code' => 'BO0001',
                 'amount' => 25.00,
                 'discount_perc' => 0.00,
                 'discount' => 0.00,

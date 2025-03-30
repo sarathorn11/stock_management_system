@@ -18,6 +18,22 @@ class ReturnList extends Model
         'remarks',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            // Get the latest record
+            $latest = static::latest('id')->first();
+
+            // Extract number and increment
+            $number = $latest ? ((int) substr($latest->return_code, 2)) + 1 : 1;
+
+            // Format as R-00001
+            $model->return_code = 'R-' . str_pad($number, 5, '0', STR_PAD_LEFT);
+        });
+    }
+
     protected $casts = [
         'stock_ids' => 'array', // Automatically converts JSON string to array
     ];

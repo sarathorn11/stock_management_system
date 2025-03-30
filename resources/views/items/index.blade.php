@@ -18,12 +18,6 @@
                 onclick="fetchItemDetails(null)">Create</button>
         </div>
     </div>
-    @if ($items->isEmpty())
-    <div class="text-center">
-        <p class="mt-4 text-gray-600">No results found (404)</p>
-        <a href="{{ route('items.index') }}" class="text-blue-500 hover:underline">Refresh</a>
-    </div>
-    @else
     <div class="overflow-x-auto">
         <table class="w-full  rounded-lg">
             <thead class="bg-[#3c8dbc] text-white">
@@ -71,11 +65,15 @@
                     </td>
                 </tr>
                 @endforeach
+                @if($items->count() == 0)
+                <tr class="bg-white hover:bg-gray-200 border-b">
+                    <td colspan="8" class="text-center p-4">No results found.</td>
+                </tr>
+                @endif
             </tbody>
         </table>
     </div>
     <x-pagination :pagination="$items" :per-page="$perPage" :per-page-options="[$perPage, 10, 20, 30, 50]" />
-    @endif
 </div>
 
 

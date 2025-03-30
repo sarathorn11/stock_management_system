@@ -120,7 +120,7 @@
             <textarea id="remarks" name="remarks" rows="3" class="w-full border rounded-md p-2">{{ old('remarks') }}</textarea>
         </div>
         <div class="bg-gray-100 p-4 text-center">
-            <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700" type="submit" form="receive-form">Save</button>
+            <button id="submit-btn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700" type="submit" form="receive-form">Save</button>
             <a href="{{ route('purchase-order.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700">Cancel</a>
         </div>
 
@@ -138,6 +138,22 @@
         const qtyInput = document.getElementById('qty');
         const supplierSelect = document.getElementById('supplier_id');
         const hiddenSupplierInput = document.getElementById('hidden_supplier_id');
+        const submitBtn = document.getElementById('submit-btn');
+
+        function toggleSubmitButton() {
+            if (itemTableBody.children.length > 0) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('bg-gray-300');
+                submitBtn.classList.add('bg-blue-500', 'hover:bg-blue-700');
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('bg-gray-300');
+                submitBtn.classList.remove('bg-blue-500', 'hover:bg-blue-700');
+            }
+        }
+
+        // Call toggleSubmitButton on page load
+        toggleSubmitButton();
 
 
         // Fetch items when the supplier is selected
@@ -216,7 +232,7 @@
                 const newRow = document.createElement('tr');
                 newRow.innerHTML = `
                     <td class="py-2 px-3 text-center border border-gray-400">
-                        <button class="border border-red-500 text-red-500 px-2 py-1 rounded hover:bg-red-500 hover:text-white" type="button" onclick="deleteRow(this)">
+                        <button class="delete-row-btn border border-red-500 text-red-500 px-2 py-1 rounded hover:bg-red-500 hover:text-white" type="button">
                             <i class="fa fa-times"></i>
                         </button>
                     </td>
@@ -240,17 +256,8 @@
             if (itemTableBody.children.length > 0) {
                 supplierSelect.disabled = true;
             }
+            toggleSubmitButton();
         });
-
-        function deleteRow(button) {
-            const row = button.closest('tr');
-            row.remove();
-            updateTotals();
-            // Enable supplier select if there are no items in the list
-            if (itemTableBody.children.length === 0) {
-                supplierSelect.disabled = false;
-            }
-        }
 
         window.updateRowTotal = function(input) {
             console.log("updateRowTotal");
@@ -296,6 +303,17 @@
         itemSelect.addEventListener('change', function() {
             const selectedItem = itemSelect.options[itemSelect.selectedIndex];
             unitInput.value = selectedItem.getAttribute('data-unit');
+        });
+
+        // Handle row deletion using event delegation
+        itemTableBody.addEventListener('click', function(e) {
+            // Ensure that the clicked element is a button (including the icon inside it)
+            if (e.target.closest('.delete-row-btn')) {
+                const row = e.target.closest('tr'); // Find the closest row (tr) element
+                row.remove(); // Remove the row
+                updateTotals();
+                toggleSubmitButton(); // Update submit button state
+            }
         });
     });
 </script>

@@ -45,16 +45,16 @@
                 <a href="{{ route('receiving.show', $receiving->id) }}" class="text-blue-500 mx-1">
                   <i class="fa fa-eye mr-2"></i>
                 </a>
-                <a href="{{ route('receiving.edit', $receiving->id) }}" class="text-yellow-500 mx-1">
+                <!-- <a href="{{ route('receiving.edit', $receiving->id) }}" class="text-yellow-500 mx-1">
                   <i class="fa fa-pencil mr-2"></i>
-                </a>
-                <form action="{{ route('receiving.destroy', $receiving->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this back order?')" class="m-0">
+                </a> -->
+                <!-- <form action="{{ route('receiving.destroy', $receiving->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this back order?')" class="m-0">
                   @csrf
                   @method('DELETE')
                   <button type="submit" class="text-red-500 text-[24px] mx-1">
                     <i class="fa fa-trash mr-2"></i>
                   </button>
-                </form>
+                </form> -->
               </div>
             </td>
           </tr>

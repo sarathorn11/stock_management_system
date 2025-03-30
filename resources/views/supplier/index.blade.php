@@ -63,6 +63,11 @@
           </td>
         </tr>
         @endforeach
+        @if($suppliers->count() == 0)
+        <tr class="bg-white hover:bg-gray-200 border-b">
+          <td colspan="5" class="text-center p-4">No results found.</td>
+        </tr>
+        @endif
       </tbody>
     </table>
   </div>

@@ -7,9 +7,9 @@
         <div></div>
         <div class="flex items-center justify-between">
             <!-- Update Button -->
-            <a href="#" class="bg-blue-500 text-white mr-3 px-6 py-2 rounded hover:bg-blue-600 transition duration-300">
+            <!-- <a href="#" class="bg-blue-500 text-white mr-3 px-6 py-2 rounded hover:bg-blue-600 transition duration-300">
                 Update
-            </a>
+            </a> -->
             <!-- Print Button -->
             <button onclick="window.print()" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition duration-300">
             <i class="fa fa-print mr-2"></i>Print

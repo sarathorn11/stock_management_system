@@ -17,7 +17,7 @@ class PurchaseOrderSeeder extends Seeder
             [
                 'id' => 1,
                 'supplier_id' => 1,
-                'po_code' => 'PO0001',
+                // 'po_code' => 'PO0001',
                 'amount' => 500.00,
                 'discount_perc' => 0.00,
                 'discount' => 0.00,
@@ -29,7 +29,7 @@ class PurchaseOrderSeeder extends Seeder
             [
                 'id' => 2,
                 'supplier_id' => 2,
-                'po_code' => 'PO0002',
+                // 'po_code' => 'PO0002',
                 'amount' => 200.00,
                 'discount_perc' => 0.00,
                 'discount' => 0.00,
@@ -41,7 +41,7 @@ class PurchaseOrderSeeder extends Seeder
             [
                 'id' => 3,
                 'supplier_id' => 3,
-                'po_code' => 'PO0003',
+                // 'po_code' => 'PO0003',
                 'amount' => 75.00,
                 'discount_perc' => 0.00,
                 'discount' => 0.00,

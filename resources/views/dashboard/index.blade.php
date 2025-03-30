@@ -10,7 +10,7 @@
       </div>
       <div class="flex-col w-full">
         <div class="text-lg font-semibold">PO Records</div>
-        <div class="text-right text-[30px]">1</div>
+        <div class="text-right text-[30px]">{{ $totalPORecords }}</div>
       </div>
     </div>
     <div class="bg-white text-black rounded-lg shadow-lg p-3 flex hover:shadow-2xl transition duration-300 ease-in-out">
@@ -19,7 +19,7 @@
       </div>
       <div class="flex-col w-full">
         <div class="text-lg font-semibold">Receiving Records</div>
-        <div class="text-right text-[30px]">1</div>
+        <div class="text-right text-[30px]">{{ $totalReceivingRecords }}</div>
       </div>
     </div>
     <div class="bg-white text-black rounded-lg shadow-lg p-3 flex hover:shadow-2xl transition duration-300 ease-in-out">
@@ -28,7 +28,7 @@
       </div>
       <div class="flex-col w-full">
         <div class="text-lg font-semibold">BO Records</div>
-        <div class="text-right text-[30px]">1</div>
+        <div class="text-right text-[30px]">{{ $totalBORecords }}</div>
       </div>
     </div>
     <div class="bg-white text-black rounded-lg shadow-lg p-3 flex hover:shadow-2xl transition duration-300 ease-in-out">
@@ -37,7 +37,7 @@
       </div>
       <div class="flex-col w-full">
         <div class="text-lg font-semibold">Return Records</div>
-        <div class="text-right text-[30px]">1</div>
+        <div class="text-right text-[30px]">{{ $totalReturnRecords }}</div>
       </div>
     </div>
   </div>
@@ -57,7 +57,7 @@
       </div>
       <div class="flex-col w-full">
         <div class="text-lg font-semibold">Suppliers</div>
-        <div class="text-right text-[30px]">1</div>
+        <div class="text-right text-[30px]">{{ $totalSupplierRecords }}</div>
       </div>
     </div>
     <div class="bg-white text-black rounded-lg shadow-lg p-3 flex hover:shadow-2xl transition duration-300 ease-in-out">
@@ -66,7 +66,7 @@
       </div>
       <div class="flex-col w-full">
         <div class="text-lg font-semibold">Items</div>
-        <div class="text-right text-[30px]">1</div>
+        <div class="text-right text-[30px]">{{ $totalItemRecords }}</div>
       </div>
     </div>
     <div class="bg-white text-black rounded-lg shadow-lg p-3 flex hover:shadow-2xl transition duration-300 ease-in-out">
@@ -75,7 +75,7 @@
       </div>
       <div class="flex-col w-full">
         <div class="text-lg font-semibold">Users</div>
-        <div class="text-right text-[30px]">1</div>
+        <div class="text-right text-[30px]">{{ $totalUserRecords }}</div>
       </div>
     </div>
   </div>

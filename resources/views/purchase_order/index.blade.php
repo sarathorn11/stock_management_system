@@ -6,11 +6,11 @@
     <div class="flex items-center justify-between my-4">
         <form action="{{ route('purchase-order.index') }}" method="GET" class="flex items-center">
             <input type="text" name="query" class="px-3 py-[5px] w-[350px] rounded border" placeholder="Po code, Amount, Supplier ...."
-              value="{{ request('query') }}">
+                value="{{ request('query') }}">
             <button type="submit" class="ml-2 bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600">
-              Search
+                Search
             </button>
-          </form>
+        </form>
         <div class="flex items-center justify-between">
             <a href="{{ route('purchase-order.create') }}"
                 class="inline-block bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600">Create</a>
@@ -26,13 +26,6 @@
     </div>
     @endif
 
-    <!-- Delete Form -->
-    <form id="delete-form" action="{{ route('purchase-order.destroy') }}" method="POST">
-        @csrf
-        @method('DELETE')
-        <input type="hidden" name="ids" id="selected-ids">
-    </form>
-
     <div class="w-full h-auto">
         <table class="table w-full">
             <thead class="bg-[#3c8dbc] text-white">
@@ -43,7 +36,7 @@
                     <th class="px-4 py-2">Items</th>
                     <th class="px-4 py-2">Amount</th>
                     <th class="px-4 py-2 text-center">Status</th>
-                    <th class="px-4 py-2">Actions</th>
+                    <th class="px-4 py-2 text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -63,10 +56,14 @@
                         <span class="inline-block px-3 py-1 rounded-full bg-green-500 text-white font-semibold">Received</span>
                         @endif
                     </td>
-                    <td class="px-4 py-2 text-center">
+                    <td class="px-4 py-2">
                         <div class="flex items-center justify-center">
                             <a href="{{ route('purchase-order.show', $purchaseOrder->id) }}" class="text-blue-500 mx-1">
                                 <i class="fa fa-eye mr-2"></i>
+                            </a>
+                            @if($purchaseOrder->status == 0)
+                            <a href="{{ route('receiving.create', ['po', $purchaseOrder->id]) }}" class="text-yellow-500 mx-1">
+                                <i class="fas fa-boxes mr-2"></i>
                             </a>
                             <a href="{{ route('purchase-order.edit', $purchaseOrder->id) }}" class="text-yellow-500 mx-1">
                                 <i class="fa fa-pencil mr-2"></i>
@@ -78,10 +75,16 @@
                                     <i class="fa fa-trash mr-2"></i>
                                 </button>
                             </form>
+                            @endif
                         </div>
                     </td>
                 </tr>
                 @endforeach
+                @if($purchaseOrders->count() == 0)
+                <tr class="bg-white hover:bg-gray-200 border-b">
+                    <td colspan="7" class="text-center py-4">No purchase orders found.</td>
+                </tr>
+                @endif
             </tbody>
         </table>
     </div>
@@ -92,42 +95,6 @@
 </div>
 
 <script>
-    // Toggle the dropdown menu
-    document.getElementById('option-button').addEventListener('click', function() {
-        document.getElementById('option-menu').classList.toggle('hidden');
-    });
-
-    // Close dropdown when clicking outside
-    window.addEventListener('click', function(event) {
-        const menu = document.getElementById('option-menu');
-        const button = document.getElementById('option-button');
-        if (!button.contains(event.target) && !menu.contains(event.target)) {
-            menu.classList.add('hidden');
-        }
-    });
-
-    function handleRowClick(event, url) {
-        if (!event.target.closest('input[type="checkbox"]')) {
-            window.location.href = url;
-        }
-    }
-
-    // Handle delete action
-    document.getElementById('delete-selected').addEventListener('click', function(event) {
-        event.preventDefault();
-        let selectedIds = Array.from(document.querySelectorAll('.select-record:checked'))
-            .map(checkbox => checkbox.value);
-
-        if (selectedIds.length === 0) {
-            alert("Please select at least one record to delete.");
-            return;
-        }
-
-        if (confirm("Are you sure you want to delete the selected records?")) {
-            document.getElementById('selected-ids').value = selectedIds.join(',');
-            document.getElementById('delete-form').submit();
-        }
-    });
 </script>
 
 @endsection
