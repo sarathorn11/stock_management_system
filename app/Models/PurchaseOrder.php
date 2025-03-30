@@ -22,6 +22,22 @@ class PurchaseOrder extends Model
         'status',         // Status of the purchase order
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            // Get the latest record
+            $latest = static::latest('id')->first();
+
+            // Extract number and increment
+            $number = $latest ? ((int) substr($latest->po_code, 3)) + 1 : 1;
+
+            // Format as PO-00001
+            $model->po_code = 'PO-' . str_pad($number, 5, '0', STR_PAD_LEFT);
+        });
+    }
+
     // Cast attributes to proper types
     protected $casts = [
         'discount_perc' => 'float',

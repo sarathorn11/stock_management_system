@@ -5,14 +5,19 @@
     .bg-navy {
         background-color: #001f3f !important;
     }
+
     @media print {
+
         /* Hide everything except the content inside the .print class */
         body * {
             visibility: hidden;
         }
-        .print, .print * {
+
+        .print,
+        .print * {
             visibility: visible;
         }
+
         /* Ensure the printable content takes full width */
         .print {
             position: absolute;
@@ -27,8 +32,14 @@
     <div class="flex items-center justify-between my-4">
         <div></div>
         <div class="flex items-center justify-between">
+            @if ($backOrder->status == 0)
+            <a href="{{ route('receiving.create', ['bo', $backOrder->id]) }}"
+                class="bg-blue-500 text-white mr-3 px-6 py-2 rounded hover:bg-blue-600 transition duration-300">
+                Receive
+            </a>
+            @endif
             <button onclick="window.print()" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition duration-300">
-            <i class="fa fa-print mr-2"></i>Print
+                <i class="fa fa-print mr-2"></i>Print
             </button>
         </div>
     </div>
@@ -36,14 +47,14 @@
         <div class="card-body" id="print_out">
             <div class="container-fluid">
                 <div class="grid grid-flow-row gap-4 grid-cols-3">
-                <div class="col-span-2">
-                    <label class="text-blue-500">From P.O. Code</label>
-                    <div>{{ $backOrder->purchaseOrder->po_code }}</div>
-                </div>
-                <div class="col-span-1">
-                    <label for="supplier_id" class="text-blue-500">Supplier</label>
-                    <div>{{ $backOrder->supplier->name }}</div>
-                </div>
+                    <div class="col-span-2">
+                        <label class="text-blue-500">From P.O. Code</label>
+                        <div>{{ $backOrder->purchaseOrder->po_code }}</div>
+                    </div>
+                    <div class="col-span-1">
+                        <label for="supplier_id" class="text-blue-500">Supplier</label>
+                        <div>{{ $backOrder->supplier->name }}</div>
+                    </div>
                     <div class="col-span-3">
                         <label class="text-blue-500">B.O. Code</label>
                         <div>{{ $backOrder->bo_code }}</div>
@@ -70,17 +81,17 @@
                     <tbody>
                         @php $total = 0; @endphp
                         @foreach($backOrder->items as $item)
-                            @php $total += $item->total; @endphp
-                            <tr>
-                                <td class="py-1 px-2 text-center border border-gray-400">{{ number_format($item->quantity, 2) }}</td>
-                                <td class="py-1 px-2 text-center border border-gray-400">{{ $item->item->unit }}</td>
-                                <td class="py-1 px-2 border border-gray-400">
-                                    {{ $item->item->name }} <br>
-                                    {{ $item->item->description }}
-                                </td>
-                                <td class="py-1 px-2 text-right border border-gray-400">{{ number_format($item->price, 2) }}</td>
-                                <td class="py-1 px-2 text-right border border-gray-400">{{ number_format($item->total, 2) }}</td>
-                            </tr>
+                        @php $total += $item->total; @endphp
+                        <tr>
+                            <td class="py-1 px-2 text-center border border-gray-400">{{ number_format($item->quantity, 2) }}</td>
+                            <td class="py-1 px-2 text-center border border-gray-400">{{ $item->item->unit }}</td>
+                            <td class="py-1 px-2 border border-gray-400">
+                                {{ $item->item->name }} <br>
+                                {{ $item->item->description }}
+                            </td>
+                            <td class="py-1 px-2 text-right border border-gray-400">{{ number_format($item->price, 2) }}</td>
+                            <td class="py-1 px-2 text-right border border-gray-400">{{ number_format($item->total, 2) }}</td>
+                        </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
@@ -104,8 +115,8 @@
                 </table>
                 <div class="grid grid-flow-col gap-4 grid-cols-3 mt-10">
                     <div class="col-span-2">
-                    <label for="remarks" class="text-blue-500">Remarks</label>
-                    <p>{{ $backOrder->remarks ?? 'N/A' }}</p>
+                        <label for="remarks" class="text-blue-500">Remarks</label>
+                        <p>{{ $backOrder->remarks ?? 'N/A' }}</p>
                     </div>
                     @if($backOrder->status > 0)
                     <div class="col-span-1">

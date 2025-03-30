@@ -16,7 +16,7 @@ class ReturnListSeeder extends Seeder
         $returnLists = [
             [
                 'id' => 1,
-                'return_code' => 'R0001',
+                // 'return_code' => 'R0001',
                 'supplier_id' => 1,
                 'stock_ids' => json_encode([3]),
                 'amount' => 50.00,

@@ -64,6 +64,11 @@
             </td>
           </tr>
         @endforeach
+        @if($backOrders->count() == 0)
+          <tr class="bg-white hover:bg-gray-200 border-b">
+            <td colspan="7" class="text-center py-4">No back orders found.</td>
+          </tr>
+        @endif
       </tbody>
     </table>
   </div>
@@ -74,26 +79,26 @@
 
 <script>
 
-document.getElementById('searching').addEventListener('keyup', function() {
-  let query = this.value;
-  const searchUrl = '{{ route("back-order.index") }}';
+// document.getElementById('searching').addEventListener('keyup', function() {
+//   let query = this.value;
+//   const searchUrl = '{{ route("back-order.index") }}';
 
-  // Construct the new URL with the search query
-  const url = new URL(searchUrl);
-  url.searchParams.set('query', query);
-  url.searchParams.set('perPage', '{{ $perPage }}');
+//   // Construct the new URL with the search query
+//   const url = new URL(searchUrl);
+//   url.searchParams.set('query', query);
+//   url.searchParams.set('perPage', '{{ $perPage }}');
 
-  // Redirect to the new URL
-  window.location.href = url.toString();
-});
+//   // Redirect to the new URL
+//   window.location.href = url.toString();
+// });
 
-// Hide success message after 5 seconds
-setTimeout(() => {
-  const successMessage = document.getElementById('success-message');
-  if (successMessage) {
-    successMessage.style.display = 'none';
-  }
-}, 5000);
+// // Hide success message after 5 seconds
+// setTimeout(() => {
+//   const successMessage = document.getElementById('success-message');
+//   if (successMessage) {
+//     successMessage.style.display = 'none';
+//   }
+// }, 5000);
 </script>
 
 @endsection

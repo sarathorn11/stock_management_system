@@ -73,8 +73,9 @@ class ReturnListController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Stock $return)
+    public function destroy($id)
     {
+        $return = ReturnList::findOrFail($id);
         $return->delete();
 
         // Redirect to the stock list with a success message
@@ -131,24 +132,24 @@ class ReturnListController extends Controller
             'items.*.quantity' => 'required|integer|min:1',
         ]);
 
-        // Generate the next Return code
-        $lastReturn = ReturnList::orderBy('id', 'desc')->first(); // Get the last ReturnList by ID
-        if ($lastReturn) {
-            $lastCode = $lastReturn->return_code;
-            // Extract the numeric part of the PO code
-            $lastNumber = (int) substr($lastCode, 1); // Assumes format is "R-XXXXX"
-            $nextNumber = $lastNumber + 1; // Increment by 1
+        // // Generate the next Return code
+        // $lastReturn = ReturnList::orderBy('id', 'desc')->first(); // Get the last ReturnList by ID
+        // if ($lastReturn) {
+        //     $lastCode = $lastReturn->return_code;
+        //     // Extract the numeric part of the PO code
+        //     $lastNumber = (int) substr($lastCode, 1); // Assumes format is "R-XXXXX"
+        //     $nextNumber = $lastNumber + 1; // Increment by 1
 
-            // Check if the nextNumber already exists in the database
-            $existingCodes = ReturnList::pluck('return_code')->toArray();
-            while (in_array('R' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT), $existingCodes)) {
-                $nextNumber++; // Increment until we find a unique code
-            }
+        //     // Check if the nextNumber already exists in the database
+        //     $existingCodes = ReturnList::pluck('return_code')->toArray();
+        //     while (in_array('R' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT), $existingCodes)) {
+        //         $nextNumber++; // Increment until we find a unique code
+        //     }
 
-            $returnCode = 'R' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT); // Format as PO-00001, PO-00002, etc.
-        } else {
-            $returnCode = 'R00001'; // Default if no POs exist
-        }
+        //     $returnCode = 'R' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT); // Format as PO-00001, PO-00002, etc.
+        // } else {
+        //     $returnCode = 'R00001'; // Default if no POs exist
+        // }
 
         $stockIds = []; // To store newly created stock IDs
         $amount = 0; // To store the total amount
@@ -170,7 +171,7 @@ class ReturnListController extends Controller
 
         // 2️⃣ **Create Return List After Stocks**
         $return = ReturnList::create([
-            'return_code' => $returnCode,
+            // 'return_code' => $returnCode,
             'supplier_id' => $request->supplier_id,
             'stock_ids' => json_encode($stockIds), // Store as JSON array
             'amount' => $amount,

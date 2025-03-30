@@ -21,10 +21,31 @@ class Sale extends Model
         'remarks',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            // Get the latest record
+            $latest = static::latest('id')->first();
+
+            // Extract number and increment
+            $number = $latest ? ((int) substr($latest->sales_code, 5)) + 1 : 1;
+
+            // Format as SALE-00001
+            $model->sales_code = 'SALE-' . str_pad($number, 5, '0', STR_PAD_LEFT);
+        });
+    }
+
     // Define the many-to-many relationship with Stock
     public function stocks()
     {
         return $this->belongsToMany(Stock::class, 'sale_item', 'sale_id', 'item_id');
+    }
+    // Define the one-to-many relationship with SaleItem
+    public function saleItems()
+    {
+        return $this->hasMany(SaleItem::class, 'sale_id');
     }
 
     public function getFormattedAmountAttribute()

@@ -2,7 +2,7 @@
 
 @section('content')
 <div>
-  <h1 class="text-xl font-bold text-gray-800">Receive Order from PO-...</h1>
+  <h1 class="text-xl font-bold text-gray-800">Receive Order from PO - {{$order->po_code ?? $order->purchaseOrder->po_code }}</h1>
   <form id="receive-form" action="{{ route('receiving.createReciving', [$type, $order->id]) }}" method="POST" class="mt-8">
     @csrf
     <input type="hidden" name="id" value="">
@@ -70,7 +70,7 @@
             <input type="hidden" name="price[]" value="{{$item->price}}">
             <input type="hidden" name="total[]" value="{{$item->total}}">
           </td>
-          <td class="py-2 px-3 text-center border border-gray-400">{{$item->unit}}</td>
+          <td class="py-2 px-3 text-center border border-gray-400">{{$item->item->unit}}</td>
           <td class="py-2 px-3 border border-gray-400">{{$item->item->name}} <br> {{$item->item->description}}</td>
           <td class="py-2 px-3 text-right border border-gray-400">{{$item->price}}</td>
           <td class="py-2 px-3 text-right border border-gray-400 total-cell">{{$item->total}}</td>

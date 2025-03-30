@@ -119,7 +119,7 @@
             <textarea id="remarks" name="remarks" rows="3" class="w-full border rounded-md p-2">{{ old('remarks') }}</textarea>
         </div>
         <div class="bg-gray-100 p-4 text-center">
-            <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700" type="submit">Save</button>
+            <button id="submit-btn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700" type="submit">Save</button>
             <a href="{{ route('return.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700">Cancel</a>
         </div>
     </form>
@@ -134,6 +134,22 @@
         const qtyInput = document.getElementById('qty');
         const supplierSelect = document.getElementById('supplier_id');
         const returnForm = document.getElementById('return-form');
+        const submitBtn = document.getElementById('submit-btn');
+
+        function toggleSubmitButton() {
+            if (itemTableBody.children.length > 0) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('bg-gray-300');
+                submitBtn.classList.add('bg-blue-500', 'hover:bg-blue-700');
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('bg-gray-300');
+                submitBtn.classList.remove('bg-blue-500', 'hover:bg-blue-700');
+            }
+        }
+
+        // Call toggleSubmitButton on page load
+        toggleSubmitButton();
 
         addToListButton.addEventListener('click', function () {
             const selectedItem = itemSelect.options[itemSelect.selectedIndex];
@@ -173,6 +189,7 @@
             itemTableBody.appendChild(newRow);
 
             updateTotals();
+            toggleSubmitButton();
         });
 
         // Handle row deletion using event delegation
@@ -182,6 +199,7 @@
               const row = e.target.closest('tr'); // Find the closest row (tr) element
               row.remove(); // Remove the row
               updateTotals();
+              toggleSubmitButton();
           }
         });
 

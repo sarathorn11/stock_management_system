@@ -1,7 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Item;
 use App\Models\Sale;
+use App\Models\SaleItem;
 use App\Models\Stock;
 use Illuminate\Http\Request;
 
@@ -34,24 +36,51 @@ class SaleController extends Controller
     public function create()
     {
         $stocks = Stock::all();
-        return view('sales.create', compact('stocks'));
+        $items = Item::all();
+        return view('sales.create', compact('stocks', 'items'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'sales_code' => 'required|string|max:255',
             'client' => 'required|string|max:255',
-            'amount' => 'required|numeric|min:0',
-            'stock_ids' => 'required|array',
             'remarks' => 'nullable|string|max:500',
+            'item_id' => 'required|array', // Ensure items are provided
+            'qty' => 'required|array', // Ensure quantities are provided
+            'price' => 'required|array', // Ensure prices are provided
+            'total' => 'required|array', // Ensure totals are provided
         ]);
 
-        // Create the Sale
-        $sale = Sale::create($validated);
+        $amount = $validated['total'];
+        $totalAmount = 0;
+        foreach ($amount as $value) {
+            $totalAmount += $value; // Sum up the total amounts
+        }
+        $validated['amount'] = $totalAmount; // Set the total amount
 
-        // Attach the selected stock IDs to the Sale (many-to-many relationship)
-        $sale->stocks()->attach($validated['stock_ids']);
+
+        // Create the Sale
+        $sale = Sale::create([
+            'client' => $validated['client'],
+            'amount' => $validated['amount'],
+            'remarks' => $validated['remarks'],
+        ]);
+
+        // create sale items
+        // Attach items to the purchase order using the PoItem model
+        foreach ($request->input('item_id') as $index => $itemId) {
+            $quantity = $request->input('qty')[$index];
+            $price = $request->input('price')[$index];
+            $total = $request->input('total')[$index];
+
+            SaleItem::create([
+                'sale_id' => $sale->id, // Link to the created purchase order
+                'item_id' => $itemId, // Item ID
+                'quantity' => $quantity, // Quantity
+                'price' => $price, // Price per unit
+                'total' => $total, // Total cost (quantity * price)
+            ]);
+        }
 
         return redirect()->route('sales.index')->with('success', 'Sale created successfully.');
     }
@@ -65,7 +94,9 @@ class SaleController extends Controller
     public function edit(Sale $sale)
     {
         $stocks = Stock::all();
-        return view('sales.edit', compact('sale', 'stocks'));
+        $items = Item::all();
+        $sale->load('stocks'); // Eager load the 'stocks' relationship
+        return view('sales.edit', compact('sale', 'stocks', 'items'));
     }
 
 
@@ -73,26 +104,48 @@ class SaleController extends Controller
     {
         // Validate the request
         $request->validate([
-            'sales_code' => 'required|string|max:255',
             'client' => 'required|string|max:255',
-            'amount' => 'required|numeric',
-            'stock_id' => 'required|exists:stocks,id',
-            'remarks' => 'nullable|string',
+            'remarks' => 'nullable|string|max:500',
+            'item_id' => 'required|array', // Ensure items are provided
+            'qty' => 'required|array', // Ensure quantities are provided
+            'price' => 'required|array', // Ensure prices are provided
+            'total' => 'required|array', // Ensure totals are provided
         ]);
     
+        $amount = $request->input('total');
+        $totalAmount = 0;
+        foreach ($amount as $value) {
+            $totalAmount += $value; // Sum up the total amounts
+        }
+        $request->merge(['amount' => $totalAmount]); // Set the total amount in the request
         // Update the sale
         $sale->update([
-            'sales_code' => $request->sales_code,
             'client' => $request->client,
             'amount' => $request->amount,
             'remarks' => $request->remarks,
         ]);
     
-        // Sync the selected stock
-        $sale->stocks()->sync([$request->stock_id]);
+        // Update the sale items
+        // First, delete existing items
+        SaleItem::where('sale_id', $sale->id)->delete();
+        // Then, create new items
+        foreach ($request->input('item_id') as $index => $itemId) {
+            $quantity = $request->input('qty')[$index];
+            $price = $request->input('price')[$index];
+            $total = $request->input('total')[$index];
+
+            SaleItem::create([
+                'sale_id' => $sale->id, // Link to the created purchase order
+                'item_id' => $itemId, // Item ID
+                'quantity' => $quantity, // Quantity
+                'price' => $price, // Price per unit
+                'total' => $total, // Total cost (quantity * price)
+            ]);
+        }
+        
     
         // Redirect with success message
-        return redirect()->route('sales.show', $sale->id)->with('success', 'Sale updated successfully.');
+        return redirect()->route('sales.index')->with('success', 'Sale updated successfully.');
     }
 
 

@@ -12,10 +12,10 @@
       <button type="submit" class="bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600 ml-2">Search</button>
     </form>
 
-    <div class="flex">
+    <!-- <div class="flex">
       <a href="{{ route('stocks.create') }}"
         class="bg-blue-500 text-white px-4 py-[6px] rounded hover:bg-blue-600">Create</a>
-    </div>
+    </div> -->
   </div>
 
   <!-- Success Message -->
@@ -27,14 +27,13 @@
 
   <!-- Stock Table -->
   <div class="w-full h-auto">
-    @if($stocks->count() > 0)
     <table class="table-auto w-full">
       <thead class="bg-[#3c8dbc] text-white">
         <tr>
           <th class="p-2">No.</th>
           <th class="p-2">Item</th>
-          <th class="p-2">Total Quantity</th>
           <th class="p-2">Unit</th>
+          <th class="p-2">Available Stocks</th>
         </tr>
       </thead>
       <tbody id="stockResults">
@@ -42,15 +41,17 @@
         <tr class="bg-white hover:bg-gray-200 border-b">
           <td class="p-2 text-center">{{ $index + 1 }}</td>
           <td class="p-2 text-center">{{ optional($stock->item)->name ?? 'N/A' }}</td>
-          <td class="p-2 text-center">{{ number_format($stock->total_quantity) }}</td>
           <td class="p-2 text-center">{{ optional($stock->item)->unit ?? 'N/A' }}</td>
+          <td class="p-2 text-center">{{ number_format($stock->total_quantity) }}</td>
         </tr>
         @endforeach
+        @if($stocks->count() == 0)
+        <tr class="bg-white hover:bg-gray-200 border-b">
+          <td colspan="4" class="p-2 text-center">No stocks found.</td>
+        </tr>
+        @endif
       </tbody>
     </table>
-    @else
-    <p class="text-gray-600 text-center py-4">No stocks found.</p>
-    @endif
   </div>
 
   <!-- Pagination -->

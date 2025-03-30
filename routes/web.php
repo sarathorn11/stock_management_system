@@ -33,7 +33,7 @@ Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 // Purchase Order Routes
 Route::resource('purchase-order', PurchaseOrderController::class);
-Route::delete('purchase-order', [PurchaseOrderController::class, 'destroy'])->name('purchase-order.destroy');
+// Route::delete('purchase-order', [PurchaseOrderController::class, 'destroy'])->name('purchase-order.destroy');
 Route::get('/get-item-details/{id}', [PurchaseOrderController::class, 'getItemDetails']);
 
 

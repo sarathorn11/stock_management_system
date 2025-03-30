@@ -15,29 +15,29 @@ class PurchaseOrderController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-{
-    $perPage = $request->get('per_page', 10); // Get per page input
-    $query = $request->get('query'); // Get search input
+    {
+        $perPage = $request->get('per_page', 10); // Get per page input
+        $query = $request->get('query'); // Get search input
 
-     $purchaseOrders = PurchaseOrder::with('supplier')
-        ->when($query, function ($q) use ($query) {
-             $q->where('po_code', 'LIKE', "%$query%")
-              ->orWhere('amount', 'LIKE', "%{$query}%")
-               ->orWhereHas('supplier', function ($supplierQuery) use ($query) {
-                  $supplierQuery->where('name', 'LIKE', "%{$query}%"); // Replace 'name' with the actual field you want to search in the supplier table
-              });
-        })
-        ->orderBy('id', 'desc')
-        ->paginate($perPage); // Apply pagination
+        $purchaseOrders = PurchaseOrder::with('supplier')
+            ->when($query, function ($q) use ($query) {
+                $q->where('po_code', 'LIKE', "%$query%")
+                    ->orWhere('amount', 'LIKE', "%{$query}%")
+                    ->orWhereHas('supplier', function ($supplierQuery) use ($query) {
+                        $supplierQuery->where('name', 'LIKE', "%{$query}%"); // Replace 'name' with the actual field you want to search in the supplier table
+                    });
+            })
+            ->orderBy('id', 'desc')
+            ->paginate($perPage); // Apply pagination
 
-    return view('purchase_order.index', compact('purchaseOrders', 'perPage'));
-}
+        return view('purchase_order.index', compact('purchaseOrders', 'perPage'));
+    }
 
     // public function index(Request $request)
     // {
     //     $perPage = $request->get('per_page', 10); 
     //     $query = $request->get('query');  
-    
+
     //     $purchaseOrders = PurchaseOrder::with('supplier')
     //         ->when($query, function ($q) use ($query) {
     //             $q->where('po_code', 'LIKE', "%$query%")   
@@ -45,10 +45,10 @@ class PurchaseOrderController extends Controller
     //         })
     //         ->orderBy('id', 'desc')
     //         ->paginate($perPage);
-    
+
     //     return view('purchase_order.index', compact('purchaseOrders', 'perPage'));
     // }    
-	
+
 
     /**
      * Show the form for creating a new resource.
@@ -79,23 +79,23 @@ class PurchaseOrderController extends Controller
         ]);
 
         // Generate the next PO code
-        $lastPO = PurchaseOrder::orderBy('id', 'desc')->first(); // Get the last PO by ID
-        if ($lastPO) {
-            $lastCode = $lastPO->po_code;
-            // Extract the numeric part of the PO code
-            $lastNumber = (int) substr($lastCode, 3); // Assumes format is "PO-XXXXX"
-            $nextNumber = $lastNumber + 1; // Increment by 1
+        // $lastPO = PurchaseOrder::orderBy('id', 'desc')->first(); // Get the last PO by ID
+        // if ($lastPO) {
+        //     $lastCode = $lastPO->po_code;
+        //     // Extract the numeric part of the PO code
+        //     $lastNumber = (int) substr($lastCode, 3); // Assumes format is "PO-XXXXX"
+        //     $nextNumber = $lastNumber + 1; // Increment by 1
 
-            // Check if the nextNumber already exists in the database
-            $existingCodes = PurchaseOrder::pluck('po_code')->toArray();
-            while (in_array('PO-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT), $existingCodes)) {
-                $nextNumber++; // Increment until we find a unique code
-            }
+        //     // Check if the nextNumber already exists in the database
+        //     $existingCodes = PurchaseOrder::pluck('po_code')->toArray();
+        //     while (in_array('PO-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT), $existingCodes)) {
+        //         $nextNumber++; // Increment until we find a unique code
+        //     }
 
-            $poCode = 'PO-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT); // Format as PO-00001, PO-00002, etc.
-        } else {
-            $poCode = 'PO-00001'; // Default if no POs exist
-        }
+        //     $poCode = 'PO-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT); // Format as PO-00001, PO-00002, etc.
+        // } else {
+        //     $poCode = 'PO-00001'; // Default if no POs exist
+        // }
 
         // Calculate subtotal, discount, tax, and grand total
         $subtotal = array_sum($request->input('total'));
@@ -107,7 +107,7 @@ class PurchaseOrderController extends Controller
 
         // Create the purchase order
         $purchaseOrder = PurchaseOrder::create([
-            'po_code' => $poCode, // Use the generated PO code
+            // 'po_code' => $poCode, // Use the generated PO code
             'supplier_id' => $request->input('supplier_id'),
             'remarks' => $request->input('remarks', ''),
             'discount_perc' => $discountPerc,
@@ -131,7 +131,6 @@ class PurchaseOrderController extends Controller
                 'item_id' => $itemId, // Item ID
                 'quantity' => $quantity, // Quantity
                 'price' => $price, // Price per unit
-                'unit' => $unit, // Unit of measurement
                 'total' => $total, // Total cost (quantity * price)
             ]);
         }
@@ -165,63 +164,108 @@ class PurchaseOrderController extends Controller
     {
         // Validate the request data
         $request->validate([
-            'po_code' => 'required|unique:purchase_orders,po_code,' . $purchaseOrder->id, // Ensure PO code is unique, excluding the current record
             'supplier_id' => 'required|exists:suppliers,id', // Ensure supplier exists
             'remarks' => 'nullable|string', // Remarks are optional
-            'item_id' => 'required|array', // Ensure at least one item is selected
+            'discount_perc' => 'nullable|numeric|min:0|max:100', // Discount percentage (0-100)
+            'tax_perc' => 'nullable|numeric|min:0|max:100', // Tax percentage (0-100)
+            'item_id' => 'required|array', // Ensure items are provided
             'qty' => 'required|array', // Ensure quantities are provided
             'unit' => 'required|array', // Ensure units are provided
             'price' => 'required|array', // Ensure prices are provided
             'total' => 'required|array', // Ensure totals are provided
-            'discount_perc' => 'nullable|numeric|min:0|max:100', // Discount percentage (0-100)
-            'tax_perc' => 'nullable|numeric|min:0|max:100', // Tax percentage (0-100)
         ]);
+
+        // Generate the next PO code
+        // $lastPO = PurchaseOrder::orderBy('id', 'desc')->first(); // Get the last PO by ID
+        // if ($lastPO) {
+        //     $lastCode = $lastPO->po_code;
+        //     // Extract the numeric part of the PO code
+        //     $lastNumber = (int) substr($lastCode, 3); // Assumes format is "PO-XXXXX"
+        //     $nextNumber = $lastNumber + 1; // Increment by 1
+
+        //     // Check if the nextNumber already exists in the database
+        //     $existingCodes = PurchaseOrder::pluck('po_code')->toArray();
+        //     while (in_array('PO-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT), $existingCodes)) {
+        //         $nextNumber++; // Increment until we find a unique code
+        //     }
+
+        //     $poCode = 'PO-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT); // Format as PO-00001, PO-00002, etc.
+        // } else {
+        //     $poCode = 'PO-00001'; // Default if no POs exist
+        // }
 
         // Calculate subtotal, discount, tax, and grand total
         $subtotal = array_sum($request->input('total'));
-        $discount = ($subtotal * $request->input('discount_perc', 0)) / 100;
-        $tax = ($subtotal * $request->input('tax_perc', 0)) / 100;
+        $discountPerc = $request->input('discount_perc', 0);
+        $taxPerc = $request->input('tax_perc', 0);
+        $discount = ($subtotal * $discountPerc) / 100;
+        $tax = ($subtotal * $taxPerc) / 100;
         $grandTotal = $subtotal - $discount + $tax;
 
-        // Update the purchase order
+        // Create the purchase order
         $purchaseOrder->update([
-            'po_code' => $request->input('po_code'),
+            // 'po_code' => $poCode, // Use the generated PO code
             'supplier_id' => $request->input('supplier_id'),
-            'remarks' => $request->input('remarks'),
-            'subtotal' => $subtotal,
+            'remarks' => $request->input('remarks', ''),
+            'discount_perc' => $discountPerc,
             'discount' => $discount,
+            'tax_perc' => $taxPerc,
             'tax' => $tax,
-            'grand_total' => $grandTotal,
+            'subtotal' => $subtotal,
+            // 'grand_total' => $grandTotal,
+            'amount' => $grandTotal,
         ]);
 
         // Delete existing items for the purchase order
         $purchaseOrder->items()->delete();
 
-        // Add new items for the purchase order
+        // Attach items to the purchase order using the PoItem model
         foreach ($request->input('item_id') as $index => $itemId) {
-            $purchaseOrder->items()->create([
-                'item_id' => $itemId,
-                'quantity' => $request->input('qty')[$index],
-                'unit' => $request->input('unit')[$index],
-                'price' => $request->input('price')[$index],
-                'total' => $request->input('total')[$index],
+            $quantity = $request->input('qty')[$index];
+            $price = $request->input('price')[$index];
+            $unit = $request->input('unit')[$index];
+            $total = $request->input('total')[$index];
+
+            PoItem::create([
+                'po_id' => $purchaseOrder->id, // Link to the created purchase order
+                'item_id' => $itemId, // Item ID
+                'quantity' => $quantity, // Quantity
+                'price' => $price, // Price per unit
+                'total' => $total, // Total cost (quantity * price)
             ]);
         }
 
-        return redirect()->route('purchase-order.index')->with('success', 'Purchase Order updated successfully!');
+        return redirect()->route('purchase-order.index')->with('success', 'Purchase Order created successfully!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, $id = null)
     {
-        $ids = explode(',', $request->input('ids'));
+        // Check if bulk deletion is requested
+        if ($request->has('ids')) {
+            $ids = $request->input('ids');
 
-        // Delete the purchase orders by IDs
-        PurchaseOrder::whereIn('id', $ids)->delete();
+            // Validate the IDs
+            if (empty($ids)) {
+                return redirect()->route('purchase-order.index')->with('error', 'No purchase orders selected for deletion.');
+            }
 
-        return redirect()->route('purchase-order.index')->with('success', 'Selected purchase orders deleted successfully.');
+            // Delete the selected purchase orders
+            PurchaseOrder::whereIn('id', $ids)->delete();
+
+            return redirect()->route('purchase-order.index')->with('success', 'Selected purchase orders deleted successfully.');
+        }
+
+        // Handle single deletion
+        if ($id) {
+            $purchaseOrder = PurchaseOrder::findOrFail($id);
+            $purchaseOrder->delete();
+            return redirect()->route('purchase-order.index')->with('success', 'purchase orders deleted successfully.');
+        }
+
+        // return redirect()->route('purchase-order.index')->with('success', 'Selected purchase orders deleted successfully.');
     }
     public function receive($id, Request $request)
     {
