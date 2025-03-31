@@ -14,6 +14,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -85,6 +86,10 @@ Route::post('/items/delete', [ItemController::class, 'deleteSelected'])->name('i
 Route::resource('user', UserController::class);
 Route::post('/user/delete', [UserController::class, 'deleteSelected'])->name('user.deleteSelected');
 
+// Login and Logout Routes
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Setting Routes
 // Route for displaying the settings form (GET request)
