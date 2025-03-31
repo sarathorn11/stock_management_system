@@ -49,7 +49,7 @@
                 <tr class="hover:bg-gray-50 border-b">
                     <td class="px-4 py-2">{{1 + $index}}</td>
                     <td class="px-4 py-2"><img
-                            src="{{$user->profile_picture ? asset('storage/avatars/'.basename($user->profile_picture)) : asset('static/assets/images/default-avatar.png')}}"
+                            src="{{$user->profile_picture ? asset('static/assets/images/'.basename($user->profile_picture)) : asset('static/assets/images/default-avatar.png')}}"
                             class="w-10 h-10 rounded-full"></td>
                     <td class="px-4 py-2">{{$user->first_name}}</td>
                     <td class="px-4 py-2">{{$user->last_name}}</td>
