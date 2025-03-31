@@ -150,9 +150,14 @@
                             class="block text-[14px] px-4 py-2 text-gray-700 hover:bg-gray-200">
                             <i class="fa fa-user mr-1"></i> My Account
                         </a>
-                        <a class="w-full text-left block text-[14px] px-4 py-2 text-gray-700 hover:bg-gray-200">
+                        <a href="{{ route('logout') }}" 
+                            class="w-full text-left block text-[14px] px-4 py-2 text-gray-700 hover:bg-gray-200"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <i class="fa fa-sign-out mr-1"></i> Logout
                         </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                            @csrf
+                        </form>
                     </div>
                 </div>
             </nav>
